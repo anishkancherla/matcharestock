@@ -1,8 +1,6 @@
 import AuthForm from "@/components/auth-form"
 
-/**
- * The login page, which renders the authentication form.
- */
+// login page
 export default function LoginPage() {
   return (
     <div className="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8 bg-white">

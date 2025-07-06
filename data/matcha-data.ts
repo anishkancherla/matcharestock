@@ -1,8 +1,6 @@
 import type { BrandData } from "@/lib/types"
 
-/**
- * Static data for matcha brands and their blends.
- */
+// matcha brands and their blends
 export const matchaBrands: BrandData[] = [
   {
     brand: "Ippodo",

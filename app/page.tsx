@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
-/**
- * The public landing page for the application.
- */
+// landing page
 export default function LandingPage() {
   return (
     <div className="flex flex-col items-center justify-center h-full text-center p-4 bg-white">

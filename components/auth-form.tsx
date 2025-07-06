@@ -7,16 +7,16 @@ import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
+import { useRouter } from "next/navigation"
 
-/**
- * A form for handling user authentication with email/password and Google OAuth.
- */
+// login/signup form with google oauth
 export default function AuthForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth()
+  const router = useRouter()
 
   const handleGoogleSignIn = async () => {
     try {
@@ -26,6 +26,7 @@ export default function AuthForm() {
       toast("Signing in with Google...", {
         description: "Redirecting you to Google.",
       })
+
     } catch (error) {
       console.error('Error signing in with Google:', error)
       toast("Error signing in", {
@@ -64,8 +65,10 @@ export default function AuthForm() {
           })
         } else if (data.user && data.session) {
           toast("Account created!", {
-            description: "Welcome to MatchaRestock! You're already signed in.",
+            description: "Welcome to MatchaRestock! Redirecting to dashboard...",
           })
+
+          setTimeout(() => router.push('/dashboard'), 1000)
         } else {
           toast("Signup initiated!", {
             description: "Please check your email for confirmation.",
@@ -74,18 +77,48 @@ export default function AuthForm() {
       } else {
         await signInWithEmail(email, password)
         toast("Welcome back!", {
-          description: "You've been signed in successfully.",
+          description: "You've been signed in successfully. Redirecting...",
         })
+
+        setTimeout(() => router.push('/dashboard'), 1000)
       }
       
-      // Clear form
+
       setEmail("")
       setPassword("")
       
     } catch (error: any) {
       console.error('Auth error:', error)
-      toast("Error", {
-        description: error.message || "Something went wrong. Please try again.",
+      
+
+      let errorTitle = "Error"
+      let errorDescription = "Something went wrong. Please try again."
+      
+      if (error.message) {
+
+        if (error.message.includes("User already registered") || 
+            error.message.includes("already been registered")) {
+          errorTitle = "Account Already Exists"
+          errorDescription = "This email is already registered. If you signed up with Google, please choose 'Continue with Google' to access your account."
+        }
+
+        else if (error.message.includes("Invalid login credentials")) {
+          errorTitle = "Account Found with Different Sign-In Method"
+          errorDescription = "Looks like this email is already registered through Google Sign-In. Please choose 'Continue with Google' to access your account."
+        }
+
+        else if (error.message.includes("Email not confirmed")) {
+          errorTitle = "Email Not Confirmed"
+          errorDescription = "Please check your email and click the confirmation link before signing in."
+        }
+
+        else {
+          errorDescription = error.message
+        }
+      }
+      
+      toast(errorTitle, {
+        description: errorDescription,
       })
     } finally {
       setIsLoading(false)

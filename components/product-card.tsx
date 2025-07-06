@@ -3,9 +3,7 @@ interface ProductCardProps {
   description: string
 }
 
-/**
- * A simple display card for a single matcha blend, showing its name and description.
- */
+// matcha blend card
 export default function ProductCard({ blend, description }: ProductCardProps) {
   return (
     <div>

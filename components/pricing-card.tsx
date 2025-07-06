@@ -8,9 +8,7 @@ interface PricingCardProps {
   onSubscribe: () => void
 }
 
-/**
- * A placeholder card displaying pricing information and a subscribe button.
- */
+// pricing card for subscriptions
 export default function PricingCard({ onSubscribe }: PricingCardProps) {
   return (
     <Card className="max-w-lg mx-auto">

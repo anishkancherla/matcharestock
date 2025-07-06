@@ -9,10 +9,7 @@ interface BrandCardProps {
   onToggleSubscription: () => void
 }
 
-/**
- * A card that displays a brand and its list of blends.
- * It includes a toggle to subscribe to all notifications for that brand.
- */
+// brand card with subscription toggle
 export default function BrandCard({ brandData, isSubscribed, onToggleSubscription }: BrandCardProps) {
   return (
     <div className="border border-gray-200/80 rounded-xl p-6">

@@ -9,7 +9,7 @@ export async function GET(request: Request) {
   const code = searchParams.get('code')
   const error = searchParams.get('error')
   
-  // Log ALL search parameters to see what Google is sending
+
   console.log('All search params:')
   for (const [key, value] of searchParams.entries()) {
     console.log(`  ${key}: ${value}`)
@@ -18,11 +18,11 @@ export async function GET(request: Request) {
   console.log('Code:', code ? 'present' : 'missing')
   console.log('Error:', error)
   
-  // if "next" is in param, use it as the redirect URL
+
   let next = searchParams.get('next') ?? '/dashboard'
   
   if (!next.startsWith('/')) {
-    // if "next" is not a relative URL, use the default
+  
     next = '/dashboard'
   }
   

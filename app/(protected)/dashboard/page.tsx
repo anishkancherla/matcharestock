@@ -4,22 +4,19 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import PricingCard from "@/components/pricing-card"
 import BrandCard from "@/components/brand-card"
-import { toast } from "sonner" // Updated import for sonner
+import { toast } from "sonner"
 import { matchaBrands } from "@/data/matcha-data"
 import DashboardSkeleton from "./loading"
 
-/**
- * The main dashboard page, visible only to authenticated users.
- * It displays a pricing card for non-subscribed users or the brand selector for subscribed users.
- */
+// main dashboard page
 export default function DashboardPage() {
   const { user, loading } = useAuth()
 
-  // State now holds an array of brand names
+
   const [subscriptions, setSubscriptions] = useState<string[]>([])
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
 
-  // Load user's current subscriptions when component mounts
+
   useEffect(() => {
     const loadSubscriptions = async () => {
       if (!user) {
@@ -43,20 +40,15 @@ export default function DashboardPage() {
     loadSubscriptions()
   }, [user])
 
-  /**
-   * Placeholder function to handle the subscription request.
-   */
+
   const onRequestSubscription = async () => {
     toast("Subscription Request", {
-      // Using sonner's toast function
+
       description: "Redirecting to payment... (This is a placeholder)",
     })
   }
 
-  /**
-   * Toggles a subscription for an entire brand.
-   * It optimistically updates the UI and then makes an API call.
-   */
+  // toggle brand subscription
   const toggleBrand = async (brandName: string) => {
     const isCurrentlySubscribed = subscriptions.includes(brandName)
 
@@ -92,14 +84,12 @@ export default function DashboardPage() {
       toast("Error", {
         description: `Could not update subscription: ${error instanceof Error ? error.message : 'Unknown error'}`,
       })
-      // Revert to original state on failure
+
       setSubscriptions(subscriptions)
     }
   }
 
-  /**
-   * Checks if a user is subscribed to a specific brand.
-   */
+
   const isBrandSubscribed = (brandName: string) => {
     return subscriptions.includes(brandName)
   }

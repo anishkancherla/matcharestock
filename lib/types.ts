@@ -1,6 +1,6 @@
 import type { User } from "@supabase/supabase-js"
 
-// Subscription is now just a brand name
+
 export type Subscription = string
 
 export interface AppUser extends User {

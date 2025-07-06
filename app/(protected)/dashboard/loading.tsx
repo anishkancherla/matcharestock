@@ -1,10 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
-/**
- * A skeleton loader component displayed while the dashboard data is loading.
- * It mimics the structure of the dashboard for a better user experience.
- */
+// loading skeleton for dashboard
 export default function DashboardSkeleton() {
   return (
     <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">

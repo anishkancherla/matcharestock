@@ -7,17 +7,14 @@ import type { User } from "@supabase/supabase-js"
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-/**
- * Provides authentication state (user, session) to the entire application.
- * Uses Supabase authentication with Google OAuth.
- */
+// auth context for the app
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null)
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
   useEffect(() => {
-    // Get initial session
+
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
@@ -29,7 +26,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     getSession()
 
-    // Listen for auth state changes
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (session?.user) {
@@ -46,25 +43,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const createAppUser = async (supabaseUser: User): Promise<AppUser> => {
-    // DEVELOPMENT MODE: Auto-grant subscription access for testing
+    // dev mode: auto-subscribe for testing
     const isDevelopment = process.env.NODE_ENV === 'development'
     
     if (isDevelopment) {
       return {
         ...supabaseUser,
-        isSubscribed: true, // Auto-subscribed in development
-        subscriptions: [], // Will be loaded from database via API
+        isSubscribed: true,
+        subscriptions: [],
       }
     }
 
-    // PRODUCTION MODE: Check actual subscription status
+
     try {
       const response = await fetch('/api/subscriptions')
       if (response.ok) {
         const data = await response.json()
         return {
           ...supabaseUser,
-          isSubscribed: false, // Will be true when payment subscriptions are implemented
+          isSubscribed: false,
           subscriptions: data.subscriptions || [],
         }
       }
@@ -72,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error('Error fetching subscriptions:', error)
     }
 
-    // Fallback
+
     return {
       ...supabaseUser,
       isSubscribed: false,
