@@ -14,7 +14,7 @@
 /coverage
 
 # scrapers
-/scrapers/
+/scrapers/database_trigger_setup.sql
 
 # next.js
 /.next/
