@@ -46,7 +46,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // dev mode: auto-subscribe for testing
     const isDevelopment = process.env.NODE_ENV === 'development'
     
-    if (isDevelopment) {
+    // check for access code bypass
+    const accessCodeEntered = localStorage.getItem('access_code_entered') === 'true'
+    
+    if (isDevelopment || accessCodeEntered) {
       return {
         ...supabaseUser,
         isSubscribed: true,
