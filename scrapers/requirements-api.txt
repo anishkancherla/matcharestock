@@ -1,8 +1,9 @@
-# API-Only Scraper Requirements
+# API-Only Scraper with Residential Proxy Requirements
 # Much simpler than the original! No database dependencies needed.
 
-# HTTP requests (for API calls)
+# HTTP requests (for API calls and proxy support)
 requests>=2.31.0
+urllib3>=1.26.0
 
 # Web scraping (for your existing scrapers)
 beautifulsoup4>=4.12.0
@@ -11,9 +12,12 @@ lxml>=4.9.0
 # Environment variables
 python-dotenv>=1.0.0
 
+# Note: threading and concurrent.futures are built into Python 3.7+
+# No additional packages needed for parallel scraping!
+
 # Optional: Advanced scraping (only if you use these in your scrapers)
-selenium>=4.15.0
-playwright>=1.40.0
+# selenium>=4.15.0
+# playwright>=1.40.0
 
 # Note: No more supabase, no more database dependencies!
-# The API handles everything now. 
+# The API handles everything now with residential proxy protection. 

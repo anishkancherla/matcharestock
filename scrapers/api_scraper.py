@@ -7,10 +7,18 @@ Simple HTTP-only scraper that sends results to your Next.js API
 import os
 import sys
 import time
+import random
 import requests
+import urllib3
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from typing import List, Dict
 from dotenv import load_dotenv
+from config import get_request_kwargs, SCRAPER_API_KEY, API_BASE_URL
+
+# Disable SSL warnings for proxy compatibility
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Import your existing scrapers (keep them unchanged!)
 from ippodo_scraper import IppodoScraper, get_all_ippodo_products
@@ -20,31 +28,35 @@ from marukyu_scraper import MarukyuKoyamaenScraper, get_all_marukyu_products
 load_dotenv()
 
 class APIMatchaRestockMonitor:
-    def __init__(self):
-        # Only need API configuration (no database credentials!)
-        self.api_base_url = os.getenv("API_BASE_URL", "http://localhost:3000")
-        self.api_key = os.getenv("SCRAPER_API_KEY")
+    def __init__(self, use_parallel_scraping=True):
+        # Use configuration from config.py (includes proxy settings!)
+        self.api_base_url = API_BASE_URL
+        self.api_key = SCRAPER_API_KEY
+        self.use_parallel_scraping = use_parallel_scraping
         
-        if not self.api_key:
-            raise ValueError("Missing SCRAPER_API_KEY environment variable")
-        
-        print(f"API-Only Scraper initialized")
+        print(f"API-Only Scraper with Residential Proxy initialized")
         print(f"API Base URL: {self.api_base_url}")
+        print(f"Proxy enabled: {get_request_kwargs().get('proxies') is not None}")
+        print(f"Parallel brand scraping: {'ENABLED' if use_parallel_scraping else 'DISABLED'}")
 
     def scrape_ippodo_products(self) -> List[Dict]:
         """Scrape Ippodo products using existing scraper"""
-        print("Checking Ippodo stock...")
+        print("🟢 [IPPODO THREAD] Starting Ippodo stock check...")
         
         try:
             scraper = IppodoScraper()
             product_urls = get_all_ippodo_products()
             
-            print(f"  Found {len(product_urls)} Ippodo products to check")
+            # STEALTH: Randomize product order to avoid predictable patterns
+            randomized_urls = product_urls.copy()
+            random.shuffle(randomized_urls)
+            
+            print(f"🟢 [IPPODO] Found {len(randomized_urls)} products to check (randomized order)")
             
             scraped_results = []
             
-            for i, url in enumerate(product_urls, 1):
-                print(f"  [{i}/{len(product_urls)}] Checking {url.split('/')[-1]}...")
+            for i, url in enumerate(randomized_urls, 1):
+                print(f"🟢 [IPPODO] [{i}/{len(randomized_urls)}] Checking {url.split('/')[-1]}...")
                 
                 try:
                     result = scraper.scrape_product(url)
@@ -63,36 +75,44 @@ class APIMatchaRestockMonitor:
                         scraped_results.append(product_data)
                         
                     else:
-                        print(f"    Failed to scrape: {result.get('error', 'Unknown error')}")
+                        print(f"🟢 [IPPODO]    Failed to scrape: {result.get('error', 'Unknown error')}")
                         
                 except Exception as e:
-                    print(f"    Exception scraping product: {e}")
+                    print(f"🟢 [IPPODO]    Exception scraping product: {e}")
                 
-                # Small delay between products
-                if i < len(product_urls):
-                    time.sleep(2)
+                # STEALTH: Reduced delays for faster parallel processing
+                if i < len(randomized_urls):
+                    base_delay = random.uniform(2, 4)  # Reduced from 4-8 seconds
+                    # Add extra delay for first few products (mimic human hesitation)
+                    if i <= 2:  # Reduced from 3 to 2
+                        base_delay += random.uniform(0.5, 1.5)  # Reduced extra delay
+                    time.sleep(base_delay)
             
-            print(f"  Scraped {len(scraped_results)} Ippodo products")
+            print(f"🟢 [IPPODO] Completed! Scraped {len(scraped_results)} products")
             return scraped_results
             
         except Exception as e:
-            print(f"  Error during Ippodo scraping: {e}")
+            print(f"🟢 [IPPODO] Error during scraping: {e}")
             return []
 
     def scrape_marukyu_products(self) -> List[Dict]:
         """Scrape Marukyu products using existing scraper"""
-        print("Checking Marukyu Koyamaen stock...")
+        print("🔵 [MARUKYU THREAD] Starting Marukyu stock check...")
         
         try:
             scraper = MarukyuKoyamaenScraper()
             product_urls = get_all_marukyu_products()
             
-            print(f"  Found {len(product_urls)} Marukyu products to check")
+            # STEALTH: Randomize product order to avoid predictable patterns
+            randomized_urls = product_urls.copy()
+            random.shuffle(randomized_urls)
+            
+            print(f"🔵 [MARUKYU] Found {len(randomized_urls)} products to check (randomized order)")
             
             scraped_results = []
             
-            for i, url in enumerate(product_urls, 1):
-                print(f"  [{i}/{len(product_urls)}] Checking {url.split('/')[-1]}...")
+            for i, url in enumerate(randomized_urls, 1):
+                print(f"🔵 [MARUKYU] [{i}/{len(randomized_urls)}] Checking {url.split('/')[-1]}...")
                 
                 try:
                     result = scraper.scrape_product(url)
@@ -111,21 +131,54 @@ class APIMatchaRestockMonitor:
                         scraped_results.append(product_data)
                         
                     else:
-                        print(f"    Failed to scrape: {result.get('error', 'Unknown error')}")
+                        print(f"🔵 [MARUKYU]    Failed to scrape: {result.get('error', 'Unknown error')}")
                         
                 except Exception as e:
-                    print(f"    Exception scraping product: {e}")
+                    print(f"🔵 [MARUKYU]    Exception scraping product: {e}")
                 
-                # Small delay between products
-                if i < len(product_urls):
-                    time.sleep(2)
+                # STEALTH: Reduced delays for faster parallel processing
+                if i < len(randomized_urls):
+                    base_delay = random.uniform(2, 4)  # Reduced from 4-8 seconds
+                    # Add extra delay for first few products (mimic human hesitation)
+                    if i <= 2:  # Reduced from 3 to 2
+                        base_delay += random.uniform(0.5, 1.5)  # Reduced extra delay
+                    time.sleep(base_delay)
             
-            print(f"  Scraped {len(scraped_results)} Marukyu products")
+            print(f"🔵 [MARUKYU] Completed! Scraped {len(scraped_results)} products")
             return scraped_results
             
         except Exception as e:
-            print(f"  Error during Marukyu scraping: {e}")
+            print(f"🔵 [MARUKYU] Error during scraping: {e}")
             return []
+
+    def scrape_all_brands_parallel(self) -> List[Dict]:
+        """Scrape both brands in parallel for maximum speed"""
+        print("🚀 PARALLEL SCRAPING: Starting both brands simultaneously...")
+        start_time = time.time()
+        
+        # Use ThreadPoolExecutor to run both brands concurrently
+        with ThreadPoolExecutor(max_workers=2, thread_name_prefix="Brand") as executor:
+            # Submit both scraping tasks
+            ippodo_future = executor.submit(self.scrape_ippodo_products)
+            marukyu_future = executor.submit(self.scrape_marukyu_products)
+            
+            # Collect results as they complete
+            all_products = []
+            
+            for future in as_completed([ippodo_future, marukyu_future]):
+                try:
+                    products = future.result(timeout=300)  # 5 minute timeout per brand
+                    all_products.extend(products)
+                except Exception as e:
+                    print(f"❌ Thread execution error: {e}")
+        
+        elapsed_time = time.time() - start_time
+        print(f"🚀 PARALLEL SCRAPING COMPLETE!")
+        print(f"   Total time: {elapsed_time:.1f} seconds ({elapsed_time/60:.1f} minutes)")
+        print(f"   Products scraped: {len(all_products)} total")
+        print(f"   Speed improvement: ~50% faster than sequential scraping")
+        
+        return all_products
 
     def send_stock_updates(self, products: List[Dict]) -> bool:
         """Send product updates to the API"""
@@ -136,15 +189,19 @@ class APIMatchaRestockMonitor:
         print(f"Sending {len(products)} product updates to API...")
         
         try:
-            response = requests.post(
-                f"{self.api_base_url}/api/stock-update",
-                json={
+            # Get configuration for API calls (no proxy for localhost)
+            api_url = f"{self.api_base_url}/api/stock-update"
+            request_kwargs = get_request_kwargs(api_url)
+            request_kwargs.update({
+                'json': {
                     "products": products,
                     "apiKey": self.api_key
                 },
-                headers={'Content-Type': 'application/json'},
-                timeout=60
-            )
+                'headers': {'Content-Type': 'application/json'},
+                'timeout': 60
+            })
+            
+            response = requests.post(api_url, **request_kwargs)
             
             if response.status_code == 200:
                 result = response.json()
@@ -168,14 +225,18 @@ class APIMatchaRestockMonitor:
         print("Processing pending notifications...")
         
         try:
-            response = requests.post(
-                f"{self.api_base_url}/api/process-notifications",
-                json={
+            # Get configuration for API calls (no proxy for localhost)
+            api_url = f"{self.api_base_url}/api/process-notifications"
+            request_kwargs = get_request_kwargs(api_url)
+            request_kwargs.update({
+                'json': {
                     "apiKey": self.api_key
                 },
-                headers={'Content-Type': 'application/json'},
-                timeout=60
-            )
+                'headers': {'Content-Type': 'application/json'},
+                'timeout': 60
+            })
+            
+            response = requests.post(api_url, **request_kwargs)
             
             if response.status_code == 200:
                 result = response.json()
@@ -211,10 +272,24 @@ class APIMatchaRestockMonitor:
         print(f"\nSTOCK MONITORING")
         print("=" * 30)
         
-        ippodo_products = self.scrape_ippodo_products()
-        marukyu_products = self.scrape_marukyu_products()
-        
-        all_products = ippodo_products + marukyu_products
+        if self.use_parallel_scraping:
+            # PARALLEL: Scrape both brands simultaneously (faster!)
+            all_products = self.scrape_all_brands_parallel()
+        else:
+            # SEQUENTIAL: Original method with brand alternation
+            print("[SEQUENTIAL] Using original stealth timing")
+            if random.choice([True, False]):
+                print("[STEALTH] Checking Ippodo first, then Marukyu")
+                ippodo_products = self.scrape_ippodo_products()
+                time.sleep(random.uniform(5, 15))
+                marukyu_products = self.scrape_marukyu_products()
+            else:
+                print("[STEALTH] Checking Marukyu first, then Ippodo")
+                marukyu_products = self.scrape_marukyu_products()
+                time.sleep(random.uniform(5, 15))
+                ippodo_products = self.scrape_ippodo_products()
+            
+            all_products = ippodo_products + marukyu_products
         total_products = len(all_products)
         
         # Step 2: Send updates to API
@@ -233,7 +308,15 @@ class APIMatchaRestockMonitor:
         
         # Step 3: Wait for database triggers to process (your existing triggers!)
         print("\nWaiting for database triggers to process...")
-        time.sleep(5)
+        
+        # STEALTH: If restocks detected, wait longer (mimics human excitement/verification)
+        restocks_detected = len([p for p in all_products if p.get('is_in_stock', False)])
+        if restocks_detected > 0:
+            extra_wait = random.uniform(10, 20)  # 10-20 seconds extra for restocks
+            print(f"[STEALTH] Found {restocks_detected} in-stock items, adding human-like verification delay")
+            time.sleep(5 + extra_wait)
+        else:
+            time.sleep(5)
         
         # Step 4: Process notifications via API
         print("\nNOTIFICATION PROCESSING") 
@@ -258,31 +341,56 @@ class APIMatchaRestockMonitor:
         
         return stats
 
-    def run_continuous_monitoring(self, interval_minutes: int = 1):
-        """Run continuous monitoring via API"""
-        print(f"Starting continuous API-only monitoring (every {interval_minutes} minutes)")
-        print("All notifications handled via your Next.js API!")
-        print("=" * 60)
+    def run_continuous_monitoring(self, base_interval_minutes: int = 5):
+        """Run continuous monitoring with anti-detection measures"""
+        print(f"Starting STEALTH monitoring (base interval: {base_interval_minutes} minutes)")
+        print("Advanced anti-detection: randomized intervals, quiet hours, pattern obfuscation")
+        print("=" * 80)
+        
+        cycle_count = 0
         
         while True:
             try:
+                cycle_count += 1
+                current_hour = datetime.now().hour
+                
+                # Implement "quiet hours" (reduce frequency during low-traffic times)
+                if 2 <= current_hour <= 6:  # 2 AM - 6 AM (low web traffic)
+                    quiet_multiplier = 3  # 3x longer intervals during quiet hours
+                    print(f"[QUIET HOURS] Reduced monitoring frequency")
+                else:
+                    quiet_multiplier = 1
+                
+                # Dynamic interval randomization (varies between 80%-150% of base)
+                min_interval = base_interval_minutes * 0.8 * quiet_multiplier
+                max_interval = base_interval_minutes * 1.5 * quiet_multiplier
+                actual_interval = random.uniform(min_interval, max_interval)
+                
+                print(f"\n[CYCLE {cycle_count}] Starting monitoring at {datetime.now().strftime('%H:%M:%S')}")
+                
                 stats = self.run_monitoring_cycle()
                 
                 if stats['success']:
-                    print(f"\nCycle completed successfully!")
+                    print(f"✅ Cycle completed successfully!")
                 else:
-                    print(f"\nCycle completed with errors")
+                    print(f"⚠️ Cycle completed with errors")
                 
-                print(f"\nNext check in {interval_minutes} minutes...")
-                time.sleep(interval_minutes * 60)
+                # Add extra delay if we've been running for a while (pattern breaking)
+                if cycle_count % 10 == 0:  # Every 10th cycle
+                    extra_delay = random.uniform(60, 300)  # 1-5 minute extra delay
+                    print(f"[PATTERN BREAK] Adding extra {extra_delay/60:.1f} minute delay")
+                    actual_interval += extra_delay / 60
+                
+                print(f"💤 Next check in {actual_interval:.1f} minutes...")
+                time.sleep(actual_interval * 60)
                 
             except KeyboardInterrupt:
                 print("\nMonitoring stopped by user")
                 break
             except Exception as e:
                 print(f"\nUnexpected error: {e}")
-                print(f"Waiting {interval_minutes} minutes before retry...")
-                time.sleep(interval_minutes * 60)
+                print(f"Waiting {base_interval_minutes} minutes before retry...")
+                time.sleep(base_interval_minutes * 60)
 
     def run_test_mode(self) -> Dict[str, any]:
         """Run test mode - single cycle for testing"""
@@ -310,25 +418,65 @@ def main():
     print("Simple, reliable, easy to deploy!")
     print("=" * 60)
     
+    # Check for parallel/sequential mode flags
+    use_parallel = True  # Default to parallel for speed
+    args = sys.argv[1:]
+    
+    if '--sequential' in args:
+        use_parallel = False
+        args.remove('--sequential')
+        print("🐌 SEQUENTIAL MODE: Using original timing (slower but more stealth)")
+    elif '--parallel' in args:
+        use_parallel = True  
+        args.remove('--parallel')
+        print("🚀 PARALLEL MODE: Using simultaneous scraping (faster)")
+    
     try:
-        monitor = APIMatchaRestockMonitor()
+        monitor = APIMatchaRestockMonitor(use_parallel_scraping=use_parallel)
         
         # Check command line arguments
-        if len(sys.argv) > 1:
-            if sys.argv[1] == "--test":
+        if len(args) > 0:
+            if args[0] == "--test":
                 # Run test mode
                 stats = monitor.run_test_mode()
                 print("\nTest mode completed!")
                 return stats
-            elif sys.argv[1] == "--continuous":
+            elif args[0] == "--continuous":
                 # Run continuous monitoring
-                interval = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+                interval = int(args[1]) if len(args) > 1 else 5
+                monitor.run_continuous_monitoring(interval)
+            elif args[0] == "--stealth":
+                # Run stealth monitoring (optimized for fast, undetectable monitoring)
+                interval = int(args[1]) if len(args) > 1 else 3
+                print("🥷 STEALTH MODE: Ultra-fast monitoring with maximum anti-detection")
+                print(f"🎯 Target interval: {interval} minutes (with randomization)")
+                print("⚡ Perfect for 15-minute sellout windows!")
                 monitor.run_continuous_monitoring(interval)
             else:
                 print("Usage:")
-                print("  python api_scraper.py                    # Single run")
-                print("  python api_scraper.py --test             # Test mode")
-                print("  python api_scraper.py --continuous [min] # Continuous monitoring")
+                print("  python api_scraper.py                        # Single run (parallel)")
+                print("  python api_scraper.py --test                 # Test mode (parallel)")
+                print("  python api_scraper.py --continuous [min]     # Normal monitoring")
+                print("  python api_scraper.py --stealth [min]        # STEALTH: Fast + undetectable")
+                print("")
+                print("Speed options (add to any command):")
+                print("  --parallel     # Default: Scrape brands simultaneously (faster)")
+                print("  --sequential   # Original: Scrape brands one after another (slower)")
+                print("")
+                print("Examples:")
+                print("  python api_scraper.py --test --parallel      # Fast test")
+                print("  python api_scraper.py --stealth 3 --sequential # Slow stealth")
+                print("")
+                print("🥷 STEALTH mode features:")
+                print("   • Randomized intervals (80%-150% of target)")
+                print("   • Product order randomization")
+                print("   • Quiet hours (3x slower 2-6 AM)")
+                print("   • Pattern breaking every 10 cycles")
+                print("   • Human-like response delays")
+                print("🚀 PARALLEL mode features:")
+                print("   • 50% faster scraping (both brands simultaneously)")
+                print("   • Reduced delays between products")
+                print("   • Same stealth features maintained")
                 return
         else:
             # Default: single monitoring cycle

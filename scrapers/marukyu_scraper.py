@@ -9,8 +9,13 @@ from bs4 import BeautifulSoup
 import time
 import random
 import re
+import urllib3
 from datetime import datetime
 from typing import Dict, List
+from config import get_request_kwargs
+
+# Disable SSL warnings for proxy compatibility
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class MarukyuKoyamaenScraper:
     def __init__(self):
@@ -24,12 +29,25 @@ class MarukyuKoyamaenScraper:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
             'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15',
+            'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0',
+        ]
+        
+        accept_languages = [
+            'en-US,en;q=0.9',
+            'en-US,en;q=0.8,ja;q=0.7',
+            'en-GB,en;q=0.9,en-US;q=0.8',
+            'en-US,en;q=0.9,fr;q=0.8',
+            'en,en-US;q=0.9,ja;q=0.8',
+            'en-US,en;q=0.8,es;q=0.6',
         ]
         
         return {
             'User-Agent': random.choice(user_agents),
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Language': random.choice(accept_languages),
             'Accept-Encoding': 'gzip, deflate',
             'DNT': '1',
             'Connection': 'keep-alive',
@@ -118,7 +136,16 @@ class MarukyuKoyamaenScraper:
             time.sleep(random.uniform(1, 3))
             
             headers = self.get_random_headers()
-            response = self.session.get(url, headers=headers, timeout=30)
+            # Use variable timeout to appear more human-like
+            timeout = random.uniform(25, 35)
+            
+            # Get proxy configuration and make request
+            request_kwargs = get_request_kwargs(url)
+            request_kwargs.update({
+                'headers': headers,
+                'timeout': timeout
+            })
+            response = self.session.get(url, **request_kwargs)
             response.raise_for_status()
             
             soup = BeautifulSoup(response.content, 'html.parser')

@@ -9,8 +9,13 @@ from bs4 import BeautifulSoup
 import time
 import random
 import re
+import urllib3
 from datetime import datetime
 from typing import Dict, Optional
+from config import get_request_kwargs
+
+# Disable SSL warnings for proxy compatibility
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class IppodoScraper:
     def __init__(self):
@@ -24,12 +29,19 @@ class IppodoScraper:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0',
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2.1 Safari/605.1.15',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/122.0.0.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.3 Safari/605.1.15',
+            'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:122.0) Gecko/20100101 Firefox/122.0',
         ]
         
         accept_languages = [
             'en-US,en;q=0.9',
             'en-US,en;q=0.8,ja;q=0.7',
             'en-GB,en;q=0.9,en-US;q=0.8',
+            'en-US,en;q=0.9,fr;q=0.8',
+            'en,en-US;q=0.9,ja;q=0.8',
+            'en-US,en;q=0.8,es;q=0.6',
         ]
         
         return {
@@ -76,7 +88,16 @@ class IppodoScraper:
         # Remove accept-encoding to avoid compression issues
         headers['Accept-Encoding'] = 'gzip, deflate'
         
-        response = self.session.get(json_url, headers=headers, timeout=30)
+        # Use variable timeout to appear more human-like
+        timeout = random.uniform(25, 35)
+        
+        # Get proxy configuration and make request
+        request_kwargs = get_request_kwargs(json_url)
+        request_kwargs.update({
+            'headers': headers,
+            'timeout': timeout
+        })
+        response = self.session.get(json_url, **request_kwargs)
         
         print(f"   Response status: {response.status_code}")
         print(f"   Content-Type: {response.headers.get('content-type', 'unknown')}")
@@ -111,7 +132,15 @@ class IppodoScraper:
         
         try:
             headers = self.get_random_headers()
-            response = self.session.get(product_url, headers=headers, timeout=30)
+            timeout = random.uniform(25, 35)
+            
+            # Get proxy configuration and make request
+            request_kwargs = get_request_kwargs(product_url)
+            request_kwargs.update({
+                'headers': headers,
+                'timeout': timeout
+            })
+            response = self.session.get(product_url, **request_kwargs)
             response.raise_for_status()
             
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -314,10 +343,15 @@ class IppodoScraper:
             
             print(f"   Variant: '{variant_title}' - Available: {variant_available} - Qty: {inventory_quantity}")
             
-            if variant_available:
+            # Check if variant is actually available (either API says available OR has inventory)
+            is_actually_available = variant_available or (inventory_quantity and inventory_quantity > 0)
+            
+            if is_actually_available:
                 available_variants += 1
+                print(f"      ✅ AVAILABLE: {'API flag' if variant_available else 'Has inventory'}")
             else:
                 unavailable_variants += 1
+                print(f"      ❌ UNAVAILABLE: No inventory or API flag")
             
             if inventory_quantity and inventory_quantity > 0:
                 total_inventory += inventory_quantity
