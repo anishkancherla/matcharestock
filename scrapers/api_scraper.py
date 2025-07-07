@@ -62,12 +62,14 @@ class APIMatchaRestockMonitor:
                     result = scraper.scrape_product(url)
                     
                     if result['success']:
-                        is_in_stock = result['status'] == 'in_stock'
+                        # Include pre-orders as notifiable events
+                        is_in_stock = result['status'] in ['in_stock', 'pre_order']
                         
                         product_data = {
                             "brand": "Ippodo",
                             "product_name": result['name'],
                             "is_in_stock": is_in_stock,
+                            "stock_status": result['status'],  # 'in_stock', 'pre_order', 'out_of_stock', etc.
                             "stock_url": result['url'],
                             "price": result.get('price'),
                             "confidence": result.get('confidence', 0.0)
@@ -118,12 +120,14 @@ class APIMatchaRestockMonitor:
                     result = scraper.scrape_product(url)
                     
                     if result['success']:
-                        is_in_stock = result['status'] == 'in_stock'
+                        # Include pre-orders as notifiable events
+                        is_in_stock = result['status'] in ['in_stock', 'pre_order']
                         
                         product_data = {
                             "brand": "Marukyu Koyamaen",
                             "product_name": result['name'],
                             "is_in_stock": is_in_stock,
+                            "stock_status": result['status'],  # 'in_stock', 'pre_order', 'out_of_stock', etc.
                             "stock_url": result['url'],
                             "price": result.get('price'),
                             "confidence": result.get('confidence', 0.0)
