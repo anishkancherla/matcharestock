@@ -9,9 +9,19 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Proxy configuration
+# Datacenter Proxy configuration (4 IPs for rotation)
 PROXY_ENABLED = True
-PROXY_URL = 'http://brd-customer-hl_85a4c607-zone-residential_proxy1:z68opcghw7w8@brd.superproxy.io:33335'
+
+# Datacenter proxies targeting your 4 allocated IPs specifically
+DATACENTER_PROXIES = [
+    'http://brd-customer-hl_85a4c607-zone-residential_proxy1-ip-188.212.137.104:z68opcghw7w8@brd.superproxy.io:33335',
+    'http://brd-customer-hl_85a4c607-zone-residential_proxy1-ip-209.20.189.10:z68opcghw7w8@brd.superproxy.io:33335', 
+    'http://brd-customer-hl_85a4c607-zone-residential_proxy1-ip-2.57.76.146:z68opcghw7w8@brd.superproxy.io:33335',
+    'http://brd-customer-hl_85a4c607-zone-residential_proxy1-ip-2.58.179.210:z68opcghw7w8@brd.superproxy.io:33335'
+]
+
+# Current proxy index for rotation
+_proxy_index = 0
 
 # API configuration
 API_KEY = '03544c84-926d-4c87-b9c6-24f978c1c463'
@@ -19,11 +29,17 @@ API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:3000")
 SCRAPER_API_KEY = os.getenv("SCRAPER_API_KEY", "your-scraper-api-key-here")
 
 def get_proxy_config():
-    """Get proxy configuration for requests"""
-    if PROXY_ENABLED and PROXY_URL:
+    """Get proxy configuration for requests with rotation"""
+    global _proxy_index
+    
+    if PROXY_ENABLED and DATACENTER_PROXIES:
+        # Get current proxy and rotate for next request
+        current_proxy = DATACENTER_PROXIES[_proxy_index]
+        _proxy_index = (_proxy_index + 1) % len(DATACENTER_PROXIES)
+        
         return {
-            'http': PROXY_URL,
-            'https': PROXY_URL,
+            'http': current_proxy,
+            'https': current_proxy,
         }
     return None
 
@@ -59,23 +75,28 @@ def test_proxy():
     test_url = 'https://geo.brdtest.com/mygeo.json'
     
     try:
-        print("Testing proxy connection...")
-        print(f"Proxy: {PROXY_URL}")
+        print("Testing datacenter proxy rotation...")
+        print(f"Available proxies: {len(DATACENTER_PROXIES)}")
         
-        kwargs = get_request_kwargs(test_url)
-        response = requests.get(test_url, **kwargs)
+        # Test each proxy
+        all_working = True
+        for i in range(len(DATACENTER_PROXIES)):
+            print(f"\nTesting proxy {i+1}/{len(DATACENTER_PROXIES)}:")
+            kwargs = get_request_kwargs(test_url)
+            response = requests.get(test_url, **kwargs)
         
-        if response.status_code == 200:
-            geo_data = response.json()
-            print("✅ Proxy working!")
-            print(f"   IP: {geo_data.get('ip', 'unknown')}")
-            print(f"   Country: {geo_data.get('country', 'unknown')}")
-            print(f"   City: {geo_data.get('city', 'unknown')}")
-            print(f"   ISP: {geo_data.get('org', 'unknown')}")
-            return True
-        else:
-            print(f"❌ Proxy test failed: {response.status_code}")
-            return False
+            if response.status_code == 200:
+                geo_data = response.json()
+                print("✅ Proxy working!")
+                print(f"   IP: {geo_data.get('ip', 'unknown')}")
+                print(f"   Country: {geo_data.get('country', 'unknown')}")
+                print(f"   City: {geo_data.get('city', 'unknown')}")
+                print(f"   ISP: {geo_data.get('org', 'unknown')}")
+            else:
+                print(f"❌ Proxy test failed: {response.status_code}")
+                all_working = False
+        
+        return all_working
             
     except Exception as e:
         print(f"❌ Proxy test error: {e}")

@@ -193,17 +193,17 @@ class APIMatchaRestockMonitor:
         print(f"Sending {len(products)} product updates to API...")
         
         try:
-            # Get configuration for API calls (no proxy for localhost)
+            # NO PROXY for API calls to our own server!
             api_url = f"{self.api_base_url}/api/stock-update"
-            request_kwargs = get_request_kwargs(api_url)
-            request_kwargs.update({
+            request_kwargs = {
                 'json': {
                     "products": products,
                     "apiKey": self.api_key
                 },
                 'headers': {'Content-Type': 'application/json'},
-                'timeout': 60
-            })
+                'timeout': 60,
+                'verify': False  # Skip SSL verification for localhost/development
+            }
             
             response = requests.post(api_url, **request_kwargs)
             
@@ -229,16 +229,16 @@ class APIMatchaRestockMonitor:
         print("Processing pending notifications...")
         
         try:
-            # Get configuration for API calls (no proxy for localhost)
+            # NO PROXY for API calls to our own server!
             api_url = f"{self.api_base_url}/api/process-notifications"
-            request_kwargs = get_request_kwargs(api_url)
-            request_kwargs.update({
+            request_kwargs = {
                 'json': {
                     "apiKey": self.api_key
                 },
                 'headers': {'Content-Type': 'application/json'},
-                'timeout': 60
-            })
+                'timeout': 60,
+                'verify': False  # Skip SSL verification for localhost/development
+            }
             
             response = requests.post(api_url, **request_kwargs)
             

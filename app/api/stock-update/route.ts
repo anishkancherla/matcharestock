@@ -5,6 +5,7 @@ interface ProductUpdate {
   brand: string
   product_name: string
   is_in_stock: boolean
+  stock_status?: string // 'in_stock', 'pre_order', 'out_of_stock', etc.
   stock_url?: string
   price?: string | number
   confidence?: number
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
     
     // Process each product update
     for (const product of products) {
-      const { brand, product_name, is_in_stock, stock_url, price, confidence } = product
+      const { brand, product_name, is_in_stock, stock_status, stock_url, price, confidence } = product
       
       if (!brand || !product_name) {
         console.warn(`⚠️ Skipping product with missing brand or name:`, product)
@@ -77,6 +78,7 @@ export async function POST(request: Request) {
           brand,
           product_name,
           is_in_stock,
+          stock_status: stock_status || (is_in_stock ? 'in_stock' : 'out_of_stock'), // Default fallback
           last_checked: currentTime,
           stock_url: stock_url || null
         }
@@ -92,11 +94,12 @@ export async function POST(request: Request) {
           const wasOutOfStock = !existing.is_in_stock
           const nowInStock = is_in_stock
           
-          // Detect restock: was out of stock, now in stock
+          // Detect restock: was out of stock, now in stock (including pre-orders)
           if (wasOutOfStock && nowInStock) {
             // Note: stock_change_detected_at will be set automatically by database trigger
             wasRestocked = true
-            console.log(`📈 Restock detected: ${brand} - ${product_name}`)
+            const statusLabel = stock_status === 'pre_order' ? 'Pre-order available' : 'Back in stock'
+            console.log(`📈 ${statusLabel}: ${brand} - ${product_name}`)
           }
 
           const { error: updateError } = await supabase
@@ -124,7 +127,8 @@ export async function POST(request: Request) {
           if (is_in_stock) {
             updateData.stock_change_detected_at = currentTime
             wasRestocked = true
-            console.log(`📈 New product in stock: ${brand} - ${product_name}`)
+            const statusLabel = stock_status === 'pre_order' ? 'New pre-order available' : 'New product in stock'
+            console.log(`📈 ${statusLabel}: ${brand} - ${product_name}`)
           }
 
           const { error: insertError } = await supabase
