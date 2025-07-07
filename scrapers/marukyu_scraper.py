@@ -77,30 +77,30 @@ class MarukyuKoyamaenScraper:
         page_text = soup.get_text().lower()
         indicators_found = []
         
-        print("🔍 Checking Marukyu Koyamaen stock status...")
+        print("Checking Marukyu Koyamaen stock status...")
         
         # SIMPLE LOGIC: Look for the ONLY difference between in-stock and out-of-stock pages
         out_of_stock_text = 'this product is currently out of stock and unavailable'
         is_out_of_stock = out_of_stock_text in page_text
         
-        print(f"   🔍 Looking for: '{out_of_stock_text}'")
-        print(f"   📊 Found out of stock text: {is_out_of_stock}")
+        print(f"   Looking for: '{out_of_stock_text}'")
+        print(f"   Found out of stock text: {is_out_of_stock}")
         
         if is_out_of_stock:
             # Product is explicitly marked as out of stock
             status = 'out_of_stock'
             confidence = 0.95
             button_text = "Out of stock"
-            indicators_found.append("❌ Found 'This product is currently out of stock and unavailable' text")
-            print("   📕 OUT OF STOCK - Explicitly marked as unavailable")
+            indicators_found.append("Found 'This product is currently out of stock and unavailable' text")
+            print("   OUT OF STOCK - Explicitly marked as unavailable")
             
         else:
             # No out of stock text = product is available
             status = 'in_stock'
             confidence = 0.95
             button_text = "Available"
-            indicators_found.append("✅ No out of stock text found - product is available")
-            print("   📗 IN STOCK - No out of stock text detected")
+            indicators_found.append("No out of stock text found - product is available")
+            print("   IN STOCK - No out of stock text detected")
         
         return {
             'status': status,
@@ -111,7 +111,7 @@ class MarukyuKoyamaenScraper:
 
     def scrape_product(self, url: str) -> Dict[str, any]:
         """Scrape a single Marukyu Koyamaen product page"""
-        print(f"\n🔍 Scraping: {url}")
+        print(f"\nScraping: {url}")
         
         try:
             # Add random delay
@@ -122,7 +122,7 @@ class MarukyuKoyamaenScraper:
             response.raise_for_status()
             
             soup = BeautifulSoup(response.content, 'html.parser')
-            print(f"   📄 Page loaded successfully")
+            print(f"   Page loaded successfully")
             
             # Extract product information
             product_info = self.extract_product_info(soup, url)
@@ -139,17 +139,17 @@ class MarukyuKoyamaenScraper:
                 'error': None
             }
             
-            print(f"   📦 Product: {product_info['name']}")
+            print(f"   Product: {product_info['name']}")
             if product_info['price']:
-                print(f"   💰 Price: ¥{product_info['price']:,}")
-            print(f"   📊 Status: {stock_info['status'].upper()}")
-            print(f"   🎯 Confidence: {stock_info['confidence']:.1%}")
+                print(f"   Price: ¥{product_info['price']:,}")
+            print(f"   Status: {stock_info['status'].upper()}")
+            print(f"   Confidence: {stock_info['confidence']:.1%}")
             
             return result
             
         except Exception as e:
             error_msg = f"Error: {e}"
-            print(f"   ❌ {error_msg}")
+            print(f"   {error_msg}")
             return {
                 'url': url,
                 'scraped_at': datetime.now().isoformat(),
@@ -176,30 +176,30 @@ def get_all_marukyu_products():
 
 def scrape_all_marukyu_products():
     """Scrape all Marukyu Koyamaen products and return results"""
-    print("🚀 Starting Marukyu Koyamaen Product Scraper")
+    print("Starting Marukyu Koyamaen Product Scraper")
     print("=" * 60)
     
     scraper = MarukyuKoyamaenScraper()
     products = get_all_marukyu_products()
     results = []
     
-    print(f"📦 Found {len(products)} Marukyu Koyamaen products to scrape")
+    print(f"Found {len(products)} Marukyu Koyamaen products to scrape")
     print("\n" + "=" * 60)
     
     for i, url in enumerate(products, 1):
-        print(f"\n🔍 [{i}/{len(products)}] Scraping product...")
+        print(f"\n[{i}/{len(products)}] Scraping product...")
         
         try:
             result = scraper.scrape_product(url)
             results.append(result)
             
             if result['success']:
-                print(f"   ✅ {result['name']} - {result['status'].upper()}")
+                print(f"   SUCCESS: {result['name']} - {result['status'].upper()}")
             else:
-                print(f"   ❌ Failed: {result.get('error', 'Unknown error')}")
+                print(f"   FAILED: {result.get('error', 'Unknown error')}")
                 
         except Exception as e:
-            print(f"   💥 Exception: {e}")
+            print(f"   EXCEPTION: {e}")
             results.append({
                 'url': url,
                 'success': False,
@@ -220,32 +220,32 @@ def test_scraper():
     
     # Display summary results
     print("\n" + "=" * 60)
-    print("📊 MARUKYU KOYAMAEN SCRAPING RESULTS")
+    print("MARUKYU KOYAMAEN SCRAPING RESULTS")
     print("=" * 60)
     
     successful = [r for r in results if r.get('success', False)]
     failed = [r for r in results if not r.get('success', False)]
     
-    print(f"✅ Successful: {len(successful)}")
-    print(f"❌ Failed: {len(failed)}")
-    print(f"📦 Total Products: {len(results)}")
+    print(f"Successful: {len(successful)}")
+    print(f"Failed: {len(failed)}")
+    print(f"Total Products: {len(results)}")
     
     if successful:
-        print(f"\n🎯 Stock Status Summary:")
+        print(f"\nStock Status Summary:")
         in_stock = len([r for r in successful if r['status'] == 'in_stock'])
         out_of_stock = len([r for r in successful if r['status'] == 'out_of_stock'])
         
-        print(f"   📗 In Stock: {in_stock}")
-        print(f"   📕 Out of Stock: {out_of_stock}")
+        print(f"   In Stock: {in_stock}")
+        print(f"   Out of Stock: {out_of_stock}")
         
-        print(f"\n📋 Detailed Results:")
+        print(f"\nDetailed Results:")
         for result in successful:
-            status_emoji = '📗' if result['status'] == 'in_stock' else '📕'
+            status_label = 'IN STOCK' if result['status'] == 'in_stock' else 'OUT OF STOCK'
             price_str = f"¥{result['price']:,}" if result.get('price') else 'N/A'
-            print(f"   {status_emoji} {result['name']} - {price_str} - {result['status'].upper()}")
+            print(f"   [{status_label}] {result['name']} - {price_str} - {result['status'].upper()}")
     
     if failed:
-        print(f"\n❌ Failed Products:")
+        print(f"\nFailed Products:")
         for result in failed:
             print(f"   • {result['url'].split('/')[-1]}: {result.get('error', 'Unknown error')}")
     

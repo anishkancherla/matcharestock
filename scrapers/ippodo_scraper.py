@@ -78,11 +78,11 @@ class IppodoScraper:
         
         response = self.session.get(json_url, headers=headers, timeout=30)
         
-        print(f"   📊 Response status: {response.status_code}")
-        print(f"   📊 Content-Type: {response.headers.get('content-type', 'unknown')}")
-        print(f"   📊 Content-Encoding: {response.headers.get('content-encoding', 'none')}")
-        print(f"   📊 Response content length: {len(response.content)}")
-        print(f"   📊 First 200 chars: {response.text[:200]}")
+        print(f"   Response status: {response.status_code}")
+        print(f"   Content-Type: {response.headers.get('content-type', 'unknown')}")
+        print(f"   Content-Encoding: {response.headers.get('content-encoding', 'none')}")
+        print(f"   Response content length: {len(response.content)}")
+        print(f"   First 200 chars: {response.text[:200]}")
         
         response.raise_for_status()
         
@@ -90,21 +90,24 @@ class IppodoScraper:
             data = response.json()
             return data
         except ValueError as e:
-            print(f"   ❌ JSON parsing error: {e}")
-            print(f"   📄 Response encoding: {response.encoding}")
+            print(f"   JSON parsing error: {e}")
+            print(f"   Response encoding: {response.encoding}")
             # Try to decode manually
             try:
                 import json
                 manual_data = json.loads(response.content.decode('utf-8'))
                 return manual_data
             except Exception as e2:
-                print(f"   ❌ Manual decode error: {e2}")
-                print(f"   📄 Raw content (first 500 bytes): {response.content[:500]}")
+                print(f"   Manual decode error: {e2}")
+                print(f"   Raw content (first 500 bytes): {response.content[:500]}")
                 raise
 
     def check_html_for_preorder(self, product_url: str) -> Dict[str, any]:
-        """Check HTML page for pre-order indicators when JSON shows unavailable"""
-        print("   🔍 Checking HTML for pre-order status...")
+        """
+        Check HTML for ACTUAL pre-order options vs just notification signups
+        More precise logic to avoid false positives from descriptive text
+        """
+        print("   Checking HTML for pre-order status...")
         
         try:
             headers = self.get_random_headers()
@@ -113,12 +116,6 @@ class IppodoScraper:
             
             soup = BeautifulSoup(response.content, 'html.parser')
             page_text = soup.get_text().lower()
-            
-            # STRICT pre-order indicators - only actual pre-order text
-            preorder_indicators = [
-                'pre-order',
-                'preorder'
-            ]
             
             # Notification/restock indicators (NOT pre-order)
             notification_indicators = [
@@ -149,11 +146,6 @@ class IppodoScraper:
             expected_date = None
             notification_email_found = False
             
-            # Check for STRICT pre-order indicators
-            for indicator in preorder_indicators:
-                if indicator in page_text:
-                    found_preorder_indicators.append(indicator)
-            
             # Check for notification indicators
             for indicator in notification_indicators:
                 if indicator in page_text:
@@ -165,17 +157,19 @@ class IppodoScraper:
                 if indicator in page_text:
                     found_outofstock_indicators.append(indicator)
             
-            # Look for specific pre-order buttons (STRICT - only actual pre-order buttons)
+            # Look for ACTUAL pre-order functionality (buttons, forms, interactive elements)
             buttons = soup.find_all(['button', 'input', 'a'])
             preorder_button_text = None
             notification_button_text = None
+            actual_preorder_found = False
             
             for button in buttons:
                 button_text = button.get_text(strip=True).lower()
                 button_classes = ' '.join(button.get('class', [])).lower()
                 button_id = button.get('id', '').lower()
                 
-                # Check for ACTUAL pre-order buttons only
+                # Check for ACTUAL pre-order buttons/functionality only
+                # Must be in interactive elements, not just descriptive text
                 strict_preorder_indicators = ['pre-order', 'preorder']
                 
                 for indicator in strict_preorder_indicators:
@@ -184,6 +178,7 @@ class IppodoScraper:
                         indicator in button_id):
                         preorder_button_text = button.get_text(strip=True)
                         found_preorder_indicators.append(f"button: {preorder_button_text}")
+                        actual_preorder_found = True
                         break
                 
                 # Check for notification buttons (separate from pre-order)
@@ -198,6 +193,19 @@ class IppodoScraper:
                             found_notification_indicators.append(f"button: {notification_button_text}")
                             notification_email_found = True
                             break
+            
+            # Look for pre-order in form actions or specific containers
+            forms = soup.find_all('form')
+            for form in forms:
+                form_action = form.get('action', '').lower()
+                form_classes = ' '.join(form.get('class', [])).lower()
+                form_id = form.get('id', '').lower()
+                
+                if any(indicator in form_action + form_classes + form_id 
+                       for indicator in ['preorder', 'pre-order']):
+                    found_preorder_indicators.append("pre-order form found")
+                    actual_preorder_found = True
+                    break
             
             # Look for email input fields (indicates notification signup, NOT pre-order)
             email_inputs = soup.find_all('input', {'type': 'email'})
@@ -220,15 +228,14 @@ class IppodoScraper:
                     found_notification_indicators.append(f"expected date: {expected_date}")
                     break
             
-            print(f"   📋 Pre-order indicators: {found_preorder_indicators}")
-            print(f"   📧 Notification indicators: {found_notification_indicators}")
-            print(f"   📕 Out of stock indicators: {found_outofstock_indicators}")
-            print(f"   📅 Expected date: {expected_date}")
+            print(f"   Pre-order indicators: {found_preorder_indicators}")
+            print(f"   Notification indicators: {found_notification_indicators}")
+            print(f"   Out of stock indicators: {found_outofstock_indicators}")
+            print(f"   Expected date: {expected_date}")
             
-            # STRICT LOGIC: Only mark as pre-order if actual "pre-order" text is found
-            is_actual_preorder = len(found_preorder_indicators) > 0
-            
-            if is_actual_preorder:
+            # FIXED LOGIC: Only mark as pre-order if ACTUAL pre-order functionality is found
+            # Not just the word "pre-order" in descriptive text
+            if actual_preorder_found:
                 return {
                     'is_preorder': True,
                     'indicators': found_preorder_indicators,
@@ -249,7 +256,7 @@ class IppodoScraper:
                 }
                 
         except Exception as e:
-            print(f"   ❌ Error checking HTML: {e}")
+            print(f"   Error checking HTML: {e}")
             return {
                 'is_preorder': False,
                 'indicators': [],
@@ -279,7 +286,7 @@ class IppodoScraper:
         product = product_data.get('product', {})
         variants = product.get('variants', [])
         
-        print(f"🔍 Analyzing {len(variants)} product variants...")
+        print(f"Analyzing {len(variants)} product variants...")
         
         # Track inventory across all variants
         total_inventory = 0
@@ -305,7 +312,7 @@ class IppodoScraper:
             }
             variant_details.append(variant_info)
             
-            print(f"   📦 Variant: '{variant_title}' - Available: {variant_available} - Qty: {inventory_quantity}")
+            print(f"   Variant: '{variant_title}' - Available: {variant_available} - Qty: {inventory_quantity}")
             
             if variant_available:
                 available_variants += 1
@@ -323,8 +330,8 @@ class IppodoScraper:
         }
         
         # Determine overall stock status
-        print(f"   📊 Summary: {available_variants} available, {unavailable_variants} unavailable variants")
-        print(f"   📊 Total inventory: {total_inventory}")
+        print(f"   Summary: {available_variants} available, {unavailable_variants} unavailable variants")
+        print(f"   Total inventory: {total_inventory}")
         
         if available_variants > 0:
             # At least one variant is available
@@ -332,11 +339,11 @@ class IppodoScraper:
             confidence = 0.95
             button_text = "Add to bag"
             indicators_found.append(f"{available_variants} variant(s) available for purchase")
-            print("   ✅ IN STOCK - At least one variant is available")
+            print("   IN STOCK - At least one variant is available")
             
         elif unavailable_variants > 0 and available_variants == 0:
             # All variants are unavailable - check for pre-order/notification availability
-            print("   🔍 All variants unavailable, checking for pre-order/notification options...")
+            print("   All variants unavailable, checking for pre-order/notification options...")
             
             # First check JSON for STRICT pre-order indicators only
             tags = product.get('tags', [])
@@ -364,7 +371,7 @@ class IppodoScraper:
                 confidence = 0.95
                 button_text = html_check['button_text'] or "Pre-order"
                 
-                indicators_found.append("✅ ACTUAL PRE-ORDER FOUND")
+                indicators_found.append("ACTUAL PRE-ORDER FOUND")
                 indicators_found.extend([f"Pre-order: {ind}" for ind in html_check['indicators']])
                 
                 print("   ⏳ PRE-ORDER - Product has actual pre-order options")
@@ -378,28 +385,28 @@ class IppodoScraper:
                     confidence = 0.9
                     button_text = html_check.get('button_text') or "Notify me"
                     
-                    indicators_found.append("📧 Out of stock with notifications available")
+                    indicators_found.append("Out of stock with notifications available")
                     if html_check.get('expected_date'):
-                        indicators_found.append(f"📅 Expected: {html_check['expected_date']}")
+                        indicators_found.append(f"Expected: {html_check['expected_date']}")
                     
                     indicators_found.extend([f"Notification: {ind}" for ind in html_check.get('notification_indicators', [])])
                     
-                    print("   📧 OUT OF STOCK - But notifications available")
+                    print("   OUT OF STOCK - But notifications available")
                     if html_check.get('expected_date'):
-                        print(f"   📅 Expected back: {html_check['expected_date']}")
+                        print(f"   Expected back: {html_check['expected_date']}")
                 else:
                     status = 'out_of_stock'
                     confidence = 0.9
                     button_text = "Sold out"
-                    indicators_found.append("❌ All variants unavailable, no options found")
-                    print("   ❌ OUT OF STOCK - No pre-order or notification options")
+                    indicators_found.append("All variants unavailable, no options found")
+                    print("   OUT OF STOCK - No pre-order or notification options")
         
         else:
             # No variants found - unusual
             status = 'unknown'
             confidence = 0.0
             indicators_found.append("No variants found in product data")
-            print("   ❓ UNKNOWN - No variants found")
+            print("   UNKNOWN - No variants found")
         
         # Add pre-order specific information to the result
         preorder_info = {}
@@ -463,7 +470,7 @@ class IppodoScraper:
         """
         Scrape a single product page using Shopify's JSON API + HTML fallback
         """
-        print(f"\n🔍 Scraping: {url}")
+        print(f"\nScraping: {url}")
         
         try:
             # Add random delay to be respectful
@@ -472,7 +479,7 @@ class IppodoScraper:
             # Get product data from Shopify JSON API
             product_data = self.get_product_json(url)
             
-            print(f"   📄 JSON data loaded successfully")
+            print(f"   JSON data loaded successfully")
             
             # Extract product information
             product_info = self.extract_product_info(product_data, url)
@@ -489,17 +496,17 @@ class IppodoScraper:
                 'error': None
             }
             
-            print(f"   📦 Product: {product_info['name']}")
-            print(f"   💰 Price: ${product_info['price']}")
-            print(f"   ⚖️ Weight: {product_info['weight']}")
-            print(f"   📊 Status: {stock_info['status'].upper()}")
-            print(f"   🎯 Confidence: {stock_info['confidence']:.1%}")
+            print(f"   Product: {result['name']}")
+            print(f"   Price: ${result['price']}")
+            print(f"   Weight: {result['weight']}")
+            print(f"   Status: {result['status'].upper()}")
+            print(f"   Confidence: {result['confidence']:.1%}")
             
             return result
             
         except requests.exceptions.RequestException as e:
             error_msg = f"Network error: {e}"
-            print(f"   ❌ {error_msg}")
+            print(f"   {error_msg}")
             return {
                 'url': url,
                 'scraped_at': datetime.now().isoformat(),
@@ -509,7 +516,7 @@ class IppodoScraper:
             }
         except Exception as e:
             error_msg = f"Parsing error: {e}"
-            print(f"   ❌ {error_msg}")
+            print(f"   {error_msg}")
             return {
                 'url': url,
                 'scraped_at': datetime.now().isoformat(),
@@ -543,33 +550,33 @@ def get_all_ippodo_products():
 
 def scrape_all_ippodo_products():
     """Scrape all Ippodo products and return results"""
-    print("🚀 Starting Ippodo Full Product Scraper")
+    print("Starting Ippodo Full Product Scraper")
     print("=" * 60)
     
     scraper = IppodoScraper()
     products = get_all_ippodo_products()
     results = []
     
-    print(f"📦 Found {len(products)} Ippodo products to scrape:")
+    print(f"Found {len(products)} Ippodo products to scrape:")
     for i, url in enumerate(products, 1):
         print(f"   {i}. {url.split('/')[-1]}")
     
     print("\n" + "=" * 60)
     
     for i, url in enumerate(products, 1):
-        print(f"\n🔍 [{i}/{len(products)}] Scraping product...")
+        print(f"\n[{i}/{len(products)}] Scraping product...")
         
         try:
             result = scraper.scrape_product(url)
             results.append(result)
             
             if result['success']:
-                print(f"   ✅ {result['name']} - {result['status'].upper()}")
+                print(f"   SUCCESS: {result['name']} - {result['status'].upper()}")
             else:
-                print(f"   ❌ Failed: {result.get('error', 'Unknown error')}")
+                print(f"   FAILED: {result.get('error', 'Unknown error')}")
                 
         except Exception as e:
-            print(f"   💥 Exception: {e}")
+            print(f"   EXCEPTION: {e}")
             results.append({
                 'url': url,
                 'success': False,
@@ -590,37 +597,37 @@ def test_scraper():
     
     # Display summary results
     print("\n" + "=" * 60)
-    print("📊 SCRAPING RESULTS SUMMARY")
+    print("SCRAPING RESULTS SUMMARY")
     print("=" * 60)
     
     successful = [r for r in results if r.get('success', False)]
     failed = [r for r in results if not r.get('success', False)]
     
-    print(f"✅ Successful: {len(successful)}")
-    print(f"❌ Failed: {len(failed)}")
-    print(f"📦 Total Products: {len(results)}")
+    print(f"Successful: {len(successful)}")
+    print(f"Failed: {len(failed)}")
+    print(f"Total Products: {len(results)}")
     
     if successful:
-        print(f"\n🎯 Product Status Summary:")
+        print(f"\nProduct Status Summary:")
         in_stock = len([r for r in successful if r['status'] == 'in_stock'])
         out_of_stock = len([r for r in successful if r['status'] == 'out_of_stock'])
         pre_order = len([r for r in successful if r['status'] == 'pre_order'])
         
-        print(f"   📗 In Stock: {in_stock}")
-        print(f"   📕 Out of Stock: {out_of_stock}")
-        print(f"   📙 Pre-order: {pre_order}")
+        print(f"   In Stock: {in_stock}")
+        print(f"   Out of Stock: {out_of_stock}")
+        print(f"   Pre-order: {pre_order}")
         
-        print(f"\n📋 Detailed Results:")
+        print(f"\nDetailed Results:")
         for result in successful:
-            status_emoji = {
-                'in_stock': '📗',
-                'out_of_stock': '📕', 
-                'pre_order': '📙',
-                'unknown': '❓'
-            }.get(result['status'], '❓')
+            status_label = {
+                'in_stock': 'IN STOCK',
+                'out_of_stock': 'OUT OF STOCK', 
+                'pre_order': 'PRE-ORDER',
+                'unknown': 'UNKNOWN'
+            }.get(result['status'], 'UNKNOWN')
             
             # Base info
-            info_line = f"   {status_emoji} {result['name']} - ${result.get('price', 'N/A')} - {result['status'].upper()}"
+            info_line = f"   [{status_label}] {result['name']} - ${result.get('price', 'N/A')} - {result['status'].upper()}"
             
             # Add status-specific info
             if result['status'] == 'pre_order':
@@ -635,7 +642,7 @@ def test_scraper():
             print(info_line)
     
     if failed:
-        print(f"\n❌ Failed Products:")
+        print(f"\nFailed Products:")
         for result in failed:
             print(f"   • {result['url'].split('/')[-1]}: {result.get('error', 'Unknown error')}")
     
