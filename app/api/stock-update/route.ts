@@ -81,14 +81,9 @@ export async function POST(request: Request) {
           stock_url: stock_url || null
         }
 
-        // Handle price conversion
-        if (price !== undefined && price !== null) {
-          updateData.price = typeof price === 'string' ? price : price.toString()
-        }
+        // Note: Price field not needed in database schema
 
-        if (confidence !== undefined && confidence !== null) {
-          updateData.confidence = confidence
-        }
+        // Note: confidence field removed - not in database schema
 
         let wasRestocked = false
 
@@ -99,7 +94,7 @@ export async function POST(request: Request) {
           
           // Detect restock: was out of stock, now in stock
           if (wasOutOfStock && nowInStock) {
-            updateData.stock_change_detected_at = currentTime
+            // Note: stock_change_detected_at will be set automatically by database trigger
             wasRestocked = true
             console.log(`📈 Restock detected: ${brand} - ${product_name}`)
           }
