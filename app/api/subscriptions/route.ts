@@ -63,29 +63,24 @@ async function sendWelcomeEmail(userEmail: string, brandName: string) {
       subject: `You're successfully signed up for ${brandName} restocks!`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <h1 style="color: #2563eb; text-align: center;">Welcome to MatchaRestock!</h1>
+          <h1 style="color: #000000; text-align: left;">Welcome to MatchaRestock!</h1>
           
-          <p style="font-size: 16px; line-height: 1.6;">
-            Great news! You're now subscribed to receive restock notifications for <strong>${brandName}</strong> matcha.
+          <p style="font-size: 16px; line-height: 1.6; color: #000000;">
+            Great news! You're now subscribed to receive restock notifications for <strong>${brandName}</strong>.
           </p>
           
-          <p style="font-size: 16px; line-height: 1.6;">
+          <p style="font-size: 16px; line-height: 1.6; color: #000000;">
             We'll send you an email as soon as any ${brandName} blends come back in stock, so you never miss out on your favorite matcha again.
           </p>
           
           <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h3 style="color: #374151; margin-top: 0;">What happens next?</h3>
-            <ul style="color: #6b7280; line-height: 1.6;">
+            <h3 style="color: #000000; margin-top: 0;">What happens next?</h3>
+            <ul style="color: #000000; line-height: 1.6;">
               <li>We monitor ${brandName} inventory in real-time</li>
               <li>You'll get instant notifications when restocks happen</li>
               <li>You can manage your subscriptions anytime in your dashboard</li>
             </ul>
           </div>
-          
-          <p style="font-size: 14px; color: #6b7280; text-align: center; margin-top: 30px;">
-            Happy matcha hunting! 🍵<br>
-            The MatchaRestock Team
-          </p>
         </div>
       `,
     })

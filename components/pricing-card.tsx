@@ -54,7 +54,7 @@ export default function PricingCard({ onSubscribe }: PricingCardProps) {
         <CardContent className="space-y-6 px-8">
           <div className="text-center">
             <div className="text-5xl font-bold text-gray-900 font-gaisyr">
-              $5<span className="text-xl font-normal text-gray-600 font-diatype">/month</span>
+              $3.50<span className="text-xl font-normal text-gray-600 font-diatype">/month</span>
             </div>
           </div>
           <ul className="space-y-4 text-gray-700">
