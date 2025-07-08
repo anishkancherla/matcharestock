@@ -43,17 +43,8 @@ export async function GET(request: Request) {
       
       if (data.user) {
         console.log('✅ User authenticated:', data.user.id)
-        const forwardedHost = request.headers.get('x-forwarded-host')
-        const isLocalEnv = process.env.NODE_ENV === 'development'
-        
-        const redirectUrl = isLocalEnv 
-          ? `${origin}${next}` 
-          : forwardedHost 
-            ? `https://${forwardedHost}${next}` 
-            : `${origin}${next}`
-            
-        console.log('Redirecting to:', redirectUrl)
-        return NextResponse.redirect(redirectUrl)
+        console.log('Redirecting to:', `${origin}${next}`)
+        return NextResponse.redirect(`${origin}${next}`)
       }
     } catch (err) {
       console.error('Callback error:', err)
