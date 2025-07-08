@@ -44,12 +44,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const createAppUser = async (supabaseUser: User): Promise<AppUser> => {
     // dev mode: auto-subscribe for testing
-    const isDevelopment = process.env.NODE_ENV === 'development'
+    // const isDevelopment = process.env.NODE_ENV === 'development'
     
     // check for access code bypass
     const accessCodeEntered = localStorage.getItem('access_code_entered') === 'true'
     
-    if (isDevelopment || accessCodeEntered) {
+    // Development mode bypass - TEMPORARILY DISABLED FOR TESTING
+    if (/* isDevelopment || */ accessCodeEntered) {
       return {
         ...supabaseUser,
         isSubscribed: true,
@@ -57,21 +58,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
     }
 
-
+    // Check payment subscription status
+    let isSubscribed = false
+    
     try {
       const response = await fetch('/api/subscriptions')
       if (response.ok) {
         const data = await response.json()
+        
+        // Check if user has an active payment subscription
+        try {
+          const paymentResponse = await fetch('/api/payment-subscription-status')
+          if (paymentResponse.ok) {
+            const paymentData = await paymentResponse.json()
+            isSubscribed = paymentData.isSubscribed || false
+          }
+        } catch (paymentError) {
+          console.error('Error checking payment subscription:', paymentError)
+          // Default to false if payment check fails
+          isSubscribed = false
+        }
+
         return {
           ...supabaseUser,
-          isSubscribed: false,
+          isSubscribed,
           subscriptions: data.subscriptions || [],
         }
       }
     } catch (error) {
       console.error('Error fetching subscriptions:', error)
     }
-
 
     return {
       ...supabaseUser,

@@ -58,6 +58,21 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        sage: {
+          50: '#f6f7f6',
+          100: '#e3e7e3',
+          200: '#c7d0c7',
+          300: '#a1b2a1',
+          400: '#7a927a',
+          500: '#5d7a5d',
+          600: '#4a6149',
+          700: '#3d4f3c',
+          800: '#334133',
+          900: '#2b362b',
+        },
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       borderRadius: {
         lg: "var(--radius)",

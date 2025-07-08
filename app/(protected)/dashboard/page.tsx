@@ -7,15 +7,18 @@ import BrandCard from "@/components/brand-card"
 import { toast } from "sonner"
 import { matchaBrands } from "@/data/matcha-data"
 import DashboardSkeleton from "./loading"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
+import { Leaf } from "lucide-react"
 
 // main dashboard page
 export default function DashboardPage() {
-  const { user, loading } = useAuth()
-
+  const { user, loading, logout } = useAuth()
+  const router = useRouter()
 
   const [subscriptions, setSubscriptions] = useState<string[]>([])
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
-
 
   useEffect(() => {
     const loadSubscriptions = async () => {
@@ -40,10 +43,20 @@ export default function DashboardPage() {
     loadSubscriptions()
   }, [user])
 
+  const handleLogout = async () => {
+    try {
+      await logout()
+      router.push('/')
+    } catch (error) {
+      console.error('Error during logout:', error)
+      toast("Error", {
+        description: "Failed to sign out. Please try again.",
+      })
+    }
+  }
 
   const onRequestSubscription = async () => {
     toast("Subscription Request", {
-
       description: "Redirecting to payment... (This is a placeholder)",
     })
   }
@@ -89,7 +102,6 @@ export default function DashboardPage() {
     }
   }
 
-
   const isBrandSubscribed = (brandName: string) => {
     return subscriptions.includes(brandName)
   }
@@ -99,19 +111,50 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="bg-white min-h-full">
-      <div className="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="mb-12 border-b pb-8">
-          <h1 className="text-4xl font-medium tracking-tight text-gray-900">Welcome back</h1>
-          <p className="mt-2 text-lg text-gray-500">Manage your matcha restock notifications.</p>
+    <div className="min-h-screen bg-gradient-to-br from-sage-200 via-sage-100 to-sage-300 relative overflow-hidden">
+      {/* Background gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-radial from-sage-300/50 via-sage-200/30 to-sage-400/40"></div>
+      
+      {/* Header */}
+      <header className="relative z-10 flex items-center justify-between px-6 py-6 lg:px-12">
+        {/* Logo */}
+        <Link href="/" className="flex items-center space-x-2">
+          <Leaf className="w-6 h-6 text-sage-600" />
+          <span className="text-xl font-semibold text-gray-900 font-diatype">matcharestock</span>
+        </Link>
+        
+        {/* User Info & Sign Out */}
+        <div className="flex items-center space-x-4">
+          {user && (
+            <span className="text-gray-700 font-diatype">{user.email}</span>
+          )}
+          <Button 
+            onClick={handleLogout}
+            className="backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 font-diatype"
+            variant="outline"
+          >
+            Sign out
+          </Button>
         </div>
+      </header>
 
-        {user && !user.isSubscribed ? (
-          <PricingCard onSubscribe={onRequestSubscription} />
-        ) : (
-          <div>
-            <h2 className="text-2xl font-medium text-gray-800 mb-6">Your Brands</h2>
-            <div className="space-y-10">
+      {/* Main Content */}
+      <main className="relative z-10 px-6 lg:px-12 pb-12">
+        <div className="container mx-auto max-w-6xl">
+          {/* Welcome Section */}
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 font-gaisyr leading-tight">
+              Your notifications
+            </h1>
+            <p className="text-xl text-gray-600 font-diatype leading-relaxed">
+              Update your notification preferences.
+            </p>
+          </div>
+
+          {user && !user.isSubscribed ? (
+            <PricingCard onSubscribe={onRequestSubscription} />
+          ) : (
+            <div className="space-y-8">
               {matchaBrands.map((brandData) => (
                 <BrandCard
                   key={brandData.brand}
@@ -121,9 +164,9 @@ export default function DashboardPage() {
                 />
               ))}
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      </main>
     </div>
   )
 }
