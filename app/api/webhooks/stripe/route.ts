@@ -2,18 +2,17 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-06-30.basil',
+})
+
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+
 // Disable Next.js body parsing for webhooks
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
   try {
-    // Initialize Stripe at runtime, not build time
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-06-30.basil',
-    })
-
-    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
-
     const body = await request.text()
     const signature = request.headers.get('stripe-signature')!
 

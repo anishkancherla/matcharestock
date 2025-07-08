@@ -27,23 +27,8 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  // Refresh session if needed
-  const { data: { user } } = await supabase.auth.getUser()
-
-  // Check if user is trying to access protected routes
-  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard')
-  
-  // If accessing protected route without authentication, redirect to login
-  if (isProtectedRoute && !user) {
-    const redirectUrl = new URL('/login', request.url)
-    return NextResponse.redirect(redirectUrl)
-  }
-
-  // If user is authenticated and trying to access auth pages, redirect to dashboard
-  if (user && (request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/auth'))) {
-    const redirectUrl = new URL('/dashboard', request.url)
-    return NextResponse.redirect(redirectUrl)
-  }
+  // refresh session if needed
+  await supabase.auth.getUser()
 
   return supabaseResponse
 }
