@@ -10,7 +10,7 @@ import DashboardSkeleton from "./loading"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Leaf } from "lucide-react"
+
 
 // main dashboard page
 export default function DashboardPage() {
@@ -197,7 +197,6 @@ export default function DashboardPage() {
       <header className="relative z-10 flex items-center justify-between px-6 py-6 lg:px-12">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Leaf className="w-6 h-6 text-sage-600" />
           <span className="text-xl font-semibold text-gray-900 font-diatype">matcharestock</span>
         </Link>
         

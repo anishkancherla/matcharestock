@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { MetalButtonWrapper, MetalCircleButton } from "@/components/ui/metal-button-wrapper"
 import Link from "next/link"
-import { ArrowUpRight, Leaf } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
 
 // landing page
@@ -128,9 +128,6 @@ export default function LandingPage() {
         <div className={getNavigationClasses()}>
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 bg-sage-600 rounded-full flex items-center justify-center">
-              <Leaf className="w-3 h-3 text-white" />
-            </div>
             <span className="text-xl font-semibold font-diatype text-gray-900">
               matcharestock
             </span>
@@ -311,9 +308,6 @@ export default function LandingPage() {
           >
             <div className="relative z-10">
               <div className="flex items-center justify-center space-x-2 mb-4">
-                <div className="w-6 h-6 bg-sage-600 rounded-full flex items-center justify-center">
-                  <Leaf className="w-3 h-3 text-white" />
-                </div>
                 <span className="text-xl font-semibold text-black font-diatype">matcharestock</span>
               </div>
               <p className="text-black font-diatype mb-4">
