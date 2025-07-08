@@ -97,15 +97,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
-    console.log('🔍 Environment Debug Info:')
-    console.log('- window.location.origin:', window.location.origin)
-    console.log('- window.location.href:', window.location.href)
-    console.log('- window.location.host:', window.location.host)
-    console.log('- window.location.hostname:', window.location.hostname)
-    console.log('- window.location.protocol:', window.location.protocol)
+    // Use canonical domain (non-www) to avoid redirect issues
+    const getCanonicalOrigin = () => {
+      const { protocol, hostname } = window.location
+      
+      // For production, always use non-www version
+      if (hostname === 'www.matcharestock.com') {
+        return `${protocol}//matcharestock.com`
+      }
+      
+      // For localhost and other domains, use as-is
+      return window.location.origin
+    }
     
-    const redirectUrl = `${window.location.origin}/auth/callback?next=/dashboard`
-    console.log('🔗 Final OAuth redirect URL:', redirectUrl)
+    const canonicalOrigin = getCanonicalOrigin()
+    const redirectUrl = `${canonicalOrigin}/auth/callback?next=/dashboard`
+    
+    console.log('🔗 Canonical origin:', canonicalOrigin)
+    console.log('🔗 OAuth redirect URL:', redirectUrl)
     
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -127,8 +136,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signUpWithEmail = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/auth/callback?next=/dashboard`
-    console.log('Email signup redirect URL:', redirectUrl)
+    // Use canonical domain (non-www) to avoid redirect issues
+    const getCanonicalOrigin = () => {
+      const { protocol, hostname } = window.location
+      
+      // For production, always use non-www version
+      if (hostname === 'www.matcharestock.com') {
+        return `${protocol}//matcharestock.com`
+      }
+      
+      // For localhost and other domains, use as-is
+      return window.location.origin
+    }
+    
+    const canonicalOrigin = getCanonicalOrigin()
+    const redirectUrl = `${canonicalOrigin}/auth/callback?next=/dashboard`
+    
+    console.log('🔗 Email signup redirect URL:', redirectUrl)
     
     const { data, error } = await supabase.auth.signUp({
       email,
