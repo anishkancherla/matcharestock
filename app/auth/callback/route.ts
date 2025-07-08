@@ -4,6 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 export async function GET(request: Request) {
   console.log('🔐 Auth callback called')
   console.log('Full URL:', request.url)
+  console.log('Request headers host:', request.headers.get('host'))
+  console.log('Request headers x-forwarded-host:', request.headers.get('x-forwarded-host'))
+  console.log('Origin:', new URL(request.url).origin)
   
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')

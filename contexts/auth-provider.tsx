@@ -97,6 +97,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signInWithGoogle = async () => {
+    console.log('🔍 Environment Debug Info:')
+    console.log('- window.location.origin:', window.location.origin)
+    console.log('- window.location.href:', window.location.href)
+    console.log('- window.location.host:', window.location.host)
+    console.log('- window.location.hostname:', window.location.hostname)
+    console.log('- window.location.protocol:', window.location.protocol)
+    
+    const redirectUrl = `${window.location.origin}/auth/callback?next=/dashboard`
+    console.log('🔗 Final OAuth redirect URL:', redirectUrl)
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -104,7 +114,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           access_type: 'offline',
           prompt: 'consent',
         },
-        redirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        redirectTo: redirectUrl,
       },
     })
     
@@ -117,11 +127,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const signUpWithEmail = async (email: string, password: string) => {
+    const redirectUrl = `${window.location.origin}/auth/callback?next=/dashboard`
+    console.log('Email signup redirect URL:', redirectUrl)
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard`,
+        emailRedirectTo: redirectUrl,
       },
     })
     
