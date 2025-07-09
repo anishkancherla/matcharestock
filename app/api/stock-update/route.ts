@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     
     const currentTime = new Date().toISOString()
     const results = []
+    const restockNotifications = []
     
     // Process each product update
     for (const product of products) {
@@ -56,16 +57,15 @@ export async function POST(request: Request) {
       }
 
       try {
-        // Check if product already exists
+        // Find existing product by URL only
         const { data: existing, error: fetchError } = await supabase
           .from('product_stock')
           .select('*')
-          .eq('brand', brand)
-          .eq('product_name', product_name)
+          .eq('stock_url', stock_url)
           .single()
 
         if (fetchError && fetchError.code !== 'PGRST116') {
-          console.error(`❌ Error fetching product ${brand} - ${product_name}:`, fetchError)
+          console.error(`❌ Error fetching product:`, fetchError)
           results.push({
             product: `${brand} - ${product_name}`,
             success: false,
@@ -74,82 +74,66 @@ export async function POST(request: Request) {
           continue
         }
 
-        const updateData: any = {
-          brand,
-          product_name,
-          is_in_stock,
-          stock_status: stock_status || (is_in_stock ? 'in_stock' : 'out_of_stock'), // Default fallback
-          last_checked: currentTime,
-          stock_url: stock_url || null
+        if (!existing) {
+          console.warn(`⚠️ Product not found for URL: ${stock_url}`)
+          results.push({
+            product: `${brand} - ${product_name}`,
+            success: false,
+            error: 'Product not found in database'
+          })
+          continue
         }
 
-        // Note: Price field not needed in database schema
-
-        // Note: confidence field removed - not in database schema
-
+        // Check if stock status changed (for restock detection)
+        const wasOutOfStock = !existing.is_in_stock
+        const nowInStock = is_in_stock
+        
         let wasRestocked = false
-
-        if (existing) {
-          // Product exists - update it
-          const wasOutOfStock = !existing.is_in_stock
-          const nowInStock = is_in_stock
+        if (wasOutOfStock && nowInStock) {
+          wasRestocked = true
+          console.log(`📈 Back in stock: ${brand} - ${product_name}`)
           
-          // Detect restock: was out of stock, now in stock (including pre-orders)
-          if (wasOutOfStock && nowInStock) {
-            // Note: stock_change_detected_at will be set automatically by database trigger
-            wasRestocked = true
-            const statusLabel = stock_status === 'pre_order' ? 'Pre-order available' : 'Back in stock'
-            console.log(`📈 ${statusLabel}: ${brand} - ${product_name}`)
-          }
+          // Create restock notification entry
+          restockNotifications.push({
+            brand,
+            product: existing.product_name, // Use the name from database for consistency
+            product_url: stock_url,
+            subscribers_notified: 0, // Will be set when emails are sent
+            email_sent: false,
+            created_at: currentTime
+          })
+        }
 
-          const { error: updateError } = await supabase
-            .from('product_stock')
-            .update(updateData)
-            .eq('id', existing.id)
+        // Always update last_checked (scraper checked this URL), only update stock status if it changed
+        const updateData: any = {
+          last_checked: currentTime
+        }
+        
+        // Only update stock status if it actually changed
+        if (existing.is_in_stock !== is_in_stock) {
+          updateData.is_in_stock = is_in_stock
+          console.log(`🔄 Stock status changed for ${brand} - ${product_name}: ${existing.is_in_stock} → ${is_in_stock}`)
+        }
 
-          if (updateError) {
-            console.error(`❌ Error updating ${brand} - ${product_name}:`, updateError)
-            results.push({
-              product: `${brand} - ${product_name}`,
-              success: false,
-              error: 'Database update error'
-            })
-          } else {
-            results.push({
-              product: `${brand} - ${product_name}`,
-              success: true,
-              action: 'updated',
-              was_restocked: wasRestocked
-            })
-          }
+        const { error: updateError } = await supabase
+          .from('product_stock')
+          .update(updateData)
+          .eq('id', existing.id)
+
+        if (updateError) {
+          console.error(`❌ Error updating ${brand} - ${product_name}:`, updateError)
+          results.push({
+            product: `${brand} - ${product_name}`,
+            success: false,
+            error: 'Database update error'
+          })
         } else {
-          // Product doesn't exist - insert it
-          if (is_in_stock) {
-            updateData.stock_change_detected_at = currentTime
-            wasRestocked = true
-            const statusLabel = stock_status === 'pre_order' ? 'New pre-order available' : 'New product in stock'
-            console.log(`📈 ${statusLabel}: ${brand} - ${product_name}`)
-          }
-
-          const { error: insertError } = await supabase
-            .from('product_stock')
-            .insert(updateData)
-
-          if (insertError) {
-            console.error(`❌ Error inserting ${brand} - ${product_name}:`, insertError)
-            results.push({
-              product: `${brand} - ${product_name}`,
-              success: false,
-              error: 'Database insert error'
-            })
-          } else {
-            results.push({
-              product: `${brand} - ${product_name}`,
-              success: true,
-              action: 'created',
-              was_restocked: wasRestocked
-            })
-          }
+          results.push({
+            product: `${brand} - ${product_name}`,
+            success: true,
+            action: 'updated',
+            was_restocked: wasRestocked
+          })
         }
       } catch (error) {
         console.error(`❌ Error processing ${brand} - ${product_name}:`, error)
@@ -161,12 +145,27 @@ export async function POST(request: Request) {
       }
     }
 
+    // Create restock notification entries for all detected restocks
+    if (restockNotifications.length > 0) {
+      console.log(`📨 Creating ${restockNotifications.length} restock notification entries`)
+      
+      const { error: notificationError } = await supabase
+        .from('restock_notifications')
+        .insert(restockNotifications)
+
+      if (notificationError) {
+        console.error(`❌ Error creating restock notifications:`, notificationError)
+      } else {
+        console.log(`✅ Successfully created ${restockNotifications.length} restock notification entries`)
+      }
+    }
+
     const successful = results.filter(r => r.success)
     const failed = results.filter(r => !r.success)
     const restocks = results.filter(r => r.success && r.was_restocked)
 
     console.log(`✅ Processed ${successful.length} products successfully, ${failed.length} failed`)
-    console.log(`📈 Detected ${restocks.length} restocks (database triggers will handle notifications)`)
+    console.log(`📈 Detected ${restocks.length} restocks - created notification entries for processing`)
 
     return NextResponse.json({
       success: true,
@@ -176,7 +175,7 @@ export async function POST(request: Request) {
       restocks_detected: restocks.length,
       results: results,
       timestamp: currentTime,
-      message: `Database triggers will automatically process ${restocks.length} restock notifications`
+      message: `Created ${restockNotifications.length} restock notification entries for processing`
     })
 
   } catch (error) {

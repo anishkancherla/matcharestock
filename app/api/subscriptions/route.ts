@@ -68,47 +68,48 @@ async function sendWelcomeEmail(userEmail: string, brandName: string) {
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Welcome to MatchaRestock!</title>
-            <style>
-              @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
-            </style>
           </head>
-          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #475569; background-color: #f1f5f9; margin: 0; padding: 16px;">
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; background-color: #f1f5f9; margin: 0; padding: 16px;">
             <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
               <div style="background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 672px; margin: 0 auto; padding: 40px; text-align: left;">
                 
                 <!-- Header -->
                 <header style="margin-bottom: 32px;">
-                  <h1 style="font-size: 30px; font-weight: 700; color: #1e293b; margin: 0; font-family: 'Source Serif 4', Georgia, serif;">
+                  <h1 style="font-size: 30px; font-weight: 700; color: #1e293b; margin: 0;">
                     Welcome to <span style="color: #324335;">MatchaRestock!</span>
                   </h1>
                 </header>
 
                 <!-- Main Content -->
-                <main style="color: #64748b;">
-                  <p style="margin-bottom: 24px; font-size: 16px; line-height: 1.6;">
-                    Great news! You're now subscribed to receive restock notifications for <strong>${brandName}</strong> matcha.
-                  </p>
+                <main style="color: #475569;">
+                  <div style="margin-bottom: 24px;">
+                    <p style="font-size: 16px; line-height: 1.6; margin: 0;">
+                      Great news! You're now subscribed to receive restock notifications for ${brandName} matcha.
+                    </p>
+                  </div>
                   
-                  <p style="margin-bottom: 24px; font-size: 16px; line-height: 1.6;">
-                    We'll send you an email as soon as any ${brandName} blends come back in stock, so you never miss out on your favorite matcha again.
-                  </p>
+                  <div style="margin-bottom: 24px;">
+                    <p style="font-size: 16px; line-height: 1.6; margin: 0;">
+                      We'll send you an email as soon as any ${brandName} blends come back in stock, so you never miss out on your favorite matcha again.
+                    </p>
+                  </div>
 
                   <!-- What Happens Next Section -->
                   <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
-                    <h2 style="font-size: 20px; font-weight: 600; color: #1e293b; margin-bottom: 16px; margin-top: 0; font-family: 'Source Serif 4', Georgia, serif;">
+                    <h2 style="font-size: 20px; font-weight: 600; color: #1e293b; margin-bottom: 16px; margin-top: 0;">
                       What happens next?
                     </h2>
                     <ul style="list-style: none; padding: 0; margin: 0;">
                       <li style="display: flex; align-items: flex-start; margin-bottom: 12px;">
-                        <span style="color: #324335; margin-right: 12px; margin-top: 2px; font-size: 18px;">✓</span>
+                        <span style="color: #324335; margin-right: 12px; margin-top: 2px; font-size: 20px; flex-shrink: 0;">✓</span>
                         <span style="font-size: 16px; line-height: 1.6;">We monitor ${brandName} inventory in real-time</span>
                       </li>
                       <li style="display: flex; align-items: flex-start; margin-bottom: 12px;">
-                        <span style="color: #324335; margin-right: 12px; margin-top: 2px; font-size: 18px;">✓</span>
+                        <span style="color: #324335; margin-right: 12px; margin-top: 2px; font-size: 20px; flex-shrink: 0;">✓</span>
                         <span style="font-size: 16px; line-height: 1.6;">You'll get instant notifications when restocks happen</span>
                       </li>
                       <li style="display: flex; align-items: flex-start;">
-                        <span style="color: #324335; margin-right: 12px; margin-top: 2px; font-size: 18px;">✓</span>
+                        <span style="color: #324335; margin-right: 12px; margin-top: 2px; font-size: 20px; flex-shrink: 0;">✓</span>
                         <span style="font-size: 16px; line-height: 1.6;">You can manage your subscriptions anytime in your dashboard</span>
                       </li>
                     </ul>
@@ -119,9 +120,9 @@ async function sendWelcomeEmail(userEmail: string, brandName: string) {
                 <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
 
                 <!-- Footer -->
-                <footer style="text-align: left; font-size: 12px; color: #94a3b8;">
+                <footer style="text-align: left; font-size: 12px; color: #64748b;">
                   <p style="margin-bottom: 16px;">
-                    <a href="https://matcharestock.com/dashboard" style="text-decoration: underline; color: #324335;">
+                    <a href="https://matcharestock.com" style="text-decoration: underline; color: #324335;">
                       Manage your subscriptions
                     </a>
                   </p>
@@ -349,55 +350,61 @@ export async function POST(request: NextRequest) {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${emailSubject}</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
+          </style>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #374151; background-color: #f9fafb; margin: 0; padding: 20px;">
-          <div style="max-width: 600px; margin: 0 auto; background-color: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden;">
-            
-            <!-- Header -->
-            <div style="background: linear-gradient(135deg, #065f46 0%, #059669 100%); padding: 32px 24px; text-align: center;">
-              <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 700;">🍵 Great News!</h1>
-              <p style="color: #a7f3d0; margin: 8px 0 0 0; font-size: 18px;">${brand} products are back in stock</p>
-            </div>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; background-color: #f1f5f9; margin: 0; padding: 16px;">
+          <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+            <div style="background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 672px; margin: 0 auto; padding: 40px;">
+              
+              <!-- Header -->
+              <header style="margin-bottom: 32px;">
+                <div style="margin-bottom: 8px;">
+                  <h1 style="font-size: 24px; font-weight: 600; color: #324335; margin: 0; font-family: 'Source Serif 4', Georgia, serif;">MatchaRestock</h1>
+                </div>
+              </header>
 
-            <!-- Content -->
-            <div style="padding: 32px 24px;">
-              <p style="font-size: 16px; margin-bottom: 24px;">
-                The matcha you've been waiting for is finally available! Here are the ${brand} products that just restocked:
-              </p>
+              <!-- Main Content -->
+              <main>
+                <div>
+                  <h2 style="font-size: 30px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">${brand} is back in stock.</h2>
+                  <p style="color: #64748b; margin: 0;">
+                    The matcha you've been waiting for is finally available. Here are the products that just restocked:
+                  </p>
+                </div>
 
-              <!-- Product List -->
-              <div style="margin-bottom: 32px;">
-                ${productListHtml}
-              </div>
+                <!-- Product List -->
+                <div style="margin: 32px 0;">
+                  ${products.map(product => `
+                    <div style="border: 1px solid #e2e8f0; border-left: 4px solid #324335; border-radius: 8px; padding: 24px; margin-bottom: 16px; text-align: left;">
+                      <h3 style="font-size: 20px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0; text-align: left;">${product.name}</h3>
+                      <p style="color: #64748b; margin: 8px 0 16px 0; text-align: left;">Don't wait – premium matcha sells out quickly!</p>
+                      <div style="text-align: left;">
+                        <a href="${product.url || '#'}" 
+                           style="display: inline-block; background-color: #324335; color: white; font-weight: 700; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-size: 16px;">
+                          Shop Now
+                        </a>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </main>
 
-              <!-- Call to Action -->
-              <div style="text-align: center; margin-bottom: 32px;">
-                <p style="margin-bottom: 16px; font-size: 16px; color: #6b7280;">
-                  Don't wait – premium matcha sells out quickly!
-                </p>
-                <a href="https://matcharestock.com/dashboard" 
-                   style="display: inline-block; background-color: #059669; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px;">
-                  View All Restocks
-                </a>
-              </div>
+              <!-- Separator -->
+              <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
 
               <!-- Footer -->
-              <div style="border-top: 1px solid #e5e7eb; padding-top: 24px; text-align: center;">
-                <p style="font-size: 14px; color: #6b7280; margin-bottom: 8px;">
-                  You're receiving this because you subscribed to ${brand} restock notifications.
+              <footer style="text-align: center; font-size: 12px; color: #64748b;">
+                <p style="margin-bottom: 8px;">You're receiving this because you subscribed to restock notifications.</p>
+                <p style="margin-bottom: 16px;">
+                  <a href="https://matcharestock.com/dashboard" style="text-decoration: underline; color: #324335;">
+                    Manage your subscriptions
+                  </a>
                 </p>
-                <p style="font-size: 14px; color: #6b7280; margin: 0;">
-                  <a href="https://matcharestock.com/dashboard" style="color: #059669; text-decoration: none;">Manage your subscriptions</a>
-                </p>
-              </div>
+                <p style="margin: 0;">© 2025 MatchaRestock. All rights reserved.</p>
+              </footer>
             </div>
-          </div>
-
-          <!-- Signature -->
-          <div style="text-align: center; margin-top: 24px;">
-            <p style="font-size: 12px; color: #9ca3af;">
-              Powered by <strong>MatchaRestock</strong> • Your premium matcha monitor
-            </p>
           </div>
         </body>
       </html>

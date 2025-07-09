@@ -39,7 +39,6 @@ export async function POST(request: Request) {
       .select('*')
       .gte('created_at', oneHourAgo)
       .eq('email_sent', false)
-      .gt('subscribers_notified', 0)
 
     if (fetchError) {
       console.error('❌ Error fetching pending notifications:', fetchError)
@@ -89,12 +88,12 @@ export async function POST(request: Request) {
       try {
         // Prepare products for the notification API
         const products = notifications.map(notification => ({
-          name: notification.product_name,
+          name: notification.product,
           url: notification.product_url || null
         }))
 
         // Call the existing subscriptions API for brand-level notifications
-        const notifyResponse = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/subscriptions`, {
+        const notifyResponse = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/subscriptions`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -125,7 +124,8 @@ export async function POST(request: Request) {
             .from('restock_notifications')
             .update({
               email_sent: true,
-              sent_at: new Date().toISOString()
+              sent_at: new Date().toISOString(),
+              subscribers_notified: notified
             })
             .in('id', notificationIds)
 
@@ -152,7 +152,8 @@ export async function POST(request: Request) {
             .from('restock_notifications')
             .update({
               email_sent: false,
-              sent_at: new Date().toISOString()
+              sent_at: new Date().toISOString(),
+              subscribers_notified: 0
             })
             .in('id', notificationIds)
 
@@ -166,7 +167,7 @@ export async function POST(request: Request) {
         stats.failures += 1
         stats.notification_results.push({
           brand: brand,
-          products: notifications.map(n => n.product_name),
+          products: notifications.map(n => n.product),
           success: false,
           error: error instanceof Error ? error.message : 'Unknown error'
         })
