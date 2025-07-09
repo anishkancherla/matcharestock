@@ -93,233 +93,337 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Dynamic Aurora Background - Noticeably Darker & More Ethereal */}
-      <div className="fixed inset-0 bg-[#D5DDD6]">
-        {/* Aurora Light Source 1 - Top Left */}
-        <div 
-          className="absolute -top-[20%] -left-[20%] w-[60vw] h-[60vw] rounded-full -z-10"
-          style={{
-            background: 'radial-gradient(circle, rgba(168, 207, 179, 0.7) 0%, rgba(198, 212, 180, 0.5) 40%, transparent 70%)',
-            filter: 'blur(180px)'
-          }}
-        ></div>
+      {/* Hero Section with White Background */}
+      <div className="bg-white relative">
+        {/* Dynamic Aurora Background - Only for Hero Section */}
+        <div className="absolute inset-0 bg-[#D5DDD6]">
+          {/* Aurora Light Source 1 - Top Left */}
+          <div 
+            className="absolute -top-[20%] -left-[20%] w-[60vw] h-[60vw] rounded-full -z-10"
+            style={{
+              background: 'radial-gradient(circle, rgba(168, 207, 179, 0.7) 0%, rgba(198, 212, 180, 0.5) 40%, transparent 70%)',
+              filter: 'blur(180px)'
+            }}
+          ></div>
+          
+          {/* Aurora Light Source 2 - Bottom Right */}
+          <div 
+            className="absolute -bottom-[20%] -right-[20%] w-[60vw] h-[60vw] rounded-full -z-10"
+            style={{
+              background: 'radial-gradient(circle, rgba(147, 173, 152, 0.6) 0%, transparent 70%)',
+              filter: 'blur(200px)'
+            }}
+          ></div>
+          
+          {/* Aurora Light Source 3 - Center Right */}
+          <div 
+            className="absolute top-[30%] -right-[10%] w-[50vw] h-[50vw] rounded-full -z-10"
+            style={{
+              background: 'radial-gradient(circle, rgba(180, 200, 170, 0.5) 0%, rgba(160, 190, 165, 0.3) 50%, transparent 70%)',
+              filter: 'blur(160px)'
+            }}
+          ></div>
+        </div>
         
-        {/* Aurora Light Source 2 - Bottom Right */}
-        <div 
-          className="absolute -bottom-[20%] -right-[20%] w-[60vw] h-[60vw] rounded-full -z-10"
-          style={{
-            background: 'radial-gradient(circle, rgba(147, 173, 152, 0.6) 0%, transparent 70%)',
-            filter: 'blur(200px)'
-          }}
-        ></div>
-        
-        {/* Aurora Light Source 3 - Center Right */}
-        <div 
-          className="absolute top-[30%] -right-[10%] w-[50vw] h-[50vw] rounded-full -z-10"
-          style={{
-            background: 'radial-gradient(circle, rgba(180, 200, 170, 0.5) 0%, rgba(160, 190, 165, 0.3) 50%, transparent 70%)',
-            filter: 'blur(160px)'
-          }}
-        ></div>
-      </div>
-      
-      {/* Header - Smart Navigation */}
-      <header className={getHeaderClasses()}>
-        <div className={getNavigationClasses()}>
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <span className="text-xl font-semibold font-diatype text-gray-900">
-              matcharestock
-            </span>
+        {/* Header - Smart Navigation */}
+        <header className={getHeaderClasses()}>
+          <div className={getNavigationClasses()}>
+            {/* Logo */}
+            <div className="flex items-center space-x-2">
+              <span className="text-xl font-semibold font-diatype text-gray-900">
+                matcharestock
+              </span>
+            </div>
+            
+            {/* Center Navigation */}
+            <nav className="flex items-center space-x-8">
+              <Link 
+                href="#how-it-works" 
+                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+              >
+                How it works
+              </Link>
+              <Link 
+                href="#pricing" 
+                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+              >
+                Pricing
+              </Link>
+            </nav>
+            
+            {/* Right Side - Auth Buttons */}
+            <div className="flex items-center space-x-6">
+              <Link 
+                href="/login" 
+                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+              >
+                Log in
+              </Link>
+              <Link href="/login?mode=signup">
+                <MetalButtonWrapper
+                  title="Sign up"
+                  isSubscribed={false}
+                  icon={<ArrowUpRight className="w-4 h-4" />}
+                />
+              </Link>
+            </div>
           </div>
-          
-          {/* Center Navigation */}
-          <nav className="flex items-center space-x-8">
-            <Link 
-              href="#how-it-works" 
-              className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+        </header>
+        
+        {/* Spacer to prevent content jump when header becomes fixed */}
+        <div className="h-24"></div>
+        
+        {/* Main Hero Content */}
+        <main className="relative z-10 flex items-center justify-center px-6 pb-16">
+          <div className="max-w-6xl w-[90%] mx-auto text-center">
+            {/* Combined Frosted Glass Content Container */}
+            <div 
+              className="p-12 lg:p-16 transition-all duration-300 hover:shadow-[inset_0_0_3px_2px_rgba(255,255,255,0.25),0_0_50px_rgba(200,220,200,0.15),0_0_100px_rgba(180,200,180,0.08)] relative border border-white/30"
+              style={{
+                borderRadius: '24px',
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(32px)',
+                WebkitBackdropFilter: 'blur(32px)',
+                boxShadow: `
+                  inset 0 0 2px 1.5px rgba(255, 255, 255, 0.2),
+                  0 0 40px rgba(200, 220, 200, 0.1),
+                  0 0 80px rgba(180, 200, 180, 0.05)
+                `
+              }}
             >
-              How it works
-            </Link>
-            <Link 
-              href="#pricing" 
-              className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-            >
-              Pricing
-            </Link>
-          </nav>
-          
-          {/* Right Side - Auth Buttons */}
-          <div className="flex items-center space-x-6">
-            <Link 
-              href="/login" 
-              className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-            >
-              Log in
-            </Link>
-            <Link href="/login?mode=signup">
-              <MetalButtonWrapper
-                title="Sign up"
-                isSubscribed={false}
-                icon={<ArrowUpRight className="w-4 h-4" />}
-              />
-            </Link>
+              <div className="relative z-10">
+                {/* Hero Section */}
+                <div className="mb-16">
+                  <h1 className="text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
+                    Real-time notifications for your favorite matcha brands.
+                  </h1>
+                  <p className="text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
+                    Never miss a restock again.
+                  </p>
+                </div>
+
+                {/* How It Works Section */}
+                <div className="mb-0">
+                  <div className="grid md:grid-cols-3 gap-8">
+                    <div className="text-center">
+                      {/* Dashboard Display Image */}
+                      <div className="mb-4 flex justify-center h-40">
+                        <img 
+                          src="/images/dashboarddisplay.png" 
+                          alt="Dashboard display showing brand subscriptions" 
+                          className="max-w-full h-auto"
+                          style={{ maxHeight: '300px' }}
+                        />
+                      </div>
+                      <div className="flex justify-center mb-4">
+                        <MetalCircleButton number="1" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Subscribe</h3>
+                      <p className="text-gray-500 font-diatype-thin">Choose your desired brands and sign up for notifications.</p>
+                    </div>
+                    <div className="text-center">
+                      {/* Layered Images - Swapped positions: Sayaka and Wako */}
+                      <div className="relative mb-4 flex justify-center h-40">
+                        {/* Sayaka image - now bottom layer */}
+                        <img 
+                          src="/images/sayaka.png" 
+                          alt="Sayaka matcha product" 
+                          className="absolute z-10"
+                          style={{ 
+                            maxHeight: '160px',
+                            top: '-40px',
+                            left: '50%',
+                            transform: 'translateX(-30%)'
+                          }}
+                        />
+                        {/* Wako image - now top layer */}
+                        <img 
+                          src="/images/wako.png" 
+                          alt="Wako matcha product" 
+                          className="absolute z-30"
+                          style={{ 
+                            maxHeight: '140px',
+                            top: '0px',
+                            left: '50%',
+                            transform: 'translateX(-50%)'
+                          }}
+                        />
+                      </div>
+                      <div className="flex justify-center mb-4">
+                        <MetalCircleButton number="2" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
+                      <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
+                    </div>
+                    <div className="text-center">
+                      {/* Figma Mockup Image */}
+                      <div className="mb-4 flex justify-center h-40">
+                        <img 
+                          src="/images/mockup.png" 
+                          alt="Matcha restock notification mockup" 
+                          className="max-w-full h-auto"
+                          style={{ maxHeight: '200px' }}
+                        />
+                      </div>
+                      <div className="flex justify-center mb-4">
+                        <MetalCircleButton number="3" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
+                      <p className="text-gray-500 font-diatype-thin">Receive instant email alerts when your matcha comes back in stock.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      {/* White background section continues here - full page width */}
+      <div className="bg-white">
+        <div className="max-w-6xl w-[90%] mx-auto">
+          {/* Brands We Currently Track Section */}
+          <div className="pt-16">
+            <div className="space-y-16">
+              {/* Ippodo Tea Co. */}
+              <div className="relative">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-[#1a1a1a] mb-6 font-diatype">
+                    Ippodo Tea Co.
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 mb-6">
+                    <span className="text-[#757575] font-diatype-thin">Ummon</span>
+                    <span className="text-[#757575] font-diatype-thin">Sayaka</span>
+                    <span className="text-[#757575] font-diatype-thin">Kan</span>
+                    <span className="text-[#757575] font-diatype-thin">Ikuyo</span>
+                    <span className="text-[#757575] font-diatype-thin">Wakaki</span>
+                  </div>
+                  <div className="bg-gradient-to-r from-[#e67e22]/10 to-[#e67e22]/5 border-l-4 border-[#e67e22] p-4 rounded-r-lg">
+                    <p className="text-[#e67e22] font-medium font-diatype leading-relaxed">
+                      Ippodo frequently opens pre-orders for most of their blends - we track exactly when their pre-orders go live so you never miss out!
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Creative separator */}
+                <div className="flex items-center justify-center mt-12">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                  <div className="mx-4 w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                </div>
+              </div>
+
+              {/* Marukyu Koyamaen */}
+              <div className="relative">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-[#1a1a1a] mb-6 font-diatype">
+                    Marukyu Koyamaen
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2">
+                    <span className="text-[#757575] font-diatype-thin">Kiwami Choan</span>
+                    <span className="text-[#757575] font-diatype-thin">Unkaku</span>
+                    <span className="text-[#757575] font-diatype-thin">Wako</span>
+                    <span className="text-[#757575] font-diatype-thin">Tenju</span>
+                    <span className="text-[#757575] font-diatype-thin">Choan</span>
+                    <span className="text-[#757575] font-diatype-thin">Eiju</span>
+                    <span className="text-[#757575] font-diatype-thin">Kinrin</span>
+                    <span className="text-[#757575] font-diatype-thin">Yugen</span>
+                    <span className="text-[#757575] font-diatype-thin">Chigi no Shiro</span>
+                    <span className="text-[#757575] font-diatype-thin">Isuzu</span>
+                    <span className="text-[#757575] font-diatype-thin">Aoarashi</span>
+                  </div>
+                </div>
+                
+                {/* Creative separator */}
+                <div className="flex items-center justify-center mt-12">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                  <div className="mx-4 w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                </div>
+              </div>
+
+              {/* Yamamasa Koyamaen - Coming Soon */}
+              <div className="text-center">
+                <h3 className="text-xl font-semibold text-[#2d2d2d] mb-2 font-diatype">
+                  Yamamasa Koyamaen
+                </h3>
+                <span className="bg-gradient-to-r from-[#e67e22] to-[#d35400] text-white text-xs font-medium px-3 py-1 rounded-full font-diatype shadow-sm">
+                  Coming Soon
+                </span>
+              </div>
+            </div>
           </div>
         </div>
-      </header>
-      
-      {/* Spacer to prevent content jump when header becomes fixed */}
-      <div className="h-24"></div>
-      
-      {/* Main Content */}
-      <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-120px)] px-6">
-        <div className="max-w-6xl w-[90%] mx-auto text-center">
-          {/* Combined Frosted Glass Content Container */}
-          <div 
-            className="p-12 lg:p-16 transition-all duration-300 hover:shadow-[inset_0_0_3px_2px_rgba(255,255,255,0.25),0_0_50px_rgba(200,220,200,0.15),0_0_100px_rgba(180,200,180,0.08)] relative"
-            style={{
-              borderRadius: '24px',
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              backdropFilter: 'blur(32px)',
-              WebkitBackdropFilter: 'blur(32px)',
-              boxShadow: `
-                inset 0 0 2px 1.5px rgba(255, 255, 255, 0.2),
-                0 0 40px rgba(200, 220, 200, 0.1),
-                0 0 80px rgba(180, 200, 180, 0.05)
-              `
-            }}
-          >
-            <div className="relative z-10">
-              {/* Hero Section */}
-              <div className="mb-24">
-                <h1 className="text-4xl lg:text-6xl font-bold text-black mb-6 font-gaisyr leading-tight">
-                  Never miss a restock again.
-                </h1>
-                <p className="text-xl lg:text-2xl text-black font-diatype leading-relaxed">
-                  Real-time notifications for your favorite premium matcha blends.
+
+        {/* Preserved Vertical Space for Future Content */}
+        <div className="py-24"></div>
+
+        {/* Pricing Section */}
+        <section id="pricing" className="relative z-10 py-24 px-6">
+          <div className="max-w-2xl w-[90%] mx-auto text-center">
+            <h2 className="text-3xl lg:text-4xl font-bold text-black mb-8 font-diatype">
+              Pricing
+            </h2>
+            <div 
+              className="p-12 transition-all duration-300 relative border border-gray-300"
+              style={{
+                borderRadius: '24px',
+              }}
+            >
+              <div className="relative z-10">
+                <div className="max-w-md mx-auto">
+                  <div className="text-center mb-8">
+                    <div className="text-5xl font-bold text-black font-diatype-mono mb-2">
+                      $3.50<span className="text-xl font-normal text-black font-diatype">/month</span>
+                    </div>
+                    <p className="text-black font-diatype-thin">Everything you need to never miss a restock</p>
+                  </div>
+                  <ul className="space-y-4 text-left mb-8">
+                    <li className="flex items-center text-black font-diatype-thin">
+                      <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
+                      Unlimited brand subscriptions
+                    </li>
+                    <li className="flex items-center text-black font-diatype-thin">
+                      <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
+                      Real-time email notifications
+                    </li>
+                    <li className="flex items-center text-black font-diatype-thin">
+                      <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
+                      Cancel anytime
+                    </li>
+                  </ul>
+                  <Link href="/login?mode=signup">
+                    <MetalButtonWrapper
+                      title="Get Started"
+                      isSubscribed={false}
+                      className="w-full"
+                    />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="relative z-10 py-12 px-6">
+          <div className="max-w-6xl w-[90%] mx-auto text-center">
+            <div className="p-8 transition-all duration-300 relative">
+              <div className="relative z-10">
+                <div className="flex items-center justify-center space-x-2 mb-4">
+                  <span className="text-xl font-semibold text-black font-diatype">matcharestock</span>
+                </div>
+                <p className="text-black font-diatype-thin mb-4">
+                  Your premium matcha monitor. Never miss a restock again.
+                </p>
+                <p className="text-sm text-black font-diatype-thin">
+                  © 2024 MatchaRestock. All rights reserved.
                 </p>
               </div>
-
-              {/* How It Works Section */}
-              <div>
-                <div className="grid md:grid-cols-3 gap-8">
-                  <div className="text-center">
-                    <div className="flex justify-center mb-4">
-                      <MetalCircleButton number="1" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Subscribe</h3>
-                    <p className="text-black font-diatype">Choose your favorite matcha brands and get instant notifications.</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex justify-center mb-4">
-                      <MetalCircleButton number="2" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
-                    <p className="text-black font-diatype">We continuously track inventory across premium matcha retailers.</p>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex justify-center mb-4">
-                      <MetalCircleButton number="3" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
-                    <p className="text-black font-diatype">Receive instant email alerts when your matcha comes back in stock.</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
-        </div>
-      </main>
-
-      {/* Preserved Vertical Space for Future Content */}
-      <div className="py-24"></div>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl w-[90%] mx-auto text-center">
-          <div 
-            className="p-12 transition-all duration-300 hover:shadow-[inset_0_0_3px_2px_rgba(255,255,255,0.25),0_0_50px_rgba(200,220,200,0.15),0_0_100px_rgba(180,200,180,0.08)] relative"
-            style={{
-              borderRadius: '24px',
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              backdropFilter: 'blur(32px)',
-              WebkitBackdropFilter: 'blur(32px)',
-              boxShadow: `
-                inset 0 0 2px 1.5px rgba(255, 255, 255, 0.2),
-                0 0 40px rgba(200, 220, 200, 0.1),
-                0 0 80px rgba(180, 200, 180, 0.05)
-              `
-            }}
-          >
-            <div className="relative z-10">
-              <h2 className="text-3xl lg:text-4xl font-bold text-black mb-8 font-gaisyr">
-                Simple Pricing
-              </h2>
-              <div className="max-w-md mx-auto">
-                <div className="text-center mb-8">
-                  <div className="text-5xl font-bold text-black font-gaisyr mb-2">
-                    $3.50<span className="text-xl font-normal text-black font-diatype">/month</span>
-                  </div>
-                  <p className="text-black font-diatype">Everything you need to never miss a restock</p>
-                </div>
-                <ul className="space-y-4 text-left mb-8">
-                  <li className="flex items-center text-black font-diatype">
-                    <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
-                    Unlimited brand subscriptions
-                  </li>
-                  <li className="flex items-center text-black font-diatype">
-                    <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
-                    Real-time email notifications
-                  </li>
-                  <li className="flex items-center text-black font-diatype">
-                    <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
-                    Cancel anytime
-                  </li>
-                </ul>
-                <Link href="/login?mode=signup">
-                  <MetalButtonWrapper
-                    title="Get Started"
-                    isSubscribed={false}
-                    className="w-full"
-                  />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 py-12 px-6">
-        <div className="max-w-6xl w-[90%] mx-auto text-center">
-          <div 
-            className="p-8 transition-all duration-300 relative"
-            style={{
-              borderRadius: '24px',
-              backgroundColor: 'rgba(255, 255, 255, 0.15)',
-              backdropFilter: 'blur(32px)',
-              WebkitBackdropFilter: 'blur(32px)',
-              boxShadow: `
-                inset 0 0 2px 1.5px rgba(255, 255, 255, 0.2),
-                0 0 40px rgba(200, 220, 200, 0.1),
-                0 0 80px rgba(180, 200, 180, 0.05)
-              `
-            }}
-          >
-            <div className="relative z-10">
-              <div className="flex items-center justify-center space-x-2 mb-4">
-                <span className="text-xl font-semibold text-black font-diatype">matcharestock</span>
-              </div>
-              <p className="text-black font-diatype mb-4">
-                Your premium matcha monitor. Never miss a restock again.
-              </p>
-              <p className="text-sm text-black font-diatype">
-                © 2024 MatchaRestock. All rights reserved.
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   )
 }

@@ -26,6 +26,22 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'ABC Diatype Thin';
+  src: url('/fonts/abc-diatype-thin.otf') format('opentype');
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ABC Diatype Mono';
+  src: url('/fonts/ABC Diatype Mono.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: 116 15% 60%;

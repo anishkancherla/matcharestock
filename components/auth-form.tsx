@@ -147,7 +147,7 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
         }`}
       >
         <h2 className="text-2xl font-semibold text-gray-900">
-          {isSignUp ? "Create an account" : "Welcome back"}
+          {isSignUp ? "Create an account" : "Welcome back!"}
         </h2>
       </div>
 
@@ -169,7 +169,7 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="your.email@example.com"
             disabled={isLoading}
-            className="h-12 bg-white border-gray-200 focus:border-gray-300 focus:ring-0 focus-visible:ring-1 focus-visible:ring-gray-300"
+            className="h-12 bg-white border-gray-400 focus:border-gray-500 focus:ring-0 focus-visible:ring-1 focus-visible:ring-gray-500"
           />
         </div>
         
@@ -186,7 +186,7 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
               placeholder="Your password"
               disabled={isLoading}
               minLength={6}
-              className="h-12 bg-white border-gray-200 focus:border-gray-300 focus:ring-0 focus-visible:ring-1 focus-visible:ring-gray-300 pr-10"
+              className="h-12 bg-white border-gray-400 focus:border-gray-500 focus:ring-0 focus-visible:ring-1 focus-visible:ring-gray-500 pr-10"
             />
             <button
               type="button"
@@ -270,8 +270,8 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
           disabled={isLoading}
         >
           {isSignUp 
-            ? <>Already have an account? <span className="font-bold">Sign in</span></> 
-            : <>Don't have an account? <span className="font-bold">Sign up</span></>
+            ? <>Already have an account? <span className="font-bold underline">Sign in</span></> 
+            : <>Don't have an account? <span className="font-bold underline">Sign up</span></>
           }
         </button>
       </div>

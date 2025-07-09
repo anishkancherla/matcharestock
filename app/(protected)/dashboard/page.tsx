@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import PricingCard from "@/components/pricing-card"
 import BrandCard from "@/components/brand-card"
@@ -10,6 +10,7 @@ import DashboardSkeleton from "./loading"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Settings, LogOut } from "lucide-react"
 
 
 // main dashboard page
@@ -20,6 +21,8 @@ export default function DashboardPage() {
 
   const [subscriptions, setSubscriptions] = useState<string[]>([])
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  const settingsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const loadSubscriptions = async () => {
@@ -43,6 +46,20 @@ export default function DashboardPage() {
 
     loadSubscriptions()
   }, [user])
+
+  // Handle clicking outside settings dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setSettingsOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   // Handle Stripe checkout success/cancel
   useEffect(() => {
@@ -200,18 +217,49 @@ export default function DashboardPage() {
           <span className="text-xl font-semibold text-gray-900 font-diatype">matcharestock</span>
         </Link>
         
-        {/* User Info & Sign Out */}
+        {/* User Info & Actions */}
         <div className="flex items-center space-x-4">
           {user && (
             <span className="text-gray-700 font-diatype">{user.email}</span>
           )}
-          <Button 
+          
+          {/* Settings Dropdown */}
+          <div className="relative" ref={settingsRef}>
+            <button
+              onClick={() => setSettingsOpen(!settingsOpen)}
+              className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+            >
+              <Settings className="h-4 w-4" />
+            </button>
+            
+            {settingsOpen && (
+              <div className="absolute -right-16 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
+                <div className="py-2">
+                  <button
+                    onClick={async () => {
+                      try {
+                        await onManageSubscription()
+                        setSettingsOpen(false)
+                      } catch (error) {
+                        setSettingsOpen(false)
+                      }
+                    }}
+                    className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                  >
+                    Manage Subscription
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sign Out Icon */}
+          <button 
             onClick={handleLogout}
-            className="backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 font-diatype"
-            variant="outline"
+            className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
           >
-            Sign out
-          </Button>
+            <LogOut className="h-4 w-4" />
+          </button>
         </div>
       </header>
 
@@ -222,27 +270,6 @@ export default function DashboardPage() {
             <PricingCard onSubscribe={onRequestSubscription} />
           ) : (
             <div className="space-y-8">
-              {/* Subscription Management Section */}
-              <div className="backdrop-blur-xl bg-white/20 border border-white/30 rounded-3xl p-6 shadow-2xl">
-                <div className="flex flex-col sm:flex-row justify-between items-center">
-                  <div className="mb-4 sm:mb-0">
-                    <h3 className="text-xl font-bold text-gray-900 font-gaisyr mb-2">
-                      Active Subscription
-                    </h3>
-                    <p className="text-gray-600 font-diatype">
-                      Manage your subscription, update payment method, or cancel anytime
-                    </p>
-                  </div>
-                  <Button
-                    onClick={onManageSubscription}
-                    variant="outline"
-                    className="bg-white/30 hover:bg-white/40 border-white/40 text-gray-900 font-diatype"
-                  >
-                    Manage Subscription
-                  </Button>
-                </div>
-              </div>
-
               {/* Brand Cards */}
               {matchaBrands.map((brandData) => (
                 <BrandCard

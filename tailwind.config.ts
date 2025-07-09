@@ -23,6 +23,8 @@ const config = {
         sans: ["ABC Diatype", "Inter", "sans-serif"],
         gaisyr: ["Gaisyr", "serif"],
         diatype: ["ABC Diatype", "sans-serif"],
+        "diatype-thin": ["ABC Diatype Thin", "sans-serif"],
+        "diatype-mono": ["ABC Diatype Mono", "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",
