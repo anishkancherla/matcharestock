@@ -11,17 +11,19 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Settings, LogOut } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 
 // main dashboard page
 export default function DashboardPage() {
-  const { user, loading, logout } = useAuth()
+  const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
 
   const [subscriptions, setSubscriptions] = useState<string[]>([])
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [loggingOut, setLoggingOut] = useState(false)
   const settingsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -83,11 +85,14 @@ export default function DashboardPage() {
   }, [searchParams, router])
 
   const handleLogout = async () => {
+    setLoggingOut(true)
     try {
-      await logout()
-      router.push('/')
+      const supabase = createClient()
+      await supabase.auth.signOut()
+      window.location.href = '/'
     } catch (error) {
       console.error('Error during logout:', error)
+      setLoggingOut(false)
       toast("Error", {
         description: "Failed to sign out. Please try again.",
       })
@@ -201,20 +206,22 @@ export default function DashboardPage() {
     return subscriptions.includes(brandName)
   }
 
-  if (loading || subscriptionsLoading) {
+  if (loading || subscriptionsLoading || loggingOut) {
     return <DashboardSkeleton />
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sage-200 via-sage-100 to-sage-300 relative overflow-hidden">
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-radial from-sage-300/50 via-sage-200/30 to-sage-400/40"></div>
+    <div className={`min-h-screen relative overflow-hidden ${user && !user.isSubscribed ? 'bg-white' : 'bg-gradient-to-br from-sage-200 via-sage-100 to-sage-300'}`}>
+      {/* Background gradient overlay - only show when not on pricing screen */}
+      {user && user.isSubscribed && (
+        <div className="absolute inset-0 bg-gradient-radial from-sage-300/50 via-sage-200/30 to-sage-400/40"></div>
+      )}
       
-      {/* Header */}
+      {/* Header - always show but with different styling */}
       <header className="relative z-10 flex items-center justify-between px-6 py-6 lg:px-12">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-semibold text-gray-900 font-diatype">matcharestock</span>
+          <span className="text-xl font-semibold text-gray-900 font-diatype-mono">matcharestock</span>
         </Link>
         
         {/* User Info & Actions */}
@@ -223,40 +230,46 @@ export default function DashboardPage() {
             <span className="text-gray-700 font-diatype">{user.email}</span>
           )}
           
-          {/* Settings Dropdown */}
-          <div className="relative" ref={settingsRef}>
-            <button
-              onClick={() => setSettingsOpen(!settingsOpen)}
-              className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
-            >
-              <Settings className="h-4 w-4" />
-            </button>
-            
-            {settingsOpen && (
-              <div className="absolute -right-16 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
-                <div className="py-2">
-                  <button
-                    onClick={async () => {
-                      try {
-                        await onManageSubscription()
-                        setSettingsOpen(false)
-                      } catch (error) {
-                        setSettingsOpen(false)
-                      }
-                    }}
-                    className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
-                  >
-                    Manage Subscription
-                  </button>
+          {/* Settings Dropdown - only show when subscribed */}
+          {user && user.isSubscribed && (
+            <div className="relative" ref={settingsRef}>
+              <button
+                onClick={() => setSettingsOpen(!settingsOpen)}
+                className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+              >
+                <Settings className="h-4 w-4" />
+              </button>
+              
+              {settingsOpen && (
+                <div className="absolute -right-16 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
+                  <div className="py-2">
+                    <button
+                      onClick={async () => {
+                        try {
+                          await onManageSubscription()
+                          setSettingsOpen(false)
+                        } catch (error) {
+                          setSettingsOpen(false)
+                        }
+                      }}
+                      className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                    >
+                      Manage Subscription
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
 
-          {/* Sign Out Icon */}
+          {/* Sign Out Icon - always show with appropriate styling */}
           <button 
             onClick={handleLogout}
-            className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+            className={`p-2 text-gray-900 rounded-lg transition-colors ${
+              user && user.isSubscribed 
+                ? 'backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30' 
+                : 'border border-gray-300 hover:bg-gray-100'
+            }`}
           >
             <LogOut className="h-4 w-4" />
           </button>
@@ -264,8 +277,8 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Content */}
-      <main className="relative z-10 px-6 lg:px-12 pb-12">
-        <div className="container mx-auto max-w-6xl">
+      <main className={`relative z-10 ${user && user.isSubscribed ? 'px-6 lg:px-12 pb-12' : ''}`}>
+        <div className={`${user && user.isSubscribed ? 'container mx-auto max-w-6xl' : ''}`}>
           {user && !user.isSubscribed ? (
             <PricingCard onSubscribe={onRequestSubscription} />
           ) : (

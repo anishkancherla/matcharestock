@@ -130,7 +130,7 @@ export default function LandingPage() {
           <div className={getNavigationClasses()}>
             {/* Logo */}
             <div className="flex items-center space-x-2">
-              <span className="text-xl font-semibold font-diatype text-gray-900">
+              <span className="text-xl font-semibold font-diatype-mono text-gray-900">
                 matcharestock
               </span>
             </div>
@@ -138,16 +138,16 @@ export default function LandingPage() {
             {/* Center Navigation */}
             <nav className="flex items-center space-x-8">
               <Link 
-                href="#how-it-works" 
-                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-              >
-                How it works
-              </Link>
-              <Link 
                 href="#pricing" 
                 className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
               >
                 Pricing
+              </Link>
+              <Link 
+                href="#questions" 
+                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+              >
+                Contact
               </Link>
             </nav>
             
@@ -356,7 +356,29 @@ export default function LandingPage() {
         </div>
 
         {/* Preserved Vertical Space for Future Content */}
-        <div className="py-24"></div>
+        <div className="py-12"></div>
+
+        {/* Request New Brand Section */}
+        <section className="relative z-10 py-8 px-6">
+          <div className="max-w-6xl w-[90%] mx-auto">
+            <div className="flex items-start space-x-4 justify-center">
+              <span className="text-3xl text-[#e67e22] font-bold mt-1">*</span>
+              <p className="text-lg text-gray-700 font-diatype leading-relaxed max-w-4xl">
+                Looking for a brand/blend we don't track yet? We're constantly planning to add new alerts —just{' '}
+                <a 
+                  href="mailto:matcharestock@gmail.com" 
+                  className="text-[#e67e22] hover:text-[#d35400] transition-colors duration-300 font-medium underline decoration-2 underline-offset-2"
+                >
+                  email us
+                </a>
+                {' '}and we'll add it to our watch list!
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Separator */}
+        <div className="bg-gray-300 h-[2px] w-full max-w-6xl mx-auto my-10"></div>
 
         {/* Pricing Section */}
         <section id="pricing" className="relative z-10 py-24 px-6">
@@ -405,19 +427,108 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Questions Section */}
+        <section id="questions" className="bg-white py-12 px-6">
+          <div className="max-w-4xl w-[90%] mx-auto text-center">
+            <p className="text-lg text-gray-700 font-diatype">
+              Questions? Email us at{' '}
+              <a 
+                href="mailto:matcharestock@gmail.com" 
+                className="text-[#e67e22] hover:text-[#d35400] transition-colors duration-300 underline decoration-1 underline-offset-2"
+              >
+                matcharestock@gmail.com
+              </a>
+            </p>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="bg-black py-24 px-6">
+          <div className="max-w-4xl w-[90%] mx-auto">
+            <h2 className="text-3xl lg:text-4xl font-bold text-white mb-12 text-center font-diatype">
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3 font-diatype">
+                  1. Which brands and blends do you track right now?
+                </h3>
+                <p className="text-gray-300 font-diatype-thin leading-relaxed">
+                  Ippodo and Marukyu Koyamaen. The full matcha line-ups are listed on our home page. You can ask us to add others! (see Q4).
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3 font-diatype">
+                  2. How fast are the alerts?
+                </h3>
+                <p className="text-gray-300 font-diatype-thin leading-relaxed">
+                  Emails land within 1–2 minutes of the restock.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3 font-diatype">
+                  3. Can I request a new brand or blend?
+                </h3>
+                <p className="text-gray-300 font-diatype-thin leading-relaxed">
+                  Absolutely, please{' '}
+                  <a 
+                    href="mailto:matcharestock@gmail.com" 
+                    className="text-[#e67e22] hover:text-[#d35400] transition-colors duration-300 underline decoration-1 underline-offset-2"
+                  >
+                    email us
+                  </a>
+                  {' '}the product name and URL! Most popular requests will be prioritized.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3 font-diatype">
+                  4. Do I need to keep my browser open or run an app?
+                </h3>
+                <p className="text-gray-300 font-diatype-thin leading-relaxed">
+                  Nope! All monitoring happens on our servers; you just watch your inbox. (We recommend you turn your email alerts on!)
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3 font-diatype">
+                  5. How safe is my data?
+                </h3>
+                <p className="text-gray-300 font-diatype-thin leading-relaxed">
+                  All payments are handled by Stripe; we never see your card number. Your email is used only for restock alerts and account messages.
+                </p>
+              </div>
+              
+              <div>
+                <h3 className="text-lg font-semibold text-white mb-3 font-diatype">
+                  6. Why didn't I get my restock alert?
+                </h3>
+                <p className="text-gray-300 font-diatype-thin leading-relaxed">
+                  Please check that our emails aren't in your spam folder and that the item is still part of your subscriptions. If the problem persists, please email support so we can investigate.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Divider */}
+        <div className="bg-gray-300 h-px w-full"></div>
+
         {/* Footer */}
-        <footer className="relative z-10 py-12 px-6">
+        <footer id="contact" className="relative z-10 py-12 px-6 bg-black">
           <div className="max-w-6xl w-[90%] mx-auto text-center">
             <div className="p-8 transition-all duration-300 relative">
               <div className="relative z-10">
                 <div className="flex items-center justify-center space-x-2 mb-4">
-                  <span className="text-xl font-semibold text-black font-diatype">matcharestock</span>
+                  <span className="text-xl font-semibold text-white font-diatype-mono">matcharestock</span>
                 </div>
-                <p className="text-black font-diatype-thin mb-4">
-                  Your premium matcha monitor. Never miss a restock again.
-                </p>
-                <p className="text-sm text-black font-diatype-thin">
+                <p className="text-sm text-white font-diatype-thin">
                   © 2024 MatchaRestock. All rights reserved.
+                </p>
+                <p className="text-xs text-gray-400 font-diatype-thin mt-2 leading-relaxed">
+                  MatchaRestock is an independent service—it is not affiliated, endorsed, or sponsored by Ippodo, Marukyu Koyamaen, or any other brand. All product names, logos, and trademarks remain the property of their respective owners.
                 </p>
               </div>
             </div>

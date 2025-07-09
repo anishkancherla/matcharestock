@@ -28,4 +28,10 @@ export const matchaBrands: BrandData[] = [
       { name: "Aoarashi", description: "A versatile culinary grade, perfect for lattes and baking." },
     ],
   },
+  {
+    brand: "Yamamasa Koyamaen",
+    blends: [
+      { name: "Coming Soon", description: "We're working on adding tracking for this premium matcha brand." },
+    ],
+  },
 ]
