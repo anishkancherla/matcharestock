@@ -13,7 +13,7 @@ async function sendRestockEmail(userEmail: string, brandName: string, productNam
     const productLink = productUrl ? `<a href="${productUrl}" style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 20px 0;">Shop ${productName || brandName} Now</a>` : ""
     
     const { data, error } = await resend.emails.send({
-      from: 'notifications@updates.matcharestock.com',
+      from: 'MatchaRestock <notifications@updates.matcharestock.com>',
       to: [userEmail],
       subject: `🍵 ${brandName} is back in stock${productInfo}!`,
       html: `

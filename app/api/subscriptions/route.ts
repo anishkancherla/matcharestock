@@ -58,7 +58,7 @@ export async function GET() {
 async function sendWelcomeEmail(userEmail: string, brandName: string) {
   try {
     const { data, error } = await resend.emails.send({
-      from: 'notifications@updates.matcharestock.com',
+      from: 'MatchaRestock <notifications@updates.matcharestock.com>',
       to: [userEmail],
       subject: `You're successfully signed up for ${brandName} restocks!`,
       html: `
@@ -428,7 +428,7 @@ export async function POST(request: NextRequest) {
         console.log(`📧 Products: ${products.map(p => p.name).join(', ')}`);
         
         const { data, error } = await resend.emails.send({
-          from: 'notifications@updates.matcharestock.com',
+          from: 'MatchaRestock <notifications@updates.matcharestock.com>',
           to: [userEmail],
           subject: emailSubject,
           html: emailHtml
