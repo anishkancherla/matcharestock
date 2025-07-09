@@ -10,6 +10,13 @@ export const metadata: Metadata = {
   description: "Never miss a restock of your favorite matcha.",
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
+
 // main app layout with auth and navbar
 export default function RootLayout({
   children,
