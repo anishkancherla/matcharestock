@@ -99,14 +99,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithGoogle = async () => {
     // Use canonical domain (non-www) to avoid redirect issues
     const getCanonicalOrigin = () => {
-      const { protocol, hostname } = window.location
+      const { protocol, hostname, port } = window.location
+      
+      // For localhost, always include the port explicitly
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return `${protocol}//${hostname}${port ? `:${port}` : ''}`
+      }
       
       // For production, always use non-www version
       if (hostname === 'www.matcharestock.com') {
         return `${protocol}//matcharestock.com`
       }
       
-      // For localhost and other domains, use as-is
+      // For other domains, use as-is
       return window.location.origin
     }
     
@@ -138,14 +143,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUpWithEmail = async (email: string, password: string) => {
     // Use canonical domain (non-www) to avoid redirect issues
     const getCanonicalOrigin = () => {
-      const { protocol, hostname } = window.location
+      const { protocol, hostname, port } = window.location
+      
+      // For localhost, always include the port explicitly
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return `${protocol}//${hostname}${port ? `:${port}` : ''}`
+      }
       
       // For production, always use non-www version
       if (hostname === 'www.matcharestock.com') {
         return `${protocol}//matcharestock.com`
       }
       
-      // For localhost and other domains, use as-is
+      // For other domains, use as-is
       return window.location.origin
     }
     

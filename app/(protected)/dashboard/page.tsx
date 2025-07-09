@@ -218,16 +218,6 @@ export default function DashboardPage() {
       {/* Main Content */}
       <main className="relative z-10 px-6 lg:px-12 pb-12">
         <div className="container mx-auto max-w-6xl">
-          {/* Welcome Section */}
-          <div className="mb-12 text-center">
-            <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 font-gaisyr leading-tight">
-              Your notifications
-            </h1>
-            <p className="text-xl text-gray-600 font-diatype leading-relaxed">
-              Update your notification preferences.
-            </p>
-          </div>
-
           {user && !user.isSubscribed ? (
             <PricingCard onSubscribe={onRequestSubscription} />
           ) : (

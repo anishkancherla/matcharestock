@@ -16,7 +16,7 @@ export async function createClient() {
           try {
             cookieStore.set(name, value, options)
           } catch (error) {
-
+            // Handle cookie setting errors silently
           }
         },
         remove(name: string, options: any) {
@@ -26,7 +26,7 @@ export async function createClient() {
               maxAge: 0,
             })
           } catch (error) {
-
+            // Handle cookie removal errors silently
           }
         },
       },

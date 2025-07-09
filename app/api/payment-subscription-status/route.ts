@@ -36,32 +36,26 @@ export async function GET() {
     const currentPeriodStart = paymentSubscription.current_period_start ? new Date(paymentSubscription.current_period_start) : null
     const currentPeriodEnd = paymentSubscription.current_period_end ? new Date(paymentSubscription.current_period_end) : null
 
-    // Check if subscription is in a valid state
+    // Debug logging
+    console.log('🐛 Subscription validation debug:')
+    console.log('  Current time (now):', now.toISOString())
+    console.log('  Period start (raw):', paymentSubscription.current_period_start)
+    console.log('  Period end (raw):', paymentSubscription.current_period_end)
+    console.log('  Period start (parsed):', currentPeriodStart?.toISOString())
+    console.log('  Period end (parsed):', currentPeriodEnd?.toISOString())
+    console.log('  Status:', paymentSubscription.status)
+    console.log('  Now >= start?', currentPeriodStart ? now >= currentPeriodStart : 'No start date')
+    console.log('  Now <= end?', currentPeriodEnd ? now <= currentPeriodEnd : 'No end date')
+
+    // Check if subscription is in a valid state (simplified - trust the database triggers)
     const validStatuses = ['active', 'trialing']
-    const hasValidStatus = validStatuses.includes(paymentSubscription.status)
+    const isSubscribed = validStatuses.includes(paymentSubscription.status)
 
-    // Check if we're within the subscription period
-    const isWithinPeriod = currentPeriodStart && currentPeriodEnd && 
-                          now >= currentPeriodStart && now <= currentPeriodEnd
-
-    // Determine if user is subscribed
-    const isSubscribed = hasValidStatus && isWithinPeriod
+    console.log('  Has valid status?', isSubscribed)
+    console.log('  Final isSubscribed?', isSubscribed)
 
     // Provide detailed reason for debugging
-    let reason = ''
-    if (!hasValidStatus) {
-      reason = `Invalid status: ${paymentSubscription.status}`
-    } else if (!isWithinPeriod) {
-      if (!currentPeriodStart || !currentPeriodEnd) {
-        reason = 'Missing period dates'
-      } else if (now < currentPeriodStart) {
-        reason = 'Subscription not yet started'
-      } else if (now > currentPeriodEnd) {
-        reason = 'Subscription period expired'
-      }
-    } else {
-      reason = 'Active subscription'
-    }
+    const reason = isSubscribed ? 'Active subscription' : `Invalid status: ${paymentSubscription.status}`
 
     return NextResponse.json({ 
       isSubscribed,

@@ -6,6 +6,8 @@ import Stripe from 'stripe'
 export const runtime = 'nodejs'
 
 export async function POST(request: NextRequest) {
+  console.log('🚀 WEBHOOK HANDLER CALLED - START')
+  
   try {
     // Initialize Stripe inside the function to avoid build-time issues
     if (!process.env.STRIPE_SECRET_KEY) {
@@ -56,16 +58,28 @@ export async function POST(request: NextRequest) {
           }
 
           // Get the subscription details
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
-            expand: ['items.data']
-          })
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId)
 
-          // Get billing period from the first subscription item
+          // Get billing period from the subscription items (this is where Stripe stores the billing periods)
           const firstItem = subscription.items.data[0]
           const currentPeriodStart = firstItem?.current_period_start
           const currentPeriodEnd = firstItem?.current_period_end
 
-          // Upsert the payment subscription record
+          console.log('🔍 Subscription items structure:', {
+            itemsCount: subscription.items.data.length,
+            firstItemId: firstItem?.id,
+            current_period_start: currentPeriodStart,
+            current_period_end: currentPeriodEnd,
+          })
+
+          console.log('📅 Subscription periods:', {
+            start: currentPeriodStart,
+            end: currentPeriodEnd,
+            status: subscription.status,
+            userId: userId
+          })
+
+          // Upsert the payment subscription record - use stripe_subscription_id for conflict resolution
           const { error } = await supabase
             .from('user_payment_subscriptions')
             .upsert({
@@ -78,11 +92,12 @@ export async function POST(request: NextRequest) {
               cancel_at_period_end: subscription.cancel_at_period_end,
               updated_at: new Date().toISOString(),
             }, {
-              onConflict: 'user_id'
+              onConflict: 'stripe_subscription_id'
             })
 
           if (error) {
             console.error('Error updating payment subscription:', error)
+            throw error // Re-throw to cause webhook to fail and retry
           } else {
             console.log('✅ Payment subscription created/updated for user:', userId)
           }
@@ -93,8 +108,8 @@ export async function POST(request: NextRequest) {
       case 'customer.subscription.updated': {
         const subscription = event.data.object as Stripe.Subscription
         
-        // Get billing period from the first subscription item
-        const firstItem = subscription.items?.data?.[0]
+        // Get billing period from the subscription items (this is where Stripe stores the billing periods)
+        const firstItem = subscription.items.data[0]
         const currentPeriodStart = firstItem?.current_period_start
         const currentPeriodEnd = firstItem?.current_period_end
 
