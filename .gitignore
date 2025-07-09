@@ -14,7 +14,10 @@
 /coverage
 
 # scrapers
-/scrapers/database_trigger_setup.sql
+/scrapers/
+
+# cursor ide
+.cursor/
 
 # next.js
 /.next/
