@@ -70,8 +70,8 @@ async function sendWelcomeEmail(userEmail: string, brandName: string) {
             <title>Welcome to MatchaRestock!</title>
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; background-color: #f1f5f9; margin: 0; padding: 16px;">
-            <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-              <div style="background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 672px; margin: 0 auto; padding: 40px; text-align: left;">
+            <div style="width: 100%; max-width: 672px; margin: 0 auto;">
+              <div style="background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); width: 100%; padding: 40px; text-align: left;">
                 
                 <!-- Header -->
                 <header style="margin-bottom: 32px;">
