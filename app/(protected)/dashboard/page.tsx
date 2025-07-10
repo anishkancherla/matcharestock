@@ -351,6 +351,7 @@ export default function DashboardPage() {
               onSubscribe={onRequestSubscription} 
               userEmail={user.email}
               onExit={() => router.push('/')}
+              showMobileHeader={false}
             />
           ) : (
             <div className="space-y-8">

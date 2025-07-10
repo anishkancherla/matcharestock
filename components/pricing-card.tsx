@@ -11,10 +11,11 @@ interface PricingCardProps {
   onSubscribe: () => void
   userEmail?: string
   onExit?: () => void
+  showMobileHeader?: boolean
 }
 
 // pricing card for subscriptions
-export default function PricingCard({ onSubscribe, userEmail, onExit }: PricingCardProps) {
+export default function PricingCard({ onSubscribe, userEmail, onExit, showMobileHeader = true }: PricingCardProps) {
   const [accessCode, setAccessCode] = useState('')
   const [showAccessCode, setShowAccessCode] = useState(false)
 
@@ -47,29 +48,31 @@ export default function PricingCard({ onSubscribe, userEmail, onExit }: PricingC
 
   return (
     <div className="h-[calc(100vh-120px)] bg-white flex items-center justify-center px-6 overflow-hidden">
-      {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-6 py-4 z-50">
-        <div className="flex items-center justify-between">
-          <div>
-            <Link href="/" className="text-xl font-semibold font-diatype-mono text-gray-900">
-              matcharestock
-            </Link>
-            {userEmail && (
-              <div className="text-sm text-gray-600 font-diatype mt-1">
-                {userEmail}
-              </div>
+      {/* Mobile Header - only show if showMobileHeader is true */}
+      {showMobileHeader && (
+        <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 px-6 py-4 z-50">
+          <div className="flex items-center justify-between">
+            <div>
+              <Link href="/" className="text-xl font-semibold font-diatype-mono text-gray-900">
+                matcharestock
+              </Link>
+              {userEmail && (
+                <div className="text-sm text-gray-600 font-diatype mt-1">
+                  {userEmail}
+                </div>
+              )}
+            </div>
+            {onExit && (
+              <button
+                onClick={onExit}
+                className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              >
+                <X className="h-4 w-4 text-gray-600" />
+              </button>
             )}
           </div>
-          {onExit && (
-            <button
-              onClick={onExit}
-              className="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-            >
-              <X className="h-4 w-4 text-gray-600" />
-            </button>
-          )}
         </div>
-      </div>
+      )}
 
       {/* Desktop Exit Button */}
       {onExit && (
@@ -81,7 +84,7 @@ export default function PricingCard({ onSubscribe, userEmail, onExit }: PricingC
         </button>
       )}
 
-      <div className="max-w-2xl w-[90%] mx-auto text-center mt-16 md:mt-0">
+      <div className={`max-w-2xl w-[90%] mx-auto text-center ${showMobileHeader ? 'mt-16' : 'mt-0'} md:mt-0`}>
         {/* Desktop Header */}
         <div className="hidden md:block mb-8">
           <h2 className="text-3xl lg:text-4xl font-bold text-black font-diatype">

@@ -147,33 +147,26 @@ export default function LandingPage() {
             {/* Mobile Layout */}
             <div className="md:hidden w-full">
               {!isAtTop ? (
-                // Scrolled down - show horizontal nav
-                <div className="flex items-center justify-between w-full">
-                  <Link href="/" className="flex items-center space-x-2">
-                    <span className="text-xl font-semibold font-diatype-mono text-gray-900">
-                      matcharestock
-                    </span>
+                // Scrolled down - show only nav items without logo
+                <div className="flex items-center justify-center w-full space-x-6">
+                  <Link 
+                    href="#pricing" 
+                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                  >
+                    Pricing
                   </Link>
-                  <div className="flex items-center space-x-4">
-                    <Link 
-                      href="#pricing" 
-                      className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
-                    >
-                      Pricing
-                    </Link>
-                    <Link 
-                      href="#questions" 
-                      className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
-                    >
-                      Contact
-                    </Link>
-                    <Link 
-                      href="/login" 
-                      className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
-                    >
-                      Log in
-                    </Link>
-                  </div>
+                  <Link 
+                    href="#questions" 
+                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                  >
+                    Contact
+                  </Link>
+                  <Link 
+                    href="/login" 
+                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                  >
+                    Log in
+                  </Link>
                 </div>
               ) : (
                 // At top - show logo with sign up button below and dropdown menu
@@ -285,7 +278,7 @@ export default function LandingPage() {
         <div className="h-24"></div>
         
         {/* Main Hero Content */}
-        <main className="relative z-10 flex items-center justify-center px-6 pb-16">
+        <main className="relative z-10 flex items-center justify-center px-6 pb-16 mt-4 md:mt-0">
           <div className="max-w-6xl w-[90%] mx-auto text-center">
             {/* Combined Frosted Glass Content Container */}
             <div 
@@ -334,17 +327,11 @@ export default function LandingPage() {
                     </div>
                     
                     <div className="text-center">
-                      {/* Mobile Layout - Text first, then images */}
+                      {/* Mobile Layout - Images first, then text below */}
                       <div className="md:hidden space-y-4">
-                        <div className="flex justify-center">
-                          <MetalCircleButton number="2" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-black font-diatype">Monitor</h3>
-                        <p className="text-gray-500 font-diatype-thin mb-6">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
-                        
-                        {/* Images positioned after text on mobile */}
-                        <div className="flex justify-center h-40">
-                          {/* Sayaka image - now bottom layer */}
+                        {/* Images positioned above text on mobile */}
+                        <div className="relative flex justify-center h-40 mb-4">
+                          {/* Sayaka image - bottom layer, adjusted left */}
                           <img 
                             src="/images/sayaka.png" 
                             alt="Sayaka matcha product" 
@@ -353,10 +340,10 @@ export default function LandingPage() {
                               maxHeight: '160px',
                               top: '-40px',
                               left: '50%',
-                              transform: 'translateX(-30%)'
+                              transform: 'translateX(-40%)'
                             }}
                           />
-                          {/* Wako image - now top layer */}
+                          {/* Wako image - top layer, adjusted left */}
                           <img 
                             src="/images/wako.png" 
                             alt="Wako matcha product" 
@@ -365,10 +352,16 @@ export default function LandingPage() {
                               maxHeight: '140px',
                               top: '0px',
                               left: '50%',
-                              transform: 'translateX(-50%)'
+                              transform: 'translateX(-60%)'
                             }}
                           />
                         </div>
+                        
+                        <div className="flex justify-center">
+                          <MetalCircleButton number="2" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-black font-diatype">Monitor</h3>
+                        <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
                       </div>
 
                       {/* Desktop Layout - Original order */}
