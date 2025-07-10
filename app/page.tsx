@@ -159,7 +159,7 @@ export default function LandingPage() {
                     href="#questions" 
                     className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
                   >
-                    Contact
+                    Info
                   </Link>
                   <Link 
                     href="/login" 
@@ -211,7 +211,7 @@ export default function LandingPage() {
                               className="block px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
                               onClick={() => setSettingsOpen(false)}
                             >
-                              Contact
+                              Info
                             </Link>
                             <Link 
                               href="/login" 
@@ -250,7 +250,7 @@ export default function LandingPage() {
                   href="#questions" 
                   className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
                 >
-                  Contact
+                  Info
                 </Link>
               </nav>
               
@@ -315,7 +315,7 @@ export default function LandingPage() {
                         <img 
                           src="/images/dashboarddisplay.png" 
                           alt="Dashboard display showing brand subscriptions" 
-                          className="max-w-full h-auto md:ml-0 -ml-2"
+                          className="max-w-full h-auto md:ml-0 -ml-3"
                           style={{ maxHeight: '300px' }}
                         />
                       </div>
@@ -338,7 +338,7 @@ export default function LandingPage() {
                             className="absolute z-10"
                             style={{ 
                               maxHeight: '160px',
-                              top: '-20px',
+                              top: '0px',
                               left: '50%',
                               transform: 'translateX(-40%)'
                             }}
@@ -350,7 +350,7 @@ export default function LandingPage() {
                             className="absolute z-30"
                             style={{ 
                               maxHeight: '140px',
-                              top: '20px',
+                              top: '40px',
                               left: '50%',
                               transform: 'translateX(-60%)'
                             }}
