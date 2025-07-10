@@ -301,7 +301,7 @@ export default function LandingPage() {
                   <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
                     Real-time notifications for your favorite matcha brands.
                   </h1>
-                  <p className="text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
+                  <p className="hidden md:block text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
                     Never miss a restock again.
                   </p>
                 </div>
@@ -315,7 +315,7 @@ export default function LandingPage() {
                         <img 
                           src="/images/dashboarddisplay.png" 
                           alt="Dashboard display showing brand subscriptions" 
-                          className="max-w-full h-auto md:ml-0 -ml-3"
+                          className="max-w-full h-auto md:ml-0 -ml-4"
                           style={{ maxHeight: '300px' }}
                         />
                       </div>
@@ -338,7 +338,7 @@ export default function LandingPage() {
                             className="absolute z-10"
                             style={{ 
                               maxHeight: '160px',
-                              top: '0px',
+                              top: '10px',
                               left: '50%',
                               transform: 'translateX(-40%)'
                             }}
@@ -350,7 +350,7 @@ export default function LandingPage() {
                             className="absolute z-30"
                             style={{ 
                               maxHeight: '140px',
-                              top: '40px',
+                              top: '50px',
                               left: '50%',
                               transform: 'translateX(-60%)'
                             }}
