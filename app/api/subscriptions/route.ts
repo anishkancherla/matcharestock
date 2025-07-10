@@ -327,22 +327,9 @@ export async function POST(request: NextRequest) {
 
     console.log(`📧 Found ${subscriptions.length} subscribers for ${brand}`);
 
-
-    const emailSubject = `🍵 ${brand} is back in stock!`;
+    // More personal, less promotional subject line
+    const emailSubject = `Matcha is available!!`;
     
-    const productListHtml = products.map(product => {
-      const shopLink = product.url 
-        ? `<a href="${product.url}" style="color: #059669; text-decoration: none; font-weight: 500;">[Shop Now]</a>`
-        : '';
-      
-      return `
-        <div style="margin-bottom: 12px; padding: 12px; background-color: #f0fdf4; border-radius: 8px; border-left: 4px solid #059669;">
-          <div style="font-weight: 600; color: #065f46;">${product.name}</div>
-          ${shopLink}
-        </div>
-      `;
-    }).join('');
-
     const emailHtml = `
       <!DOCTYPE html>
       <html>
@@ -350,60 +337,39 @@ export async function POST(request: NextRequest) {
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>${emailSubject}</title>
-          <style>
-            @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
-          </style>
         </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; background-color: #f1f5f9; margin: 0; padding: 16px;">
-          <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
-            <div style="background-color: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); width: 100%; max-width: 672px; margin: 0 auto; padding: 40px;">
-              
-              <!-- Header -->
-              <header style="margin-bottom: 32px;">
-                <div style="margin-bottom: 8px;">
-                  <h1 style="font-size: 24px; font-weight: 600; color: #324335; margin: 0; font-family: 'Source Serif 4', Georgia, serif;">MatchaRestock</h1>
-                </div>
-              </header>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; background-color: #ffffff; margin: 0; padding: 20px;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff;">
+            
+            <!-- Simple Header -->
+            <div style="margin-bottom: 30px;">
+              <h1 style="font-size: 20px; font-weight: 400; color: #333333; margin: 0;">Hi there,</h1>
+            </div>
 
-              <!-- Main Content -->
-              <main>
-                <div>
-                  <h2 style="font-size: 30px; font-weight: 700; color: #1e293b; margin-bottom: 12px;">${brand} is back in stock.</h2>
-                  <p style="color: #64748b; margin: 0;">
-                    The matcha you've been waiting for is finally available. Here are the products that just restocked:
-                  </p>
-                </div>
+            <!-- Main Content -->
+            <div>
+              <p style="color: #555555; margin: 0 0 20px 0; font-size: 16px;">
+                Good news about ${brand} - some products are available again:
+              </p>
 
-                <!-- Product List -->
-                <div style="margin: 32px 0;">
-                  ${products.map(product => `
-                    <div style="border: 1px solid #e2e8f0; border-left: 4px solid #324335; border-radius: 8px; padding: 24px; margin-bottom: 16px; text-align: left;">
-                      <h3 style="font-size: 20px; font-weight: 600; color: #1e293b; margin: 0 0 8px 0; text-align: left;">${product.name}</h3>
-                      <p style="color: #64748b; margin: 8px 0 16px 0; text-align: left;">Don't wait – premium matcha sells out quickly!</p>
-                      <div style="text-align: left;">
-                        <a href="${product.url || '#'}" 
-                           style="display: inline-block; background-color: #324335; color: white; font-weight: 700; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-size: 16px;">
-                          Shop Now
-                        </a>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </main>
+              <!-- Simple Product List -->
+              <div style="margin: 25px 0;">
+                ${products.map(product => `
+                  <div style="margin-bottom: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                    <div style="font-weight: 500; color: #333333; font-size: 16px;">${product.name}</div>
+                    <div style="color: #666666; font-size: 14px; margin-top: 5px;">Available now</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
 
-              <!-- Separator -->
-              <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0;">
-
-              <!-- Footer -->
-              <footer style="text-align: center; font-size: 12px; color: #64748b;">
-                <p style="margin-bottom: 8px;">You're receiving this because you subscribed to restock notifications.</p>
-                <p style="margin-bottom: 16px;">
-                  <a href="https://matcharestock.com/dashboard" style="text-decoration: underline; color: #324335;">
-                    Manage your subscriptions
-                  </a>
-                </p>
-                <p style="margin: 0;">© 2025 MatchaRestock. All rights reserved.</p>
-              </footer>
+            <!-- Simple Footer -->
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center;">
+              <p style="font-size: 12px; color: #888888; margin: 0;">
+                <a href="https://matcharestock.com/dashboard" style="color: #666666; text-decoration: underline;">
+                  Update preferences
+                </a>
+              </p>
             </div>
           </div>
         </body>
