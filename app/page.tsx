@@ -278,7 +278,7 @@ export default function LandingPage() {
         <div className="h-24"></div>
         
         {/* Main Hero Content */}
-        <main className="relative z-10 flex items-center justify-center px-6 pb-16 mt-4 md:mt-0">
+        <main className="relative z-10 flex items-center justify-center px-6 pb-16 mt-8 md:mt-0">
           <div className="max-w-6xl w-[90%] mx-auto text-center">
             {/* Combined Frosted Glass Content Container */}
             <div 
@@ -315,7 +315,7 @@ export default function LandingPage() {
                         <img 
                           src="/images/dashboarddisplay.png" 
                           alt="Dashboard display showing brand subscriptions" 
-                          className="max-w-full h-auto"
+                          className="max-w-full h-auto md:ml-0 -ml-2"
                           style={{ maxHeight: '300px' }}
                         />
                       </div>
@@ -338,7 +338,7 @@ export default function LandingPage() {
                             className="absolute z-10"
                             style={{ 
                               maxHeight: '160px',
-                              top: '-40px',
+                              top: '-20px',
                               left: '50%',
                               transform: 'translateX(-40%)'
                             }}
@@ -350,7 +350,7 @@ export default function LandingPage() {
                             className="absolute z-30"
                             style={{ 
                               maxHeight: '140px',
-                              top: '0px',
+                              top: '20px',
                               left: '50%',
                               transform: 'translateX(-60%)'
                             }}
