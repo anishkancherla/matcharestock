@@ -618,14 +618,7 @@ export default function LandingPage() {
                   3. Can I request a new brand or blend?
                 </h3>
                 <p className="text-gray-300 font-diatype-thin leading-relaxed">
-                  Absolutely, please{' '}
-                  <a 
-                    href="mailto:matcharestock@gmail.com" 
-                    className="text-[#e67e22] hover:text-[#d35400] transition-colors duration-300 underline decoration-1 underline-offset-2"
-                  >
-                    email us
-                  </a>
-                  {' '}the product name and URL! Most popular requests will be prioritized.
+                  Absolutely, please email us the product name and URL! Most popular requests will be prioritized.
                 </p>
               </div>
               
