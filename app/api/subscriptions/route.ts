@@ -331,7 +331,7 @@ export async function POST(request: NextRequest) {
     console.log('📧 All subscribers found:', subscriptions.map(s => s.email));
 
     // More personal, less promotional subject line
-    const emailSubject = `Matcha is available!!`;
+    const emailSubject = `Matcha is available!`;
     
     const emailHtml = `
       <!DOCTYPE html>
@@ -347,15 +347,16 @@ export async function POST(request: NextRequest) {
             <!-- Simple Header -->
             <div style="margin-bottom: 30px;">
               <h2 style="color: #333333; margin: 0; font-size: 20px; font-weight: 500;">Hi there,</h2>
-              <p style="color: #666666; margin: 10px 0 0 0; font-size: 16px;">Good news about ${brand} - some products are available again:</p>
+              <p style="color: #666666; margin: 10px 0 0 0; font-size: 16px;">Good news! The following matcha from ${brand} is available:</p>
             </div>
             
             <!-- Simple Product List -->
             <div style="margin: 25px 0;">
               ${products.map(product => `
                 <div style="margin-bottom: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
-                  <div style="font-weight: 500; color: #333333; font-size: 16px;">${product.name}</div>
-                  <div style="color: #666666; font-size: 14px; margin-top: 5px;">Available now</div>
+                  <div style="font-weight: 500; color: #333333; font-size: 16px;">
+                    ${product.url ? `<a href="${product.url}" style="color: #333333; text-decoration: none;">${product.name}</a>` : product.name}
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -363,9 +364,6 @@ export async function POST(request: NextRequest) {
 
           <!-- Simple Footer -->
           <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center;">
-            <p style="font-size: 12px; color: #888888; margin: 0;">
-              <a href="https://matcharestock.com/dashboard" style="color: #888888; text-decoration: none;">Update preferences</a>
-            </p>
             <p style="font-size: 12px; color: #888888; margin: 10px 0 0 0;">Have a great day!</p>
           </div>
         </body>
@@ -396,7 +394,10 @@ export async function POST(request: NextRequest) {
           from: 'MatchaRestock <notifications@updates.matcharestock.com>',
           to: [subscription.email],
           subject: emailSubject,
-          html: emailHtml
+          html: emailHtml,
+          headers: {
+            'List-Unsubscribe': `<https://matcharestock.com/dashboard>`
+          }
         }));
 
         console.log(`📧 Sending batch ${batchIndex + 1} to:`, chunk.map(s => s.email));
