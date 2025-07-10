@@ -56,11 +56,6 @@ export default function PricingCard({ onSubscribe, userEmail, onExit, showMobile
               <Link href="/" className="text-xl font-semibold font-diatype-mono text-gray-900">
                 matcharestock
               </Link>
-              {userEmail && (
-                <div className="text-sm text-gray-600 font-diatype mt-1">
-                  {userEmail}
-                </div>
-              )}
             </div>
             {onExit && (
               <button
@@ -90,11 +85,6 @@ export default function PricingCard({ onSubscribe, userEmail, onExit, showMobile
           <h2 className="text-3xl lg:text-4xl font-bold text-black font-diatype">
             Unlock Access
           </h2>
-          {userEmail && (
-            <div className="text-gray-600 font-diatype mt-2">
-              {userEmail}
-            </div>
-          )}
         </div>
 
         {/* Mobile Title */}
@@ -155,13 +145,13 @@ export default function PricingCard({ onSubscribe, userEmail, onExit, showMobile
                     placeholder="Enter access code"
                     value={accessCode}
                     onChange={(e) => setAccessCode(e.target.value)}
-                    className="text-sm text-white placeholder-white/70 bg-transparent border-white/30 focus:border-white focus:ring-white"
+                    className="text-sm text-black placeholder-gray-400 bg-white border-black focus:border-black focus:ring-black"
                   />
                   <div className="flex space-x-3">
                     <Button
                       onClick={handleAccessCode}
                       size="sm"
-                      className="flex-1 bg-white/20 hover:bg-white/30 text-white border border-white/30 font-diatype"
+                      className="flex-1 bg-white hover:bg-gray-50 text-black border border-black font-diatype"
                     >
                       Submit
                     </Button>
@@ -172,7 +162,7 @@ export default function PricingCard({ onSubscribe, userEmail, onExit, showMobile
                       }}
                       size="sm"
                       variant="outline"
-                      className="flex-1 font-diatype text-white border-white/30 hover:bg-white/10"
+                      className="flex-1 font-diatype text-black bg-white border-black hover:bg-gray-50"
                     >
                       Cancel
                     </Button>
