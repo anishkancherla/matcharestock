@@ -315,7 +315,7 @@ export default function LandingPage() {
                         <img 
                           src="/images/dashboarddisplay.png" 
                           alt="Dashboard display showing brand subscriptions" 
-                          className="max-w-full h-auto md:ml-0 -ml-5"
+                          className="max-w-full h-auto md:ml-0 -ml-6"
                           style={{ maxHeight: '300px' }}
                         />
                       </div>
