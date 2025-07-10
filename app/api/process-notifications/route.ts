@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       try {
         // Prepare products for the notification API
         const products = notifications.map(notification => ({
-          name: notification.product,
+          name: notification.product_name, // Fixed: was notification.product
           url: notification.product_url || null
         }))
 
