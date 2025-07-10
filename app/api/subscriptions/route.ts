@@ -355,7 +355,7 @@ export async function POST(request: NextRequest) {
               ${products.map(product => `
                 <div style="margin-bottom: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
                   <div style="font-weight: 500; color: #333333; font-size: 16px;">
-                    ${product.url ? `<a href="${product.url}" style="color: #333333; text-decoration: none;">${product.name}</a>` : product.name}
+                    ${product.url ? `<a href="${product.url}" style="color: #333333; text-decoration: underline;">${product.name}</a>` : product.name}
                   </div>
                 </div>
               `).join('')}
@@ -365,6 +365,7 @@ export async function POST(request: NextRequest) {
           <!-- Simple Footer -->
           <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center;">
             <p style="font-size: 12px; color: #888888; margin: 10px 0 0 0;">Have a great day!</p>
+            <p style="font-size: 12px; color: #888888; margin: 10px 0 0 0;">MatchaRestock</p>
           </div>
         </body>
       </html>
