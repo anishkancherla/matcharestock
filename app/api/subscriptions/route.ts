@@ -326,6 +326,9 @@ export async function POST(request: NextRequest) {
     }
 
     console.log(`📧 Found ${subscriptions.length} subscribers for ${brand}`);
+    
+    // DEBUG: Log all emails we're about to process
+    console.log('📧 All subscribers found:', subscriptions.map(s => s.email));
 
     // More personal, less promotional subject line
     const emailSubject = `Matcha is available!!`;
@@ -343,85 +346,112 @@ export async function POST(request: NextRequest) {
             
             <!-- Simple Header -->
             <div style="margin-bottom: 30px;">
-              <h1 style="font-size: 20px; font-weight: 400; color: #333333; margin: 0;">Hi there,</h1>
+              <h2 style="color: #333333; margin: 0; font-size: 20px; font-weight: 500;">Hi there,</h2>
+              <p style="color: #666666; margin: 10px 0 0 0; font-size: 16px;">Good news about ${brand} - some products are available again:</p>
             </div>
-
-            <!-- Main Content -->
-            <div>
-              <p style="color: #555555; margin: 0 0 20px 0; font-size: 16px;">
-                Good news about ${brand} - some products are available again:
-              </p>
-
-              <!-- Simple Product List -->
-              <div style="margin: 25px 0;">
-                ${products.map(product => `
-                  <div style="margin-bottom: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
-                    <div style="font-weight: 500; color: #333333; font-size: 16px;">${product.name}</div>
-                    <div style="color: #666666; font-size: 14px; margin-top: 5px;">Available now</div>
-                  </div>
-                `).join('')}
-              </div>
+            
+            <!-- Simple Product List -->
+            <div style="margin: 25px 0;">
+              ${products.map(product => `
+                <div style="margin-bottom: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
+                  <div style="font-weight: 500; color: #333333; font-size: 16px;">${product.name}</div>
+                  <div style="color: #666666; font-size: 14px; margin-top: 5px;">Available now</div>
+                </div>
+              `).join('')}
             </div>
+          </div>
 
-            <!-- Simple Footer -->
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center;">
-              <p style="font-size: 12px; color: #888888; margin: 0;">
-                <a href="https://matcharestock.com/dashboard" style="color: #666666; text-decoration: underline;">
-                  Update preferences
-                </a>
-              </p>
-            </div>
+          <!-- Simple Footer -->
+          <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eeeeee; text-align: center;">
+            <p style="font-size: 12px; color: #888888; margin: 0;">
+              <a href="https://matcharestock.com/dashboard" style="color: #888888; text-decoration: none;">Update preferences</a>
+            </p>
+            <p style="font-size: 12px; color: #888888; margin: 10px 0 0 0;">Have a great day!</p>
           </div>
         </body>
       </html>
     `;
 
+    // Chunk subscribers into batches of 100 (Resend's batch limit)
+    const BATCH_SIZE = 100;
+    const chunks = [];
+    for (let i = 0; i < subscriptions.length; i += BATCH_SIZE) {
+      chunks.push(subscriptions.slice(i, i + BATCH_SIZE));
+    }
 
-    let emailsSent = 0;
-    let emailErrors = 0;
+    console.log(`📧 Splitting ${subscriptions.length} subscribers into ${chunks.length} batches of ${BATCH_SIZE}`);
 
-    for (const subscription of subscriptions) {
+    let totalEmailsSent = 0;
+    let totalEmailErrors = 0;
+    let batchResults = [];
+
+    // Process each batch
+    for (let batchIndex = 0; batchIndex < chunks.length; batchIndex++) {
+      const chunk = chunks[batchIndex];
+      console.log(`📧 Processing batch ${batchIndex + 1}/${chunks.length} with ${chunk.length} emails`);
+
       try {
-        const userEmail = subscription.email;
-        if (!userEmail) {
-          console.log('⚠️  Skipping subscription - no email found');
-          continue;
-        }
-
-
-        console.log(`📧 Sending restock notification to: ${userEmail}`);
-        console.log(`📧 Subject: ${emailSubject}`);
-        console.log(`📧 Products: ${products.map(p => p.name).join(', ')}`);
-        
-        const { data, error } = await resend.emails.send({
+        // Prepare batch email array
+        const batchEmails = chunk.map(subscription => ({
           from: 'MatchaRestock <notifications@updates.matcharestock.com>',
-          to: [userEmail],
+          to: [subscription.email],
           subject: emailSubject,
           html: emailHtml
-        });
+        }));
+
+        console.log(`📧 Sending batch ${batchIndex + 1} to:`, chunk.map(s => s.email));
+
+        // Send batch
+        const { data, error } = await resend.batch.send(batchEmails);
 
         if (error) {
-          console.error('❌ Resend error:', error);
-          throw error;
+          console.error(`❌ Batch ${batchIndex + 1} failed:`, error);
+          totalEmailErrors += chunk.length;
+          batchResults.push({
+            batch: batchIndex + 1,
+            status: 'failed',
+            count: chunk.length,
+            error: error.message
+          });
+        } else {
+          console.log(`✅ Batch ${batchIndex + 1} sent successfully:`, data);
+          totalEmailsSent += chunk.length;
+          batchResults.push({
+            batch: batchIndex + 1,
+            status: 'success',
+            count: chunk.length,
+            data: data
+          });
         }
 
-        console.log('✅ Email sent successfully:', data?.id);
+        // Add delay between batches to be safe (except for last batch)
+        if (batchIndex < chunks.length - 1) {
+          console.log('⏳ Waiting 1 second between batches...');
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
 
-        emailsSent++;
-      } catch (emailError) {
-        console.error('❌ Failed to send email:', emailError);
-        emailErrors++;
+      } catch (batchError) {
+        console.error(`❌ Batch ${batchIndex + 1} exception:`, batchError);
+        totalEmailErrors += chunk.length;
+        batchResults.push({
+          batch: batchIndex + 1,
+          status: 'exception',
+          count: chunk.length,
+          error: batchError instanceof Error ? batchError.message : String(batchError)
+        });
       }
     }
 
-    console.log(`✅ Brand notification complete: ${emailsSent} emails sent, ${emailErrors} errors`);
+    console.log(`✅ Brand notification complete: ${totalEmailsSent} emails sent, ${totalEmailErrors} errors`);
+    console.log('📊 Batch Results:', batchResults);
 
     return NextResponse.json({
       message: 'Restock notifications sent successfully',
       brand,
       products: products.map(p => p.name),
-      notified: emailsSent,
-      errors: emailErrors
+      notified: totalEmailsSent,
+      errors: totalEmailErrors,
+      batches: batchResults
     });
 
   } catch (error) {
