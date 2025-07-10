@@ -5,6 +5,8 @@ import { MetalButtonWrapper, MetalCircleButton } from "@/components/ui/metal-but
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
+import { Settings } from "lucide-react"
+import Image from "next/image"
 
 // landing page
 export default function LandingPage() {
@@ -15,6 +17,8 @@ export default function LandingPage() {
   
   const lastScrollY = useRef(0)
   const ticking = useRef(false)
+  const settingsRef = useRef<HTMLDivElement>(null)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -55,11 +59,23 @@ export default function LandingPage() {
       }
     }
 
+    // Click outside handler for mobile dropdown
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
+        setSettingsOpen(false)
+      }
+    }
+
     // Initial call to set correct state
     handleScroll()
     
     window.addEventListener('scroll', throttledHandleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', throttledHandleScroll)
+    document.addEventListener('mousedown', handleClickOutside)
+    
+    return () => {
+      window.removeEventListener('scroll', throttledHandleScroll)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   // Determine navigation classes based on state
@@ -128,44 +144,139 @@ export default function LandingPage() {
         {/* Header - Smart Navigation */}
         <header className={getHeaderClasses()}>
           <div className={getNavigationClasses()}>
-            {/* Logo */}
-            <div className="flex items-center space-x-2">
-              <span className="text-xl font-semibold font-diatype-mono text-gray-900">
-                matcharestock
-              </span>
+            {/* Mobile Layout */}
+            <div className="md:hidden w-full">
+              {!isAtTop ? (
+                // Scrolled down - show horizontal nav
+                <div className="flex items-center justify-between w-full">
+                  <Link href="/" className="flex items-center space-x-2">
+                    <span className="text-xl font-semibold font-diatype-mono text-gray-900">
+                      matcharestock
+                    </span>
+                  </Link>
+                  <div className="flex items-center space-x-4">
+                    <Link 
+                      href="#pricing" 
+                      className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                    >
+                      Pricing
+                    </Link>
+                    <Link 
+                      href="#questions" 
+                      className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                    >
+                      Contact
+                    </Link>
+                    <Link 
+                      href="/login" 
+                      className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                    >
+                      Log in
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                // At top - show logo with sign up button below and dropdown menu
+                <div className="flex flex-col space-y-4 w-full">
+                  <div className="flex items-center justify-between w-full">
+                    <div>
+                      <Link href="/" className="flex items-center space-x-2">
+                        <span className="text-xl font-semibold font-diatype-mono text-gray-900">
+                          matcharestock
+                        </span>
+                      </Link>
+                      <div className="mt-2">
+                        <Link href="/login?mode=signup">
+                          <MetalButtonWrapper
+                            title="Sign up"
+                            isSubscribed={false}
+                            icon={<ArrowUpRight className="w-4 h-4" />}
+                          />
+                        </Link>
+                      </div>
+                    </div>
+                    <div className="relative" ref={settingsRef}>
+                      <button
+                        onClick={() => setSettingsOpen(!settingsOpen)}
+                        className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+                      >
+                        <Settings className="h-4 w-4" />
+                      </button>
+                      
+                      {settingsOpen && (
+                        <div className="absolute right-0 mt-2 w-48 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
+                          <div className="py-2">
+                            <Link 
+                              href="#pricing" 
+                              className="block px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                              onClick={() => setSettingsOpen(false)}
+                            >
+                              Pricing
+                            </Link>
+                            <Link 
+                              href="#questions" 
+                              className="block px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                              onClick={() => setSettingsOpen(false)}
+                            >
+                              Contact
+                            </Link>
+                            <Link 
+                              href="/login" 
+                              className="block px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                              onClick={() => setSettingsOpen(false)}
+                            >
+                              Log in
+                            </Link>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
-            
-            {/* Center Navigation */}
-            <nav className="flex items-center space-x-8">
-              <Link 
-                href="#pricing" 
-                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-              >
-                Pricing
-              </Link>
-              <Link 
-                href="#questions" 
-                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-              >
-                Contact
-              </Link>
-            </nav>
-            
-            {/* Right Side - Auth Buttons */}
-            <div className="flex items-center space-x-6">
-              <Link 
-                href="/login" 
-                className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-              >
-                Log in
-              </Link>
-              <Link href="/login?mode=signup">
-                <MetalButtonWrapper
-                  title="Sign up"
-                  isSubscribed={false}
-                  icon={<ArrowUpRight className="w-4 h-4" />}
-                />
-              </Link>
+
+            {/* Desktop Layout */}
+            <div className="hidden md:flex items-center justify-between w-full">
+              {/* Logo */}
+              <div className="flex items-center space-x-2">
+                <span className="text-xl font-semibold font-diatype-mono text-gray-900">
+                  matcharestock
+                </span>
+              </div>
+              
+              {/* Center Navigation */}
+              <nav className="flex items-center space-x-8">
+                <Link 
+                  href="#pricing" 
+                  className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                >
+                  Pricing
+                </Link>
+                <Link 
+                  href="#questions" 
+                  className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                >
+                  Contact
+                </Link>
+              </nav>
+              
+              {/* Right Side - Auth Buttons */}
+              <div className="flex items-center space-x-6">
+                <Link 
+                  href="/login" 
+                  className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                >
+                  Log in
+                </Link>
+                <Link href="/login?mode=signup">
+                  <MetalButtonWrapper
+                    title="Sign up"
+                    isSubscribed={false}
+                    icon={<ArrowUpRight className="w-4 h-4" />}
+                  />
+                </Link>
+              </div>
             </div>
           </div>
         </header>
@@ -194,10 +305,10 @@ export default function LandingPage() {
               <div className="relative z-10">
                 {/* Hero Section */}
                 <div className="mb-16">
-                  <h1 className="text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
+                  <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
                     Real-time notifications for your favorite matcha brands.
                   </h1>
-                  <p className="text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
+                  <p className="text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
                     Never miss a restock again.
                   </p>
                 </div>
@@ -221,40 +332,82 @@ export default function LandingPage() {
                       <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Subscribe</h3>
                       <p className="text-gray-500 font-diatype-thin">Choose your desired brands and sign up for notifications.</p>
                     </div>
+                    
                     <div className="text-center">
-                      {/* Layered Images - Swapped positions: Sayaka and Wako */}
-                      <div className="relative mb-4 flex justify-center h-40">
-                        {/* Sayaka image - now bottom layer */}
-                        <img 
-                          src="/images/sayaka.png" 
-                          alt="Sayaka matcha product" 
-                          className="absolute z-10"
-                          style={{ 
-                            maxHeight: '160px',
-                            top: '-40px',
-                            left: '50%',
-                            transform: 'translateX(-30%)'
-                          }}
-                        />
-                        {/* Wako image - now top layer */}
-                        <img 
-                          src="/images/wako.png" 
-                          alt="Wako matcha product" 
-                          className="absolute z-30"
-                          style={{ 
-                            maxHeight: '140px',
-                            top: '0px',
-                            left: '50%',
-                            transform: 'translateX(-50%)'
-                          }}
-                        />
+                      {/* Mobile Layout - Text first, then images */}
+                      <div className="md:hidden space-y-4">
+                        <div className="flex justify-center">
+                          <MetalCircleButton number="2" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-black font-diatype">Monitor</h3>
+                        <p className="text-gray-500 font-diatype-thin mb-6">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
+                        
+                        {/* Images positioned after text on mobile */}
+                        <div className="flex justify-center h-40">
+                          {/* Sayaka image - now bottom layer */}
+                          <img 
+                            src="/images/sayaka.png" 
+                            alt="Sayaka matcha product" 
+                            className="absolute z-10"
+                            style={{ 
+                              maxHeight: '160px',
+                              top: '-40px',
+                              left: '50%',
+                              transform: 'translateX(-30%)'
+                            }}
+                          />
+                          {/* Wako image - now top layer */}
+                          <img 
+                            src="/images/wako.png" 
+                            alt="Wako matcha product" 
+                            className="absolute z-30"
+                            style={{ 
+                              maxHeight: '140px',
+                              top: '0px',
+                              left: '50%',
+                              transform: 'translateX(-50%)'
+                            }}
+                          />
+                        </div>
                       </div>
-                      <div className="flex justify-center mb-4">
-                        <MetalCircleButton number="2" />
+
+                      {/* Desktop Layout - Original order */}
+                      <div className="hidden md:block">
+                        {/* Layered Images - Swapped positions: Sayaka and Wako */}
+                        <div className="relative mb-4 flex justify-center h-40">
+                          {/* Sayaka image - now bottom layer */}
+                          <img 
+                            src="/images/sayaka.png" 
+                            alt="Sayaka matcha product" 
+                            className="absolute z-10"
+                            style={{ 
+                              maxHeight: '160px',
+                              top: '-40px',
+                              left: '50%',
+                              transform: 'translateX(-30%)'
+                            }}
+                          />
+                          {/* Wako image - now top layer */}
+                          <img 
+                            src="/images/wako.png" 
+                            alt="Wako matcha product" 
+                            className="absolute z-30"
+                            style={{ 
+                              maxHeight: '140px',
+                              top: '0px',
+                              left: '50%',
+                              transform: 'translateX(-50%)'
+                            }}
+                          />
+                        </div>
+                        <div className="flex justify-center mb-4">
+                          <MetalCircleButton number="2" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
+                        <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
                       </div>
-                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
-                      <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
                     </div>
+                    
                     <div className="text-center">
                       {/* Figma Mockup Image */}
                       <div className="mb-4 flex justify-center h-40">

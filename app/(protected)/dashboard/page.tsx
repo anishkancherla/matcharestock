@@ -218,61 +218,128 @@ export default function DashboardPage() {
       )}
       
       {/* Header - always show but with different styling */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-6 lg:px-12">
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-semibold text-gray-900 font-diatype-mono">matcharestock</span>
-        </Link>
-        
-        {/* User Info & Actions */}
-        <div className="flex items-center space-x-4">
-          {user && (
-            <span className="text-gray-700 font-diatype">{user.email}</span>
-          )}
-          
-          {/* Settings Dropdown - only show when subscribed */}
-          {user && user.isSubscribed && (
-            <div className="relative" ref={settingsRef}>
-              <button
-                onClick={() => setSettingsOpen(!settingsOpen)}
-                className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
-              >
-                <Settings className="h-4 w-4" />
-              </button>
-              
-              {settingsOpen && (
-                <div className="absolute -right-16 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
-                  <div className="py-2">
-                    <button
-                      onClick={async () => {
-                        try {
-                          await onManageSubscription()
-                          setSettingsOpen(false)
-                        } catch (error) {
-                          setSettingsOpen(false)
-                        }
-                      }}
-                      className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
-                    >
-                      Manage Subscription
-                    </button>
-                  </div>
+      <header className="relative z-10 px-6 py-6 lg:px-12">
+        {/* Mobile Layout */}
+        <div className="md:hidden">
+          <div className="flex items-start justify-between">
+            {/* Logo and Email */}
+            <div>
+              <Link href="/" className="text-xl font-semibold text-gray-900 font-diatype-mono">
+                matcharestock
+              </Link>
+              {user && (
+                <div className="text-sm text-gray-700 font-diatype mt-1">
+                  {user.email}
                 </div>
               )}
             </div>
-          )}
+            
+            {/* Right side buttons */}
+            <div className="flex items-center space-x-2">
+              {/* Settings Dropdown - only show when subscribed */}
+              {user && user.isSubscribed && (
+                <div className="relative" ref={settingsRef}>
+                  <button
+                    onClick={() => setSettingsOpen(!settingsOpen)}
+                    className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+                  >
+                    <Settings className="h-4 w-4" />
+                  </button>
+                  
+                  {settingsOpen && (
+                    <div className="absolute -right-4 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
+                      <div className="py-2">
+                        <button
+                          onClick={async () => {
+                            try {
+                              await onManageSubscription()
+                              setSettingsOpen(false)
+                            } catch (error) {
+                              setSettingsOpen(false)
+                            }
+                          }}
+                          className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                        >
+                          Manage Subscription
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
 
-          {/* Sign Out Icon - always show with appropriate styling */}
-          <button 
-            onClick={handleLogout}
-            className={`p-2 text-gray-900 rounded-lg transition-colors ${
-              user && user.isSubscribed 
-                ? 'backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30' 
-                : 'border border-gray-300 hover:bg-gray-100'
-            }`}
-          >
-            <LogOut className="h-4 w-4" />
-          </button>
+              {/* Sign Out Icon */}
+              <button 
+                onClick={handleLogout}
+                className={`p-2 text-gray-900 rounded-lg transition-colors ${
+                  user && user.isSubscribed 
+                    ? 'backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30' 
+                    : 'border border-gray-300 hover:bg-gray-100'
+                }`}
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Layout */}
+        <div className="hidden md:flex items-center justify-between">
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2">
+            <span className="text-xl font-semibold text-gray-900 font-diatype-mono">matcharestock</span>
+          </Link>
+          
+          {/* User Info & Actions */}
+          <div className="flex items-center space-x-4">
+            {user && (
+              <span className="text-gray-700 font-diatype">{user.email}</span>
+            )}
+            
+            {/* Settings Dropdown - only show when subscribed */}
+            {user && user.isSubscribed && (
+              <div className="relative" ref={settingsRef}>
+                <button
+                  onClick={() => setSettingsOpen(!settingsOpen)}
+                  className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+                >
+                  <Settings className="h-4 w-4" />
+                </button>
+                
+                {settingsOpen && (
+                  <div className="absolute -right-16 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={async () => {
+                          try {
+                            await onManageSubscription()
+                            setSettingsOpen(false)
+                          } catch (error) {
+                            setSettingsOpen(false)
+                          }
+                        }}
+                        className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
+                      >
+                        Manage Subscription
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Sign Out Icon */}
+            <button 
+              onClick={handleLogout}
+              className={`p-2 text-gray-900 rounded-lg transition-colors ${
+                user && user.isSubscribed 
+                  ? 'backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30' 
+                  : 'border border-gray-300 hover:bg-gray-100'
+              }`}
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -280,7 +347,11 @@ export default function DashboardPage() {
       <main className={`relative z-10 ${user && user.isSubscribed ? 'px-6 lg:px-12 pb-12' : ''}`}>
         <div className={`${user && user.isSubscribed ? 'container mx-auto max-w-6xl' : ''}`}>
           {user && !user.isSubscribed ? (
-            <PricingCard onSubscribe={onRequestSubscription} />
+            <PricingCard 
+              onSubscribe={onRequestSubscription} 
+              userEmail={user.email}
+              onExit={() => router.push('/')}
+            />
           ) : (
             <div className="space-y-8">
               {/* Brand Cards */}
