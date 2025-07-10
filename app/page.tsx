@@ -302,7 +302,7 @@ export default function LandingPage() {
                     Real-time notifications for your favorite matcha brands.
                   </h1>
                   <p className="hidden md:block text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
-                    Never miss a restock again.
+                    Never miss a restock again!
                   </p>
                 </div>
 
