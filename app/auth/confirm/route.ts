@@ -30,6 +30,14 @@ export async function GET(request: Request) {
       
       if (data.user) {
         console.log('✅ User verified:', data.user.id)
+        
+        // For password recovery, redirect to update password page
+        if (type === 'recovery') {
+          console.log('🔑 Password recovery confirmed, redirecting to update password page')
+          return NextResponse.redirect(`${origin}/auth/update-password`)
+        }
+        
+        // For other confirmations (email signup), redirect to dashboard or next
         return NextResponse.redirect(`${origin}${next}`)
       }
     } catch (err) {
