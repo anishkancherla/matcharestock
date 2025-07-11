@@ -83,17 +83,34 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
           identities: data.user?.identities?.length
         })
         
-        if (data.user && !data.session) {
+        // Check if this might be an existing user
+        if (data.user && !data.session && data.user.identities && data.user.identities.length > 0) {
+          // User exists but no session was created - likely already registered
+          const hasGoogleIdentity = data.user.identities.some((identity: any) => identity.provider === 'google')
+          
+          if (hasGoogleIdentity) {
+            toast("Account already exists!", {
+              description: "This email is registered with Google. Please use 'Continue with Google' to sign in.",
+            })
+          } else {
+            toast("Account already exists!", {
+              description: "This email is already registered. Please try logging in instead.",
+            })
+          }
+        } else if (data.user && !data.session) {
+          // New user signup - needs email confirmation
           toast("Check your email!", {
             description: "We sent you a confirmation link to complete your signup.",
           })
         } else if (data.user && data.session) {
+          // New user signup with immediate session (auto-confirmed)
           toast("Account created!", {
             description: "Welcome to MatchaRestock! Redirecting to dashboard...",
           })
 
           setTimeout(() => router.push('/dashboard'), 1000)
         } else {
+          // Fallback case
           toast("Signup initiated!", {
             description: "Please check your email for confirmation.",
           })
@@ -119,23 +136,32 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
       let errorDescription = "Something went wrong. Please try again."
       
       if (error.message) {
-
         if (error.message.includes("User already registered") || 
             error.message.includes("already been registered")) {
           errorTitle = "Account Already Exists"
-          errorDescription = "This email is already registered. If you signed up with Google, please choose 'Continue with Google' to access your account."
+          if (isSignUp) {
+            errorDescription = "This email is already registered. Please try logging in instead, or use 'Continue with Google' if you signed up with Google."
+          } else {
+            errorDescription = "This email is already registered. If you signed up with Google, please choose 'Continue with Google' to access your account."
+          }
         }
-
         else if (error.message.includes("Invalid login credentials")) {
-          errorTitle = "Account Found with Different Sign-In Method"
-          errorDescription = "Looks like this email is already registered through Google Sign-In. Please choose 'Continue with Google' to access your account."
+          if (isSignUp) {
+            errorTitle = "Account Already Exists" 
+            errorDescription = "This email is already registered with a different password. Please try logging in instead."
+          } else {
+            errorTitle = "Incorrect Password"
+            errorDescription = "The password you entered is incorrect. If you signed up with Google, please use 'Continue with Google' instead."
+          }
         }
-
         else if (error.message.includes("Email not confirmed")) {
           errorTitle = "Email Not Confirmed"
           errorDescription = "Please check your email and click the confirmation link before signing in."
         }
-
+        else if (error.message.includes("signup_disabled") || error.message.includes("Signup disabled")) {
+          errorTitle = "Signup Temporarily Disabled"
+          errorDescription = "Account creation is temporarily disabled. Please try again later."
+        }
         else {
           errorDescription = error.message
         }
