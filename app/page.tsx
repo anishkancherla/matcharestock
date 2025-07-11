@@ -361,7 +361,7 @@ export default function LandingPage() {
                           <MetalCircleButton number="2" />
                         </div>
                         <h3 className="text-lg font-semibold text-black font-diatype">Monitor</h3>
-                        <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
+                        <p className="text-gray-500 font-diatype-thin">We continuously track stock status across your favorite matcha retailers.</p>
                       </div>
 
                       {/* Desktop Layout - Original order */}
@@ -609,7 +609,7 @@ export default function LandingPage() {
                   2. How fast are the alerts?
                 </h3>
                 <p className="text-gray-300 font-diatype-thin leading-relaxed">
-                  Emails land within 1–2 minutes of the restock.
+                  Emails land within 1 minute of the restock!
                 </p>
               </div>
               
@@ -681,7 +681,7 @@ export default function LandingPage() {
                 </div>
                 
                 <p className="text-sm text-white font-diatype-thin">
-                  © 2024 MatchaRestock. All rights reserved.
+                  © 2025 MatchaRestock. All rights reserved.
                 </p>
                 <p className="text-xs text-gray-400 font-diatype-thin mt-2 leading-relaxed">
                   MatchaRestock is an independent service—it is not affiliated, endorsed, or sponsored by Ippodo, Marukyu Koyamaen, or any other brand. All product names, logos, and trademarks remain the property of their respective owners.
