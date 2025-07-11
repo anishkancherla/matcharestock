@@ -8,6 +8,7 @@ import { Label } from "./ui/label"
 import { toast } from "sonner"
 import { Loader2, Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 
 interface AuthFormProps {
   mode?: 'signin' | 'signup'
@@ -202,6 +203,18 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
             </button>
           </div>
         </div>
+
+        {/* Forgot Password Link - only show for sign in */}
+        {!isSignUp && (
+          <div className="text-right">
+            <Link
+              href="/auth/reset-password"
+              className="text-sm text-sage-700 hover:text-sage-800 font-medium"
+            >
+              Forgot password?
+            </Link>
+          </div>
+        )}
 
         <Button 
           type="submit"

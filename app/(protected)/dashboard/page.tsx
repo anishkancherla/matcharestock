@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
 import PricingCard from "@/components/pricing-card"
 import BrandCard from "@/components/brand-card"
@@ -22,9 +22,7 @@ export default function DashboardPage() {
 
   const [subscriptions, setSubscriptions] = useState<string[]>([])
   const [subscriptionsLoading, setSubscriptionsLoading] = useState(true)
-  const [settingsOpen, setSettingsOpen] = useState(false)
   const [loggingOut, setLoggingOut] = useState(false)
-  const settingsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const loadSubscriptions = async () => {
@@ -49,19 +47,7 @@ export default function DashboardPage() {
     loadSubscriptions()
   }, [user])
 
-  // Handle clicking outside settings dropdown to close it
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
-        setSettingsOpen(false)
-      }
-    }
 
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
 
   // Handle Stripe checkout success/cancel
   useEffect(() => {
@@ -236,36 +222,14 @@ export default function DashboardPage() {
             
             {/* Right side buttons */}
             <div className="flex items-center space-x-2">
-              {/* Settings Dropdown - only show when subscribed */}
+              {/* Settings Link - only show when subscribed */}
               {user && user.isSubscribed && (
-                <div className="relative" ref={settingsRef}>
-                  <button
-                    onClick={() => setSettingsOpen(!settingsOpen)}
-                    className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
-                  >
-                    <Settings className="h-4 w-4" />
-                  </button>
-                  
-                  {settingsOpen && (
-                    <div className="absolute -right-4 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
-                      <div className="py-2">
-                        <button
-                          onClick={async () => {
-                            try {
-                              await onManageSubscription()
-                              setSettingsOpen(false)
-                            } catch (error) {
-                              setSettingsOpen(false)
-                            }
-                          }}
-                          className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
-                        >
-                          Manage Subscription
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Link
+                  href="/settings"
+                  className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+                >
+                  <Settings className="h-4 w-4" />
+                </Link>
               )}
 
               {/* Sign Out Icon */}
@@ -296,36 +260,14 @@ export default function DashboardPage() {
               <span className="text-gray-700 font-diatype">{user.email}</span>
             )}
             
-            {/* Settings Dropdown - only show when subscribed */}
+            {/* Settings Link - only show when subscribed */}
             {user && user.isSubscribed && (
-              <div className="relative" ref={settingsRef}>
-                <button
-                  onClick={() => setSettingsOpen(!settingsOpen)}
-                  className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
-                >
-                  <Settings className="h-4 w-4" />
-                </button>
-                
-                {settingsOpen && (
-                  <div className="absolute -right-16 mt-2 w-56 backdrop-blur-xl bg-white/90 border border-white/40 rounded-lg shadow-lg z-50">
-                    <div className="py-2">
-                      <button
-                        onClick={async () => {
-                          try {
-                            await onManageSubscription()
-                            setSettingsOpen(false)
-                          } catch (error) {
-                            setSettingsOpen(false)
-                          }
-                        }}
-                        className="flex items-center justify-center w-full px-4 py-2 text-gray-700 hover:bg-white/50 font-diatype transition-colors"
-                      >
-                        Manage Subscription
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Link
+                href="/settings"
+                className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+              >
+                <Settings className="h-4 w-4" />
+              </Link>
             )}
 
             {/* Sign Out Icon */}

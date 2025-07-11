@@ -15,6 +15,9 @@ export interface AuthContextType {
   signInWithEmail: (email: string, password: string) => Promise<any>
   signUpWithEmail: (email: string, password: string) => Promise<any>
   logout: () => void
+  deleteAccount: () => Promise<void>
+  resetPassword: (email: string) => Promise<void>
+  updatePassword: (newPassword: string) => Promise<void>
 }
 
 export interface Blend {

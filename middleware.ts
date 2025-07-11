@@ -31,7 +31,8 @@ export async function middleware(request: NextRequest) {
   const { data: { user }, error } = await supabase.auth.getUser()
 
   // Protect dashboard and other protected routes
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
+  if (request.nextUrl.pathname.startsWith('/dashboard') || 
+      request.nextUrl.pathname.startsWith('/settings')) {
     if (!user || error) {
       // Redirect to login if not authenticated
       const redirectUrl = new URL('/login', request.url)
@@ -57,11 +58,13 @@ export const config = {
     /*
      * Match request paths for authentication and protected routes:
      * - /dashboard (protected)
+     * - /settings (protected)
      * - /login (auth)
      * - /auth/ (auth callbacks)
      * Exclude static files and API routes
      */
     '/dashboard/:path*',
+    '/settings/:path*',
     '/login',
     '/auth/:path*',
   ],

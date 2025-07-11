@@ -199,6 +199,65 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }
 
+  const deleteAccount = async () => {
+    const response = await fetch('/api/delete-account', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.details || errorData.error || 'Failed to delete account')
+    }
+
+    // Clear user state after successful deletion
+    setUser(null)
+    
+    // Clear any local storage items
+    localStorage.removeItem('access_code_entered')
+  }
+
+  const resetPassword = async (email: string) => {
+    const getCanonicalOrigin = () => {
+      const { protocol, hostname, port } = window.location
+      
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return `${protocol}//${hostname}${port ? `:${port}` : ''}`
+      }
+      
+      if (hostname === 'www.matcharestock.com') {
+        return `${protocol}//matcharestock.com`
+      }
+      
+      return window.location.origin
+    }
+    
+    const canonicalOrigin = getCanonicalOrigin()
+    const redirectUrl = `${canonicalOrigin}/auth/update-password`
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    })
+    
+    if (error) {
+      console.error('Reset password error:', error)
+      throw error
+    }
+  }
+
+  const updatePassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ 
+      password: newPassword 
+    })
+    
+    if (error) {
+      console.error('Update password error:', error)
+      throw error
+    }
+  }
+
   const value = {
     user,
     loading,
@@ -206,6 +265,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signInWithEmail,
     signUpWithEmail,
     logout,
+    deleteAccount,
+    resetPassword,
+    updatePassword,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
