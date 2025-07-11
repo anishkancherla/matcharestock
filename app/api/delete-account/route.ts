@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
+import { createClient as createAdminClient } from '@supabase/supabase-js'
 import Stripe from 'stripe'
 
 export async function DELETE() {
   try {
     console.log('🗑️ Delete account API called')
     
-    // Initialize Stripe
+    // Check required environment variables
     if (!process.env.STRIPE_SECRET_KEY) {
       throw new Error('STRIPE_SECRET_KEY is not configured')
+    }
+    
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      throw new Error('SUPABASE_SERVICE_ROLE_KEY is not configured')
     }
     
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -16,6 +21,12 @@ export async function DELETE() {
     })
     
     const supabase = await createClient()
+    
+    // Create admin client for user deletion (requires service role key)
+    const adminSupabase = createAdminClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
     
     // Get the authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -86,7 +97,7 @@ export async function DELETE() {
     // Step 4: Delete the user from Supabase Auth
     // Note: This will cascade delete all auth-related data (sessions, refresh_tokens, etc.)
     console.log('🗑️ Deleting user from Supabase Auth')
-    const { error: deleteUserError } = await supabase.auth.admin.deleteUser(user.id)
+    const { error: deleteUserError } = await adminSupabase.auth.admin.deleteUser(user.id)
 
     if (deleteUserError) {
       console.error('❌ Error deleting user from Supabase Auth:', deleteUserError)
