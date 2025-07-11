@@ -41,12 +41,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Redirect authenticated users away from auth pages, but allow auth callbacks and password reset to complete
+  // Redirect authenticated users away from auth pages, but allow auth callbacks to complete
   if (user && !error) {
     if (request.nextUrl.pathname.startsWith('/login') || 
         (request.nextUrl.pathname.startsWith('/auth/') && 
-         !request.nextUrl.pathname.startsWith('/auth/callback') &&
-         !request.nextUrl.pathname.startsWith('/auth/update-password'))) {
+         !request.nextUrl.pathname.startsWith('/auth/callback'))) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }

@@ -18,6 +18,8 @@ export interface AuthContextType {
   deleteAccount: () => Promise<void>
   resetPassword: (email: string) => Promise<void>
   updatePassword: (newPassword: string) => Promise<void>
+  showPasswordReset: boolean
+  setShowPasswordReset: (show: boolean) => void
 }
 
 export interface Blend {

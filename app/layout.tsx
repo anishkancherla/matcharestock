@@ -4,6 +4,7 @@ import "./globals.css"
 import { AuthProvider } from "@/contexts/auth-provider"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
+import PasswordResetModal from "@/components/password-reset-modal"
 
 export const metadata: Metadata = {
   title: "MatchaRestock",
@@ -30,6 +31,7 @@ export default function RootLayout({
           <div className="flex flex-col h-full">
             <main className="flex-1">{children}</main>
           </div>
+          <PasswordResetModal />
           <Toaster />
         </AuthProvider>
       </body>

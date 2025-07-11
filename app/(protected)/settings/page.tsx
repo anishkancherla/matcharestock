@@ -25,44 +25,19 @@ import DeleteAccountDialog from "@/components/delete-account-dialog"
 type TabType = "profile" | "security" | "privacy" | "billing"
 
 export default function SettingsPage() {
-  const { user, resetPassword } = useAuth()
+  const { user } = useAuth()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<TabType>("profile")
   const [displayName, setDisplayName] = useState("")
-  const [resetEmail, setResetEmail] = useState("")
-  const [isResettingPassword, setIsResettingPassword] = useState(false)
-  const [passwordResetSent, setPasswordResetSent] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
   useEffect(() => {
     if (user?.user_metadata?.display_name) {
       setDisplayName(user.user_metadata.display_name)
     }
-    if (user?.email) {
-      setResetEmail(user.email)
-    }
   }, [user])
 
-  const handleResetPassword = async () => {
-    if (!resetEmail) return
 
-    try {
-      setIsResettingPassword(true)
-      await resetPassword(resetEmail)
-      setPasswordResetSent(true)
-      
-      toast("Reset link sent!", {
-        description: "Check your email for a password reset link.",
-      })
-    } catch (error) {
-      console.error('Error sending reset email:', error)
-      toast("Error", {
-        description: error instanceof Error ? error.message : "Failed to send reset email.",
-      })
-    } finally {
-      setIsResettingPassword(false)
-    }
-  }
 
   const onManageSubscription = async () => {
     try {
@@ -161,48 +136,22 @@ export default function SettingsPage() {
               <div>
                 <h3 className="text-lg font-semibold text-black mb-4">Password</h3>
                 
-                {!passwordResetSent ? (
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="resetEmail" className="text-black">Email Address</Label>
-                      <Input
-                        id="resetEmail"
-                        type="email"
-                        value={resetEmail}
-                        onChange={(e) => setResetEmail(e.target.value)}
-                        className="mt-1 bg-white border-black text-black"
-                      />
-                    </div>
-
+                <div className="bg-white border border-black rounded-lg p-4">
+                  <h4 className="font-medium text-black mb-2">Reset Password</h4>
+                  <p className="text-sm text-black mb-4">
+                    To reset your password, use the "Forgot password?" link on the login page. 
+                    You'll receive an email with instructions to update your password.
+                  </p>
+                  <Link href="/auth/reset-password">
                     <Button
-                      onClick={handleResetPassword}
-                      disabled={isResettingPassword}
-                      className="bg-black hover:bg-gray-800 text-white"
-                    >
-                      {isResettingPassword ? "Sending..." : "Send Password Reset Link"}
-                    </Button>
-                    
-                    <p className="text-sm text-black">
-                      We'll send you an email with a link to reset your password.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-white border border-black rounded-lg p-4">
-                    <h4 className="font-semibold text-black mb-2">Reset link sent!</h4>
-                    <p className="text-sm text-black mb-3">
-                      We've sent a password reset link to <strong>{resetEmail}</strong>. 
-                      Click the link in your email to reset your password.
-                    </p>
-                    <Button
-                      onClick={() => setPasswordResetSent(false)}
                       variant="outline"
-                      size="sm"
                       className="border-black text-black hover:bg-gray-100"
                     >
-                      Send Another Link
+                      <Lock className="h-4 w-4 mr-2" />
+                      Reset Password
                     </Button>
-                  </div>
-                )}
+                  </Link>
+                </div>
               </div>
             )}
 

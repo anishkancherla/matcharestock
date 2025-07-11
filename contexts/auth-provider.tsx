@@ -11,6 +11,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AppUser | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showPasswordReset, setShowPasswordReset] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -29,6 +30,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('Auth state change:', event)
+        
+        if (event === 'PASSWORD_RECOVERY') {
+          console.log('Password recovery event detected')
+          setShowPasswordReset(true)
+        }
+        
         if (session?.user) {
           const appUser = await createAppUser(session.user)
           setUser(appUser)
@@ -235,7 +243,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     
     const canonicalOrigin = getCanonicalOrigin()
-    const redirectUrl = `${canonicalOrigin}/auth/update-password`
+    // Redirect to login page - this is more reliable than custom pages
+    const redirectUrl = `${canonicalOrigin}/login`
     
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
@@ -268,6 +277,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     deleteAccount,
     resetPassword,
     updatePassword,
+    showPasswordReset,
+    setShowPasswordReset,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
