@@ -23,6 +23,7 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
   const [showPassword, setShowPassword] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [acceptTerms, setAcceptTerms] = useState(false)
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false)
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth()
   const router = useRouter()
 
@@ -83,32 +84,22 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
           identities: data.user?.identities?.length
         })
         
-        // Check if this might be an existing user
-        if (data.user && !data.session && data.user.identities && data.user.identities.length > 0) {
-          // User exists but no session was created - likely already registered
-          const hasGoogleIdentity = data.user.identities.some((identity: any) => identity.provider === 'google')
-          
-          if (hasGoogleIdentity) {
-            toast("Account already exists!", {
-              description: "This email is registered with Google. Please use 'Continue with Google' to sign in.",
-            })
-          } else {
-            toast("Account already exists!", {
-              description: "This email is already registered. Please try logging in instead.",
-            })
-          }
-        } else if (data.user && !data.session) {
-          // New user signup - needs email confirmation
-          toast("Check your email!", {
-            description: "We sent you a confirmation link to complete your signup.",
-          })
-        } else if (data.user && data.session) {
+        if (data.user && data.session) {
           // New user signup with immediate session (auto-confirmed)
           toast("Account created!", {
             description: "Welcome to MatchaRestock! Redirecting to dashboard...",
           })
 
           setTimeout(() => router.push('/dashboard'), 1000)
+        } else if (data.user && !data.session) {
+          // New user signup - needs email confirmation
+          setEmail("")
+          setPassword("")
+          setIsLoading(false)
+          
+          // Show email confirmation screen instead of just a toast
+          setShowEmailConfirmation(true)
+          return
         } else {
           // Fallback case
           toast("Signup initiated!", {
@@ -173,6 +164,42 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Show email confirmation screen if signup was successful
+  if (showEmailConfirmation) {
+    return (
+      <div className="space-y-6 text-center">
+        <div className="mb-8">
+          <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 7.89a2 2 0 002.83 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Check your email</h2>
+          <p className="text-gray-600 max-w-md mx-auto">
+            We've sent a confirmation link to your email address. Click the link to verify your account and start getting restock alerts!
+          </p>
+        </div>
+
+        <div className="bg-gray-50 rounded-lg p-4 text-left">
+          <h3 className="font-medium text-gray-900 mb-2">Next steps:</h3>
+          <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+            <li>Check your email inbox (and spam folder)</li>
+            <li>Click the confirmation link in the email</li>
+            <li>You'll be redirected back here to access your dashboard</li>
+          </ol>
+        </div>
+
+        <Button 
+          onClick={() => setShowEmailConfirmation(false)}
+          variant="outline"
+          className="w-full"
+        >
+          Back to sign up
+        </Button>
+      </div>
+    )
   }
 
   return (
