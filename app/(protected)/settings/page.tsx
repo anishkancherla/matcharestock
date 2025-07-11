@@ -116,25 +116,6 @@ export default function SettingsPage() {
                     Your email address cannot be changed
                   </p>
                 </div>
-
-                <div>
-                  <Label htmlFor="displayName" className="text-black">Display Name (Optional)</Label>
-                  <Input
-                    id="displayName"
-                    type="text"
-                    value={displayName}
-                    onChange={(e) => setDisplayName(e.target.value)}
-                    placeholder="Enter your display name"
-                    className="mt-1 bg-white border-black text-black placeholder:text-gray-500"
-                  />
-                  <p className="mt-1 text-xs text-black">
-                    This is how you'll appear to other users
-                  </p>
-                </div>
-
-                <Button className="bg-black hover:bg-gray-800 text-white">
-                  Save Changes
-                </Button>
               </div>
             </div>
 
@@ -175,52 +156,55 @@ export default function SettingsPage() {
       case "security":
         return (
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-black mb-4">Password</h3>
-              
-              {!passwordResetSent ? (
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="resetEmail" className="text-black">Email Address</Label>
-                    <Input
-                      id="resetEmail"
-                      type="email"
-                      value={resetEmail}
-                      onChange={(e) => setResetEmail(e.target.value)}
-                      className="mt-1 bg-white border-black text-black"
-                    />
-                  </div>
+            {/* Only show password section for email/password users, not Google OAuth users */}
+            {!(user?.app_metadata?.providers?.includes('google') || user?.identities?.some(i => i.provider === 'google')) && (
+              <div>
+                <h3 className="text-lg font-semibold text-black mb-4">Password</h3>
+                
+                {!passwordResetSent ? (
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="resetEmail" className="text-black">Email Address</Label>
+                      <Input
+                        id="resetEmail"
+                        type="email"
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        className="mt-1 bg-white border-black text-black"
+                      />
+                    </div>
 
-                  <Button
-                    onClick={handleResetPassword}
-                    disabled={isResettingPassword}
-                    className="bg-black hover:bg-gray-800 text-white"
-                  >
-                    {isResettingPassword ? "Sending..." : "Send Password Reset Link"}
-                  </Button>
-                  
-                  <p className="text-sm text-black">
-                    We'll send you an email with a link to reset your password.
-                  </p>
-                </div>
-              ) : (
-                <div className="bg-white border border-black rounded-lg p-4">
-                  <h4 className="font-semibold text-black mb-2">Reset link sent!</h4>
-                  <p className="text-sm text-black mb-3">
-                    We've sent a password reset link to <strong>{resetEmail}</strong>. 
-                    Click the link in your email to reset your password.
-                  </p>
-                  <Button
-                    onClick={() => setPasswordResetSent(false)}
-                    variant="outline"
-                    size="sm"
-                    className="border-black text-black hover:bg-gray-100"
-                  >
-                    Send Another Link
-                  </Button>
-                </div>
-              )}
-            </div>
+                    <Button
+                      onClick={handleResetPassword}
+                      disabled={isResettingPassword}
+                      className="bg-black hover:bg-gray-800 text-white"
+                    >
+                      {isResettingPassword ? "Sending..." : "Send Password Reset Link"}
+                    </Button>
+                    
+                    <p className="text-sm text-black">
+                      We'll send you an email with a link to reset your password.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-white border border-black rounded-lg p-4">
+                    <h4 className="font-semibold text-black mb-2">Reset link sent!</h4>
+                    <p className="text-sm text-black mb-3">
+                      We've sent a password reset link to <strong>{resetEmail}</strong>. 
+                      Click the link in your email to reset your password.
+                    </p>
+                    <Button
+                      onClick={() => setPasswordResetSent(false)}
+                      variant="outline"
+                      size="sm"
+                      className="border-black text-black hover:bg-gray-100"
+                    >
+                      Send Another Link
+                    </Button>
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="border-t border-black pt-6">
               <h3 className="text-lg font-semibold text-black mb-4">Account Actions</h3>
@@ -252,7 +236,7 @@ export default function SettingsPage() {
                 Learn about how we handle your data and understand your rights.
               </p>
               
-              <div className="space-y-4">
+                              <div className="space-y-4">
                 <div className="border border-black rounded-lg p-4 bg-white">
                   <div className="flex items-center justify-between">
                     <div>
@@ -261,10 +245,12 @@ export default function SettingsPage() {
                         Understand how we collect, use, and protect your personal information.
                       </p>
                     </div>
-                    <Button variant="outline" disabled className="border-black text-black">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      View Policy
-                    </Button>
+                    <Link href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" className="border-black text-black hover:bg-gray-100">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View Policy
+                      </Button>
+                    </Link>
                   </div>
                 </div>
 
@@ -276,10 +262,12 @@ export default function SettingsPage() {
                         Understand your rights and responsibilities when using our platform.
                       </p>
                     </div>
-                    <Button variant="outline" disabled className="border-black text-black">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      View Terms
-                    </Button>
+                    <Link href="/terms-of-service" target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" className="border-black text-black hover:bg-gray-100">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View Terms
+                      </Button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -298,7 +286,6 @@ export default function SettingsPage() {
                     <li>• Email address for account creation and notifications</li>
                     <li>• Brand subscription preferences</li>
                     <li>• Payment information (processed securely by Stripe)</li>
-                    <li>• Account usage and authentication data</li>
                   </ul>
                 </div>
               </div>

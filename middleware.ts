@@ -61,7 +61,7 @@ export const config = {
      * - /settings (protected)
      * - /login (auth)
      * - /auth/ (auth callbacks)
-     * Exclude static files and API routes
+     * Exclude static files, API routes, and public legal pages
      */
     '/dashboard/:path*',
     '/settings/:path*',

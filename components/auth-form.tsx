@@ -22,6 +22,7 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [acceptTerms, setAcceptTerms] = useState(false)
   const { signInWithGoogle, signInWithEmail, signUpWithEmail } = useAuth()
   const router = useRouter()
 
@@ -29,6 +30,7 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
     setIsTransitioning(true)
     setTimeout(() => {
       setIsSignUp(!isSignUp)
+      setAcceptTerms(false) // Reset terms acceptance when switching modes
       setIsTransitioning(false)
     }, 150)
   }
@@ -57,6 +59,13 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
     if (!email || !password) {
       toast("Error", {
         description: "Please fill in all fields.",
+      })
+      return
+    }
+
+    if (isSignUp && !acceptTerms) {
+      toast("Error", {
+        description: "Please accept the Terms of Service and Privacy Policy to continue.",
       })
       return
     }
@@ -216,10 +225,44 @@ export default function AuthForm({ mode = 'signin' }: AuthFormProps) {
           </div>
         )}
 
+        {/* Terms Acceptance Checkbox - only show for sign up */}
+        {isSignUp && (
+          <div className="flex items-start space-x-3">
+            <input
+              id="acceptTerms"
+              type="checkbox"
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+              className="mt-1 w-4 h-4 border-gray-400 rounded focus:ring-sage-500 focus:border-sage-500"
+              disabled={isLoading}
+            />
+            <label htmlFor="acceptTerms" className="text-sm text-gray-700 leading-relaxed">
+              I agree to the{" "}
+              <Link
+                href="/terms-of-service"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sage-700 hover:text-sage-800 underline font-medium"
+              >
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sage-700 hover:text-sage-800 underline font-medium"
+              >
+                Privacy Policy
+              </Link>
+            </label>
+          </div>
+        )}
+
         <Button 
           type="submit"
           className="w-full h-12 bg-sage-600 hover:bg-sage-700 text-white font-medium" 
-          disabled={isLoading}
+          disabled={isLoading || (isSignUp && !acceptTerms)}
         >
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Continue

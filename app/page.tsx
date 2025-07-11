@@ -663,6 +663,23 @@ export default function LandingPage() {
                 <div className="flex items-center justify-center space-x-2 mb-4">
                   <span className="text-xl font-semibold text-white font-diatype-mono">matcharestock</span>
                 </div>
+                
+                {/* Legal Links */}
+                <div className="flex items-center justify-center space-x-6 mb-4">
+                  <Link
+                    href="/privacy-policy"
+                    className="text-sm text-gray-300 hover:text-white font-diatype transition-colors"
+                  >
+                    Privacy Policy
+                  </Link>
+                  <Link
+                    href="/terms-of-service"
+                    className="text-sm text-gray-300 hover:text-white font-diatype transition-colors"
+                  >
+                    Terms of Service
+                  </Link>
+                </div>
+                
                 <p className="text-sm text-white font-diatype-thin">
                   © 2024 MatchaRestock. All rights reserved.
                 </p>
