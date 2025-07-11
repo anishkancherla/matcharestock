@@ -131,31 +131,7 @@ export default function SettingsPage() {
       case "security":
         return (
           <div className="space-y-6">
-            {/* Only show password section for email/password users, not Google OAuth users */}
-            {!(user?.app_metadata?.providers?.includes('google') || user?.identities?.some(i => i.provider === 'google')) && (
-              <div>
-                <h3 className="text-lg font-semibold text-black mb-4">Password</h3>
-                
-                <div className="bg-white border border-black rounded-lg p-4">
-                  <h4 className="font-medium text-black mb-2">Reset Password</h4>
-                  <p className="text-sm text-black mb-4">
-                    To reset your password, use the "Forgot password?" link on the login page. 
-                    You'll receive an email with instructions to update your password.
-                  </p>
-                  <Link href="/auth/reset-password">
-                    <Button
-                      variant="outline"
-                      className="border-black text-black hover:bg-gray-100"
-                    >
-                      <Lock className="h-4 w-4 mr-2" />
-                      Reset Password
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            <div className="border-t border-black pt-6">
+            <div>
               <h3 className="text-lg font-semibold text-black mb-4">Account Actions</h3>
               
               <div className="bg-white border border-black rounded-lg p-4">

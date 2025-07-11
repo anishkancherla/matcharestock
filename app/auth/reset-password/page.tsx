@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="your.email@example.com"
-                  className="mt-1"
+                  className="mt-1 bg-white border-gray-300 text-black focus:border-sage-700 focus:ring-sage-700"
                   required
                 />
               </div>
@@ -120,18 +120,6 @@ export default function ResetPasswordPage() {
             </div>
           )}
         </Card>
-
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Remember your password?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-sage-700 hover:text-sage-800"
-            >
-              Sign in
-            </Link>
-          </p>
-        </div>
       </div>
     </div>
   )
