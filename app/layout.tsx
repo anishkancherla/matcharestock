@@ -4,6 +4,7 @@ import "./globals.css"
 import { AuthProvider } from "@/contexts/auth-provider"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/sonner"
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "MatchaRestock",
@@ -31,6 +32,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
           </div>
           <Toaster />
+          <Analytics />
         </AuthProvider>
       </body>
     </html>
