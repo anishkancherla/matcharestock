@@ -46,7 +46,8 @@ export async function middleware(request: NextRequest) {
     if (request.nextUrl.pathname.startsWith('/login') || 
         (request.nextUrl.pathname.startsWith('/auth/') && 
          !request.nextUrl.pathname.startsWith('/auth/callback') &&
-         !request.nextUrl.pathname.startsWith('/auth/confirm'))) {
+         !request.nextUrl.pathname.startsWith('/auth/confirm') &&
+         !request.nextUrl.pathname.startsWith('/auth/update-password'))) {
       return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
