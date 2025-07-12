@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { Eye, EyeOff, Lock } from "lucide-react"
 
 export default function UpdatePasswordPage() {
-  const { updatePassword, user } = useAuth()
+  const { updatePassword, user, loading } = useAuth()
   const router = useRouter()
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -19,12 +19,17 @@ export default function UpdatePasswordPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Redirect to login if not authenticated
+  // Only redirect if we're done loading AND there's no user
+  // This prevents redirecting during the auth recovery flow
   useEffect(() => {
-    if (!user) {
-      router.push('/login')
+    if (!loading && !user) {
+      // Add a small delay to ensure session has time to be established
+      const timer = setTimeout(() => {
+        router.push('/login')
+      }, 1000)
+      return () => clearTimeout(timer)
     }
-  }, [user, router])
+  }, [user, loading, router])
 
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,8 +78,27 @@ export default function UpdatePasswordPage() {
     }
   }
 
+  // Show loading while auth is being determined
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage-700 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Don't render anything if no user (will redirect soon)
   if (!user) {
-    return null // Will redirect to login
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Redirecting...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

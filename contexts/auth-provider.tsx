@@ -235,8 +235,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     
     const canonicalOrigin = getCanonicalOrigin()
-    // Redirect to update password page where users can actually change their password
-    const redirectUrl = `${canonicalOrigin}/auth/update-password`
+    // Email link should go to confirm route first to verify OTP, then redirect to update password
+    const redirectUrl = `${canonicalOrigin}/auth/confirm`
     
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
