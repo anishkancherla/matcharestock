@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { Resend } from "resend"
 import { NextRequest } from 'next/server'
+import { sendDiscordNotification } from "@/lib/utils/discord"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -387,7 +388,7 @@ export async function POST(request: NextRequest) {
     // Process each batch
     for (let batchIndex = 0; batchIndex < chunks.length; batchIndex++) {
       const chunk = chunks[batchIndex];
-      console.log(`📧 Processing batch ${batchIndex + 1}/${chunks.length} with ${chunk.length} emails`);
+      console.log(`📧 Processing batch ${batchIndex + 1}/${chunks.length} (${chunk.length} subscribers)`);
 
       try {
         // Prepare batch email array
@@ -446,6 +447,10 @@ export async function POST(request: NextRequest) {
 
     console.log(`✅ Brand notification complete: ${totalEmailsSent} emails sent, ${totalEmailErrors} errors`);
     console.log('📊 Batch Results:', batchResults);
+
+    // After successful email batch processing, send Discord notification
+    console.log('📧 All email batches processed, sending Discord notification...');
+    await sendDiscordNotification(brand, products);
 
     return NextResponse.json({
       message: 'Restock notifications sent successfully',

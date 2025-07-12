@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { Resend } from "resend"
+import { sendDiscordNotification } from "@/lib/utils/discord"
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -175,6 +176,12 @@ export async function POST(request: Request) {
 
     console.log(`Successfully sent ${successfulEmails} out of ${subscribers.length} restock emails`)
 
+    // Send Discord notification after emails are processed
+    if (successfulEmails > 0) {
+      console.log('📧 Emails sent, sending Discord notification...');
+      const products = product ? [{ name: product, url: productUrl }] : [{ name: `${brand} products` }];
+      await sendDiscordNotification(brand, products);
+    }
 
     const { error: logError } = await supabase
       .from('restock_notifications')
