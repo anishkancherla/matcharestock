@@ -11,12 +11,16 @@ export async function POST(request: NextRequest) {
   try {
     // Initialize Stripe inside the function to avoid build-time issues
     if (!process.env.STRIPE_SECRET_KEY) {
+      console.error('❌ STRIPE_SECRET_KEY is not configured')
       throw new Error('STRIPE_SECRET_KEY is not configured')
     }
     
     if (!process.env.STRIPE_WEBHOOK_SECRET) {
+      console.error('❌ STRIPE_WEBHOOK_SECRET is not configured')
       throw new Error('STRIPE_WEBHOOK_SECRET is not configured')
     }
+    
+    console.log('✅ Environment variables check passed')
     
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2025-06-30.basil',
@@ -30,6 +34,7 @@ export async function POST(request: NextRequest) {
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
+      console.log('✅ Stripe webhook signature verified')
     } catch (err) {
       console.log(`❌ Webhook signature verification failed.`, err)
       return NextResponse.json({ error: 'Webhook Error' }, { status: 400 })
@@ -38,27 +43,59 @@ export async function POST(request: NextRequest) {
     console.log('✅ Webhook received:', event.type)
 
     // Use service role to bypass RLS
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_URL is not configured')
+      throw new Error('NEXT_PUBLIC_SUPABASE_URL is not configured')
+    }
+    
+    if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('❌ SUPABASE_SERVICE_ROLE_KEY is not configured')
+      throw new Error('SUPABASE_SERVICE_ROLE_KEY is not configured')
+    }
+    
+    console.log('✅ Supabase environment variables found')
+    console.log('🔍 SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+    console.log('🔍 SERVICE_ROLE_KEY (first 20 chars):', process.env.SUPABASE_SERVICE_ROLE_KEY.substring(0, 20) + '...')
+    
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
+    console.log('✅ Supabase client created')
 
     switch (event.type) {
       case 'checkout.session.completed': {
+        console.log('🔄 Processing checkout.session.completed')
         const session = event.data.object as Stripe.Checkout.Session
         
         if (session.mode === 'subscription') {
+          console.log('✅ Session mode is subscription')
           const subscriptionId = session.subscription as string
           const customerId = session.customer as string
           const userId = session.metadata?.supabase_user_id
 
+          console.log('🔍 Session details:', {
+            subscriptionId,
+            customerId,
+            userId
+          })
+
           if (!userId) {
-            console.error('No user ID in session metadata')
+            console.error('❌ No user ID in session metadata')
             break
           }
 
+          console.log('🔄 Retrieving subscription from Stripe...')
           // Get the subscription details
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+          let subscription: Stripe.Subscription
+          try {
+            subscription = await stripe.subscriptions.retrieve(subscriptionId)
+            console.log('✅ Successfully retrieved subscription from Stripe')
+            console.log('🔍 Subscription status:', subscription.status)
+          } catch (stripeError) {
+            console.error('❌ Failed to retrieve subscription from Stripe:', stripeError)
+            throw stripeError
+          }
 
           // Get billing period from the subscription items (this is where Stripe stores the billing periods)
           const firstItem = subscription.items.data[0]
@@ -79,28 +116,37 @@ export async function POST(request: NextRequest) {
             userId: userId
           })
 
+          // Prepare data for upsert
+          const upsertData = {
+            user_id: userId,
+            stripe_customer_id: customerId,
+            stripe_subscription_id: subscriptionId,
+            status: subscription.status,
+            current_period_start: currentPeriodStart ? new Date(currentPeriodStart * 1000).toISOString() : null,
+            current_period_end: currentPeriodEnd ? new Date(currentPeriodEnd * 1000).toISOString() : null,
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            updated_at: new Date().toISOString(),
+          }
+          
+          console.log('🔍 Data to upsert:', upsertData)
+          console.log('🔄 Attempting database upsert...')
+
           // Upsert the payment subscription record - use stripe_subscription_id for conflict resolution
           const { error } = await supabase
             .from('user_payment_subscriptions')
-            .upsert({
-              user_id: userId,
-              stripe_customer_id: customerId,
-              stripe_subscription_id: subscriptionId,
-              status: subscription.status,
-              current_period_start: currentPeriodStart ? new Date(currentPeriodStart * 1000).toISOString() : null,
-              current_period_end: currentPeriodEnd ? new Date(currentPeriodEnd * 1000).toISOString() : null,
-              cancel_at_period_end: subscription.cancel_at_period_end,
-              updated_at: new Date().toISOString(),
-            }, {
+            .upsert(upsertData, {
               onConflict: 'stripe_subscription_id'
             })
 
           if (error) {
-            console.error('Error updating payment subscription:', error)
+            console.error('❌ Database upsert failed:', error)
+            console.error('❌ Error details:', JSON.stringify(error, null, 2))
             throw error // Re-throw to cause webhook to fail and retry
           } else {
             console.log('✅ Payment subscription created/updated for user:', userId)
           }
+        } else {
+          console.log('ℹ️ Session mode is not subscription:', session.mode)
         }
         break
       }
@@ -180,10 +226,12 @@ export async function POST(request: NextRequest) {
         console.log(`Unhandled event type: ${event.type}`)
     }
 
+    console.log('✅ Webhook processing completed successfully')
     return NextResponse.json({ received: true })
 
   } catch (error) {
-    console.error('Webhook error:', error)
+    console.error('❌ Webhook error:', error)
+    console.error('❌ Error stack:', error instanceof Error ? error.stack : 'No stack trace')
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }
