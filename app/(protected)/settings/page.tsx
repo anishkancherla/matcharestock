@@ -230,7 +230,7 @@ export default function SettingsPage() {
                     <div>
                       <h4 className="font-medium text-black">Current Plan</h4>
                       <p className="text-sm text-black">
-                        {user?.isSubscribed ? "MatchaRestock Premium - $3.50/month" : "Free Plan"}
+                        {user?.isSubscribed ? "MatchaRestock Premium - $1.99/month" : "Free Plan"}
                       </p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-sm font-medium ${

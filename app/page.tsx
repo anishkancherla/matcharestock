@@ -571,7 +571,7 @@ export default function LandingPage() {
                 <div className="max-w-md mx-auto">
                   <div className="text-center mb-8">
                     <div className="text-5xl font-bold text-black font-diatype-mono mb-2">
-                      $3.50<span className="text-xl font-normal text-black font-diatype">/month</span>
+                      $1.99<span className="text-xl font-normal text-black font-diatype">/month</span>
                     </div>
                     <p className="text-black font-diatype-thin">Everything you need to never miss a restock</p>
                   </div>
