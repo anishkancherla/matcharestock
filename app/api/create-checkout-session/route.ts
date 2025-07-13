@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
               name: 'MatchaRestock Premium',
               description: 'Get unlimited restock notifications for all matcha brands',
             },
-            unit_amount: 99, // $0.99
+            unit_amount: 199, // $1.99 - Updated price
             recurring: {
               interval: 'month',
             },
