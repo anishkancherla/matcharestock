@@ -130,4 +130,69 @@
     0px -0.5px 0px rgba(0, 0, 0, 0.7);
   position: relative;
   z-index: 3;
+}
+
+/* Discord Metal Button Styles */
+.discord-metal-button {
+  /* Outer button container with Discord gradient */
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  border: none;
+  border-radius: 1000px;
+  background: linear-gradient(180deg, rgb(114, 137, 217) 0%, rgb(91, 110, 174) 100%);
+  box-shadow: 0px 5px 10px 5px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  text-decoration: none;
+  min-width: 130px;
+  height: 50px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  transition: transform 0.2s ease;
+  width: 100%;
+}
+
+.discord-metal-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0px 6px 12px 6px rgba(0, 0, 0, 0.2);
+}
+
+.discord-metal-button:active {
+  transform: translateY(0px);
+  box-shadow: 0px 3px 8px 3px rgba(0, 0, 0, 0.25);
+}
+
+/* Inner bevel layer for Discord button */
+.discord-metal-button::before {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 100px;
+  background: linear-gradient(180deg, rgb(140, 165, 255) 0%, rgb(70, 95, 150) 48.73%, rgb(140, 165, 255) 100%);
+  z-index: 1;
+}
+
+/* Inner cap/button surface for Discord button */
+.discord-metal-button::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 1000px;
+  background: linear-gradient(180deg, rgb(114, 137, 217) 0%, rgb(91, 110, 174) 100%);
+  box-shadow: inset 0px -1px 0px 0px rgba(255, 255, 255, 0.25);
+  z-index: 2;
+}
+
+/* Text styling for Discord button */
+.discord-metal-button {
+  color: rgb(255, 255, 255);
+  text-shadow: 
+    0px 0.5px 0px rgba(255, 255, 255, 0.6), 
+    0px -0.5px 0px rgba(0, 0, 0, 0.7);
+  position: relative;
+  z-index: 3;
 } 

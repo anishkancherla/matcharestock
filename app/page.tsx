@@ -178,7 +178,7 @@ export default function LandingPage() {
                           matcharestock
                         </span>
                       </Link>
-                      <div className="mt-2">
+                      <div className="mt-2 space-y-3">
                         <Link href="/login?mode=signup">
                           <MetalButtonWrapper
                             title="Sign up"
@@ -186,6 +186,19 @@ export default function LandingPage() {
                             icon={<ArrowUpRight className="w-4 h-4" />}
                           />
                         </Link>
+                                                 {/* Discord Button - Mobile */}
+                         <Link 
+                           href="https://discord.gg/g3Spmt7P" 
+                           target="_blank" 
+                           rel="noopener noreferrer"
+                         >
+                           <button className="discord-metal-button">
+                             <div className="flex items-center space-x-2 relative z-10">
+                               <span className="text-sm font-medium">Join the Discord</span>
+                               <ArrowUpRight className="w-4 h-4" />
+                             </div>
+                           </button>
+                         </Link>
                       </div>
                     </div>
                     <div className="relative" ref={settingsRef}>
@@ -255,27 +268,43 @@ export default function LandingPage() {
               </nav>
               
               {/* Right Side - Auth Buttons */}
-              <div className="flex items-center space-x-6">
-                <Link 
-                  href="/login" 
-                  className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
-                >
-                  Log in
-                </Link>
-                <Link href="/login?mode=signup">
-                  <MetalButtonWrapper
-                    title="Sign up"
-                    isSubscribed={false}
-                    icon={<ArrowUpRight className="w-4 h-4" />}
-                  />
-                </Link>
+              <div className="flex flex-col items-end space-y-3">
+                <div className="flex items-center space-x-6">
+                  <Link 
+                    href="/login" 
+                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                  >
+                    Log in
+                  </Link>
+                  <Link href="/login?mode=signup">
+                    <MetalButtonWrapper
+                      title="Sign up"
+                      isSubscribed={false}
+                      icon={<ArrowUpRight className="w-4 h-4" />}
+                    />
+                  </Link>
+                </div>
+                                 {/* Discord Button - Desktop */}
+                 <Link 
+                   href="https://discord.gg/g3Spmt7P" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="w-full"
+                 >
+                   <button className="discord-metal-button">
+                     <div className="flex items-center space-x-2 relative z-10">
+                       <span className="text-sm font-medium">Join the Discord</span>
+                       <ArrowUpRight className="w-4 h-4" />
+                     </div>
+                   </button>
+                 </Link>
               </div>
             </div>
           </div>
         </header>
         
         {/* Spacer to prevent content jump when header becomes fixed */}
-        <div className="h-24"></div>
+        <div className="h-32 md:h-36"></div>
         
         {/* Main Hero Content */}
         <main className="relative z-10 flex items-center justify-center px-6 pb-16 mt-8 md:mt-0">
