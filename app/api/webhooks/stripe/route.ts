@@ -144,6 +144,25 @@ export async function POST(request: NextRequest) {
             throw error // Re-throw to cause webhook to fail and retry
           } else {
             console.log('✅ Payment subscription created/updated for user:', userId)
+            
+            // Update user profile to premium and set payment details
+            console.log('🔄 Updating user profile to premium...')
+            const { error: userUpdateError } = await supabase
+              .from('users')
+              .update({
+                user_type: 'premium',
+                stripe_customer_id: customerId,
+                first_payment_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              })
+              .eq('id', userId)
+
+            if (userUpdateError) {
+              console.error('❌ Failed to update user profile:', userUpdateError)
+              // Don't throw - payment subscription was successful, user profile update is secondary
+            } else {
+              console.log('✅ User profile updated to premium for user:', userId)
+            }
           }
         } else {
           console.log('ℹ️ Session mode is not subscription:', session.mode)
@@ -175,6 +194,29 @@ export async function POST(request: NextRequest) {
           console.error('Error updating subscription:', error)
         } else {
           console.log('✅ Subscription updated:', subscription.id)
+          
+          // Update user type based on subscription status
+          console.log('🔄 Updating user type based on subscription status...')
+          const newUserType = subscription.status === 'active' || subscription.status === 'trialing' ? 'premium' : 'free'
+          
+          const { error: userUpdateError } = await supabase
+            .from('users')
+            .update({
+              user_type: newUserType,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', (await supabase
+              .from('user_payment_subscriptions')
+              .select('user_id')
+              .eq('stripe_subscription_id', subscription.id)
+              .single()
+            ).data?.user_id)
+
+          if (userUpdateError) {
+            console.error('❌ Failed to update user type:', userUpdateError)
+          } else {
+            console.log(`✅ User type updated to ${newUserType} for subscription:`, subscription.id)
+          }
         }
         break
       }
@@ -195,6 +237,27 @@ export async function POST(request: NextRequest) {
           console.error('Error canceling subscription:', error)
         } else {
           console.log('✅ Subscription canceled:', subscription.id)
+          
+          // Downgrade user to free when subscription is canceled
+          console.log('🔄 Downgrading user to free tier...')
+          const { error: userUpdateError } = await supabase
+            .from('users')
+            .update({
+              user_type: 'free',
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', (await supabase
+              .from('user_payment_subscriptions')
+              .select('user_id')
+              .eq('stripe_subscription_id', subscription.id)
+              .single()
+            ).data?.user_id)
+
+          if (userUpdateError) {
+            console.error('❌ Failed to downgrade user:', userUpdateError)
+          } else {
+            console.log('✅ User downgraded to free for canceled subscription:', subscription.id)
+          }
         }
         break
       }
