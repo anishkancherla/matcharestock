@@ -178,7 +178,7 @@ export default function LandingPage() {
                           matcharestock
                         </span>
                       </Link>
-                      <div className="mt-2 space-y-3">
+                      <div className="mt-2 space-y-4">
                         <Link href="/login?mode=signup">
                           <MetalButtonWrapper
                             title="Sign up"
@@ -304,7 +304,7 @@ export default function LandingPage() {
         </header>
         
         {/* Spacer to prevent content jump when header becomes fixed */}
-        <div className="h-32 md:h-36"></div>
+        <div className="h-36 md:h-36"></div>
         
         {/* Main Hero Content */}
         <main className="relative z-10 flex items-center justify-center px-6 pb-16 mt-8 md:mt-0">
