@@ -328,7 +328,7 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <div className="mb-16">
                   <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
-                    Real-time notifications for your favorite matcha brands.
+                    Real-time <span style={{ color: '#ef4444' }}>email</span> and <span style={{ color: 'rgb(114, 137, 217)' }}>discord</span> notifications for your favorite matcha brands.
                   </h1>
                   <p className="hidden md:block text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
                     Never miss a restock again!
@@ -431,20 +431,63 @@ export default function LandingPage() {
                     </div>
                     
                     <div className="text-center">
-                      {/* Figma Mockup Image */}
-                      <div className="mb-4 flex justify-center h-40">
-                        <img 
-                          src="/images/mockup.png" 
-                          alt="Matcha restock notification mockup" 
-                          className="max-w-full h-auto"
-                          style={{ maxHeight: '200px' }}
-                        />
+                      {/* Mobile Layout - RestockBot above, Mockup below */}
+                      <div className="md:hidden space-y-4">
+                        <div className="flex justify-center mb-4">
+                          <MetalCircleButton number="3" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
+                        <p className="text-gray-500 font-diatype-thin">Receive instant email and discord alerts when your matcha comes back in stock.</p>
+                        
+                        {/* RestockBot Image - Above mockup on mobile */}
+                        <div className="mb-4 flex justify-center h-32">
+                          <img 
+                            src="/images/restockbot.PNG" 
+                            alt="RestockBot Discord notification" 
+                            className="max-w-full h-auto"
+                            style={{ maxHeight: '120px' }}
+                          />
+                        </div>
+                        
+                        {/* Figma Mockup Image */}
+                        <div className="mb-4 flex justify-center h-40">
+                          <img 
+                            src="/images/mockup.png" 
+                            alt="Matcha restock notification mockup" 
+                            className="max-w-full h-auto"
+                            style={{ maxHeight: '200px' }}
+                          />
+                        </div>
                       </div>
-                      <div className="flex justify-center mb-4">
-                        <MetalCircleButton number="3" />
+
+                      {/* Desktop Layout - Mockup above, RestockBot below */}
+                      <div className="hidden md:block">
+                        {/* Figma Mockup Image */}
+                        <div className="mb-4 flex justify-center h-40">
+                          <img 
+                            src="/images/mockup.png" 
+                            alt="Matcha restock notification mockup" 
+                            className="max-w-full h-auto"
+                            style={{ maxHeight: '200px' }}
+                          />
+                        </div>
+                        
+                        {/* RestockBot Image - Below mockup, above number 3 on desktop */}
+                        <div className="mb-4 flex justify-center h-32">
+                          <img 
+                            src="/images/restockbot.PNG" 
+                            alt="RestockBot Discord notification" 
+                            className="max-w-full h-auto"
+                            style={{ maxHeight: '120px' }}
+                          />
+                        </div>
+                        
+                        <div className="flex justify-center mb-4">
+                          <MetalCircleButton number="3" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
+                        <p className="text-gray-500 font-diatype-thin">Receive instant email and discord alerts when your matcha comes back in stock.</p>
                       </div>
-                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
-                      <p className="text-gray-500 font-diatype-thin">Receive instant email alerts when your matcha comes back in stock.</p>
                     </div>
                   </div>
                 </div>
@@ -582,7 +625,7 @@ export default function LandingPage() {
                     </li>
                     <li className="flex items-center text-black font-diatype-thin">
                       <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
-                      Real-time email notifications
+                      Real-time email and discord notifications
                     </li>
                     <li className="flex items-center text-black font-diatype-thin">
                       <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>

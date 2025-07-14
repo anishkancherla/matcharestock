@@ -115,7 +115,7 @@ export default function PricingCard({ onSubscribe, userEmail, onExit, showMobile
                 </li>
                 <li className="flex items-center text-black font-diatype-thin">
                   <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
-                  Real-time email notifications
+                  Real-time email and discord notifications
                 </li>
                 <li className="flex items-center text-black font-diatype-thin">
                   <div className="w-2 h-2 bg-sage-600 rounded-full mr-3"></div>
