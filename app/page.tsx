@@ -328,7 +328,7 @@ export default function LandingPage() {
                 {/* Hero Section */}
                 <div className="mb-16">
                   <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
-                    Real-time <span style={{ color: '#ef4444' }}>email</span> and <span style={{ color: 'rgb(114, 137, 217)' }}>discord</span> notifications for your favorite matcha brands.
+                    Real-time <span style={{ color: '#e67e22' }}>email</span> and <span style={{ color: 'rgb(114, 137, 217)' }}>discord</span> notifications for your favorite matcha brands.
                   </h1>
                   <p className="hidden md:block text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
                     Never miss a restock again!
@@ -339,13 +339,13 @@ export default function LandingPage() {
                 <div className="mb-0">
                   <div className="grid md:grid-cols-3 gap-8">
                     <div className="text-center">
-                      {/* Dashboard Display Image */}
-                      <div className="mb-4 flex justify-center h-40">
+                      {/* Dashboard Display Image - Match total height of section 3 images */}
+                      <div className="mb-4 flex justify-center" style={{ height: '400px' }}>
                         <img 
                           src="/images/dashboarddisplay.png" 
                           alt="Dashboard display showing brand subscriptions" 
                           className="max-w-full h-auto md:ml-0 -ml-6"
-                          style={{ maxHeight: '300px' }}
+                          style={{ maxHeight: '240px', marginTop: 'auto', marginBottom: 'auto' }}
                         />
                       </div>
                       <div className="flex justify-center mb-4">
@@ -395,16 +395,16 @@ export default function LandingPage() {
 
                       {/* Desktop Layout - Original order */}
                       <div className="hidden md:block">
-                        {/* Layered Images - Swapped positions: Sayaka and Wako */}
-                        <div className="relative mb-4 flex justify-center h-40">
+                        {/* Layered Images - Match total height of section 3 images */}
+                        <div className="relative mb-4 flex justify-center" style={{ height: '400px' }}>
                           {/* Sayaka image - now bottom layer */}
                           <img 
                             src="/images/sayaka.png" 
                             alt="Sayaka matcha product" 
                             className="absolute z-10"
                             style={{ 
-                              maxHeight: '160px',
-                              top: '-40px',
+                              maxHeight: '180px',
+                              top: '60px',
                               left: '50%',
                               transform: 'translateX(-30%)'
                             }}
@@ -415,8 +415,8 @@ export default function LandingPage() {
                             alt="Wako matcha product" 
                             className="absolute z-30"
                             style={{ 
-                              maxHeight: '140px',
-                              top: '0px',
+                              maxHeight: '160px',
+                              top: '100px',
                               left: '50%',
                               transform: 'translateX(-50%)'
                             }}
@@ -460,26 +460,29 @@ export default function LandingPage() {
                         </div>
                       </div>
 
-                      {/* Desktop Layout - Mockup above, RestockBot below */}
+                      {/* Desktop Layout - RestockBot above, Mockup below */}
                       <div className="hidden md:block">
-                        {/* Figma Mockup Image */}
-                        <div className="mb-4 flex justify-center h-40">
-                          <img 
-                            src="/images/mockup.png" 
-                            alt="Matcha restock notification mockup" 
-                            className="max-w-full h-auto"
-                            style={{ maxHeight: '200px' }}
-                          />
-                        </div>
-                        
-                        {/* RestockBot Image - Below mockup, above number 3 on desktop */}
-                        <div className="mb-4 flex justify-center h-32">
-                          <img 
-                            src="/images/restockbot.PNG" 
-                            alt="RestockBot Discord notification" 
-                            className="max-w-full h-auto"
-                            style={{ maxHeight: '120px' }}
-                          />
+                        {/* Combined image container - Match height of other sections */}
+                        <div className="mb-4 flex flex-col justify-center" style={{ height: '400px' }}>
+                          {/* RestockBot Image - Above mockup, bigger on desktop */}
+                          <div className="flex justify-center mb-4">
+                            <img 
+                              src="/images/restockbot.PNG" 
+                              alt="RestockBot Discord notification" 
+                              className="max-w-full h-auto"
+                              style={{ maxHeight: '240px' }}
+                            />
+                          </div>
+                          
+                          {/* Figma Mockup Image - Below RestockBot */}
+                          <div className="flex justify-center">
+                            <img 
+                              src="/images/mockup.png" 
+                              alt="Matcha restock notification mockup" 
+                              className="max-w-full h-auto"
+                              style={{ maxHeight: '160px' }}
+                            />
+                          </div>
                         </div>
                         
                         <div className="flex justify-center mb-4">
