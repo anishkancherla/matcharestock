@@ -335,8 +335,33 @@ export default function LandingPage() {
                   </p>
                 </div>
 
-                {/* How It Works Section */}
-                <div className="mb-0">
+                {/* Mobile Layout - Just notification images, no sections */}
+                <div className="md:hidden mb-8">
+                  <div className="space-y-6">
+                    {/* RestockBot Image */}
+                    <div className="flex justify-center">
+                      <img 
+                        src="/images/restockbot.PNG" 
+                        alt="RestockBot Discord notification" 
+                        className="max-w-full h-auto"
+                        style={{ maxHeight: '140px' }}
+                      />
+                    </div>
+                    
+                    {/* Mockup Image */}
+                    <div className="flex justify-center">
+                      <img 
+                        src="/images/mockup.png" 
+                        alt="Matcha restock notification mockup" 
+                        className="max-w-full h-auto"
+                        style={{ maxHeight: '180px' }}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop Layout - Full How It Works Section */}
+                <div className="hidden md:block mb-0">
                   <div className="grid md:grid-cols-3 gap-8">
                     <div className="text-center">
                       {/* Dashboard Display Image - Match total height of section 3 images */}
@@ -356,141 +381,69 @@ export default function LandingPage() {
                     </div>
                     
                     <div className="text-center">
-                      {/* Mobile Layout - Images first, then text below */}
-                      <div className="md:hidden space-y-4">
-                        {/* Images positioned above text on mobile */}
-                        <div className="relative flex justify-center h-40 mb-4">
-                          {/* Sayaka image - bottom layer, adjusted left */}
-                          <img 
-                            src="/images/sayaka.png" 
-                            alt="Sayaka matcha product" 
-                            className="absolute z-10"
-                            style={{ 
-                              maxHeight: '160px',
-                              top: '10px',
-                              left: '50%',
-                              transform: 'translateX(-40%)'
-                            }}
-                          />
-                          {/* Wako image - top layer, adjusted left */}
-                          <img 
-                            src="/images/wako.png" 
-                            alt="Wako matcha product" 
-                            className="absolute z-30"
-                            style={{ 
-                              maxHeight: '140px',
-                              top: '50px',
-                              left: '50%',
-                              transform: 'translateX(-60%)'
-                            }}
-                          />
-                        </div>
-                        
-                        <div className="flex justify-center">
-                          <MetalCircleButton number="2" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-black font-diatype">Monitor</h3>
-                        <p className="text-gray-500 font-diatype-thin">We continuously track stock status across your favorite matcha retailers.</p>
+                      {/* Layered Images - Match total height of section 3 images */}
+                      <div className="relative mb-4 flex justify-center" style={{ height: '400px' }}>
+                        {/* Sayaka image - now bottom layer */}
+                        <img 
+                          src="/images/sayaka.png" 
+                          alt="Sayaka matcha product" 
+                          className="absolute z-10"
+                          style={{ 
+                            maxHeight: '180px',
+                            top: '60px',
+                            left: '50%',
+                            transform: 'translateX(-30%)'
+                          }}
+                        />
+                        {/* Wako image - now top layer */}
+                        <img 
+                          src="/images/wako.png" 
+                          alt="Wako matcha product" 
+                          className="absolute z-30"
+                          style={{ 
+                            maxHeight: '160px',
+                            top: '100px',
+                            left: '50%',
+                            transform: 'translateX(-50%)'
+                          }}
+                        />
                       </div>
-
-                      {/* Desktop Layout - Original order */}
-                      <div className="hidden md:block">
-                        {/* Layered Images - Match total height of section 3 images */}
-                        <div className="relative mb-4 flex justify-center" style={{ height: '400px' }}>
-                          {/* Sayaka image - now bottom layer */}
-                          <img 
-                            src="/images/sayaka.png" 
-                            alt="Sayaka matcha product" 
-                            className="absolute z-10"
-                            style={{ 
-                              maxHeight: '180px',
-                              top: '60px',
-                              left: '50%',
-                              transform: 'translateX(-30%)'
-                            }}
-                          />
-                          {/* Wako image - now top layer */}
-                          <img 
-                            src="/images/wako.png" 
-                            alt="Wako matcha product" 
-                            className="absolute z-30"
-                            style={{ 
-                              maxHeight: '160px',
-                              top: '100px',
-                              left: '50%',
-                              transform: 'translateX(-50%)'
-                            }}
-                          />
-                        </div>
-                        <div className="flex justify-center mb-4">
-                          <MetalCircleButton number="2" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
-                        <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
+                      <div className="flex justify-center mb-4">
+                        <MetalCircleButton number="2" />
                       </div>
+                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
+                      <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
                     </div>
                     
                     <div className="text-center">
-                      {/* Mobile Layout - RestockBot above, Mockup below */}
-                      <div className="md:hidden space-y-4">
+                      {/* Combined image container - Match height of other sections */}
+                      <div className="mb-4 flex flex-col justify-center" style={{ height: '400px' }}>
+                        {/* RestockBot Image - Above mockup, bigger on desktop */}
                         <div className="flex justify-center mb-4">
-                          <MetalCircleButton number="3" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
-                        <p className="text-gray-500 font-diatype-thin">Receive instant email and discord alerts when your matcha comes back in stock.</p>
-                        
-                        {/* RestockBot Image - Above mockup on mobile */}
-                        <div className="mb-4 flex justify-center h-32">
                           <img 
                             src="/images/restockbot.PNG" 
                             alt="RestockBot Discord notification" 
                             className="max-w-full h-auto"
-                            style={{ maxHeight: '120px' }}
+                            style={{ maxHeight: '240px' }}
                           />
                         </div>
                         
-                        {/* Figma Mockup Image */}
-                        <div className="mb-4 flex justify-center h-40">
+                        {/* Figma Mockup Image - Below RestockBot */}
+                        <div className="flex justify-center">
                           <img 
                             src="/images/mockup.png" 
                             alt="Matcha restock notification mockup" 
                             className="max-w-full h-auto"
-                            style={{ maxHeight: '200px' }}
+                            style={{ maxHeight: '160px' }}
                           />
                         </div>
                       </div>
-
-                      {/* Desktop Layout - RestockBot above, Mockup below */}
-                      <div className="hidden md:block">
-                        {/* Combined image container - Match height of other sections */}
-                        <div className="mb-4 flex flex-col justify-center" style={{ height: '400px' }}>
-                          {/* RestockBot Image - Above mockup, bigger on desktop */}
-                          <div className="flex justify-center mb-4">
-                            <img 
-                              src="/images/restockbot.PNG" 
-                              alt="RestockBot Discord notification" 
-                              className="max-w-full h-auto"
-                              style={{ maxHeight: '240px' }}
-                            />
-                          </div>
-                          
-                          {/* Figma Mockup Image - Below RestockBot */}
-                          <div className="flex justify-center">
-                            <img 
-                              src="/images/mockup.png" 
-                              alt="Matcha restock notification mockup" 
-                              className="max-w-full h-auto"
-                              style={{ maxHeight: '160px' }}
-                            />
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-center mb-4">
-                          <MetalCircleButton number="3" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
-                        <p className="text-gray-500 font-diatype-thin">Receive instant email and discord alerts when your matcha comes back in stock.</p>
+                      
+                      <div className="flex justify-center mb-4">
+                        <MetalCircleButton number="3" />
                       </div>
+                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
+                      <p className="text-gray-500 font-diatype-thin">Receive instant email and discord alerts when your matcha comes back in stock.</p>
                     </div>
                   </div>
                 </div>
