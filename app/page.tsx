@@ -188,7 +188,7 @@ export default function LandingPage() {
                         </Link>
                                                  {/* Discord Button - Mobile */}
                          <Link 
-                           href="https://discord.gg/g3Spmt7P" 
+                           href="https://discord.gg/w9qQCf3yEJ" 
                            target="_blank" 
                            rel="noopener noreferrer"
                          >
@@ -286,7 +286,7 @@ export default function LandingPage() {
                 </div>
                                  {/* Discord Button - Desktop */}
                  <Link 
-                   href="https://discord.gg/g3Spmt7P" 
+                   href="https://discord.gg/w9qQCf3yEJ" 
                    target="_blank" 
                    rel="noopener noreferrer"
                    className="w-full"
