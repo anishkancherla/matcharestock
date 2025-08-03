@@ -1,7 +1,7 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { MetalButtonWrapper, MetalCircleButton } from "@/components/ui/metal-button-wrapper"
+
+
 import Link from "next/link"
 import { ArrowUpRight } from "lucide-react"
 import { useEffect, useState, useRef } from "react"
@@ -180,11 +180,10 @@ export default function LandingPage() {
                       </Link>
                       <div className="mt-2 space-y-4">
                         <Link href="/login?mode=signup">
-                          <MetalButtonWrapper
-                            title="Sign up"
-                            isSubscribed={false}
-                            icon={<ArrowUpRight className="w-4 h-4" />}
-                          />
+                          <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center space-x-1.5">
+                            <span className="text-sm font-medium">Sign up</span>
+                            <ArrowUpRight className="w-4 h-4" />
+                          </button>
                         </Link>
                                                  {/* Discord Button - Mobile */}
                          <Link 
@@ -192,11 +191,9 @@ export default function LandingPage() {
                            target="_blank" 
                            rel="noopener noreferrer"
                          >
-                           <button className="discord-metal-button">
-                             <div className="flex items-center space-x-2 relative z-10">
-                               <span className="text-sm font-medium">Join the Discord</span>
-                               <ArrowUpRight className="w-4 h-4" />
-                             </div>
+                           <button className="bg-gradient-to-b from-[rgb(114,137,217)] to-[rgb(91,110,174)] text-white px-4 py-2 rounded-full hover:from-[rgb(124,147,227)] hover:to-[rgb(101,120,184)] transition-all flex items-center space-x-1.5">
+                             <span className="text-sm font-medium">Join the Discord</span>
+                             <ArrowUpRight className="w-4 h-4" />
                            </button>
                          </Link>
                       </div>
@@ -277,11 +274,10 @@ export default function LandingPage() {
                     Log in
                   </Link>
                   <Link href="/login?mode=signup">
-                    <MetalButtonWrapper
-                      title="Sign up"
-                      isSubscribed={false}
-                      icon={<ArrowUpRight className="w-4 h-4" />}
-                    />
+                    <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center space-x-1.5">
+                      <span className="text-sm font-medium">Sign up</span>
+                      <ArrowUpRight className="w-4 h-4" />
+                    </button>
                   </Link>
                 </div>
                                  {/* Discord Button - Desktop */}
@@ -291,11 +287,9 @@ export default function LandingPage() {
                    rel="noopener noreferrer"
                    className="w-full"
                  >
-                   <button className="discord-metal-button">
-                     <div className="flex items-center space-x-2 relative z-10">
-                       <span className="text-sm font-medium">Join the Discord</span>
-                       <ArrowUpRight className="w-4 h-4" />
-                     </div>
+                   <button className="bg-gradient-to-b from-[rgb(114,137,217)] to-[rgb(91,110,174)] text-white px-4 py-2 rounded-full hover:from-[rgb(124,147,227)] hover:to-[rgb(101,120,184)] transition-all flex items-center space-x-1.5 w-full justify-center">
+                     <span className="text-sm font-medium">Join the Discord</span>
+                     <ArrowUpRight className="w-4 h-4" />
                    </button>
                  </Link>
               </div>
@@ -327,12 +321,9 @@ export default function LandingPage() {
               <div className="relative z-10">
                 {/* Hero Section */}
                 <div className="mb-16">
-                  <h1 className="text-2xl md:text-4xl lg:text-4xl font-bold text-black mb-6 font-gaisyr leading-tight">
-                    Real-time <span style={{ color: '#e67e22' }}>email</span> and <span style={{ color: 'rgb(114, 137, 217)' }}>discord</span> notifications for your favorite matcha brands.
+                  <h1 className="text-xl md:text-3xl lg:text-3xl font-bold text-black mb-6 font-diatype-thin leading-tight">
+                    Real-time <span>email</span> and <span>discord</span> notifications for your favorite matcha brands.
                   </h1>
-                  <p className="hidden md:block text-lg md:text-xl lg:text-2xl text-gray-600 font-diatype leading-relaxed">
-                    Never miss a restock again!
-                  </p>
                 </div>
 
                 {/* Mobile Layout - Just notification images, no sections */}
@@ -374,9 +365,9 @@ export default function LandingPage() {
                         />
                       </div>
                       <div className="flex justify-center mb-4">
-                        <MetalCircleButton number="1" />
+                        <span className="text-2xl font-bold text-black font-diatype-mono">1</span>
                       </div>
-                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Subscribe</h3>
+                      <h3 className="text-lg text-black mb-2 font-diatype">Subscribe</h3>
                       <p className="text-gray-500 font-diatype-thin">Choose your desired brands and sign up for notifications.</p>
                     </div>
                     
@@ -409,9 +400,9 @@ export default function LandingPage() {
                         />
                       </div>
                       <div className="flex justify-center mb-4">
-                        <MetalCircleButton number="2" />
+                        <span className="text-2xl font-bold text-black font-diatype-mono">2</span>
                       </div>
-                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Monitor</h3>
+                      <h3 className="text-lg text-black mb-2 font-diatype">Monitor</h3>
                       <p className="text-gray-500 font-diatype-thin">We continuously track inventory across your favorite matcha retailers. Our system monitors stock levels 24/7 and detects changes instantly.</p>
                     </div>
                     
@@ -440,9 +431,9 @@ export default function LandingPage() {
                       </div>
                       
                       <div className="flex justify-center mb-4">
-                        <MetalCircleButton number="3" />
+                        <span className="text-2xl font-bold text-black font-diatype-mono">3</span>
                       </div>
-                      <h3 className="text-lg font-semibold text-black mb-2 font-diatype">Get Notified</h3>
+                      <h3 className="text-lg text-black mb-2 font-diatype">Get Notified</h3>
                       <p className="text-gray-500 font-diatype-thin">Receive instant email and discord alerts when your matcha comes back in stock.</p>
                     </div>
                   </div>
@@ -588,12 +579,10 @@ export default function LandingPage() {
                       Cancel anytime
                     </li>
                   </ul>
-                  <Link href="/login?mode=signup">
-                    <MetalButtonWrapper
-                      title="Get Started"
-                      isSubscribed={false}
-                      className="w-full"
-                    />
+                  <Link href="/login?mode=signup" className="w-full">
+                    <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors w-full">
+                      <span className="text-sm font-medium">Get Started</span>
+                    </button>
                   </Link>
                 </div>
               </div>
