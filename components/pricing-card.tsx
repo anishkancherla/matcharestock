@@ -3,7 +3,6 @@
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
 import { useState } from "react"
-import { MetalButtonWrapper } from "./ui/metal-button-wrapper"
 import { X } from "lucide-react"
 import Link from "next/link"
 
@@ -123,12 +122,12 @@ export default function PricingCard({ onSubscribe, userEmail, onExit, showMobile
                 </li>
               </ul>
               <div className="mb-6">
-                <MetalButtonWrapper
-                  title="Subscribe Now"
-                  isSubscribed={false}
+                <button 
                   onClick={onSubscribe}
-                  className="w-full"
-                />
+                  className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors w-full"
+                >
+                  <span className="text-sm font-medium">Subscribe Now</span>
+                </button>
               </div>
               
               {!showAccessCode ? (
