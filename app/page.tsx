@@ -86,8 +86,8 @@ export default function LandingPage() {
       // At top - transparent background, no rounded corners
       classes += "bg-transparent shadow-none rounded-none"
     } else {
-      // Past top - white pill shape with very rounded corners
-      classes += "bg-white shadow-[0_2px_10px_rgba(0,0,0,0.1)] rounded-full"
+      // Past top - black pill shape with very rounded corners
+      classes += "bg-black shadow-[0_2px_10px_rgba(0,0,0,0.3)] rounded-full"
     }
     
     return classes
@@ -111,35 +111,6 @@ export default function LandingPage() {
     <div className="min-h-screen relative overflow-hidden">
       {/* Hero Section with White Background */}
       <div className="bg-white relative">
-        {/* Dynamic Aurora Background - Only for Hero Section */}
-        <div className="absolute inset-0 bg-[#D5DDD6]">
-          {/* Aurora Light Source 1 - Top Left */}
-          <div 
-            className="absolute -top-[20%] -left-[20%] w-[60vw] h-[60vw] rounded-full -z-10"
-            style={{
-              background: 'radial-gradient(circle, rgba(168, 207, 179, 0.7) 0%, rgba(198, 212, 180, 0.5) 40%, transparent 70%)',
-              filter: 'blur(180px)'
-            }}
-          ></div>
-          
-          {/* Aurora Light Source 2 - Bottom Right */}
-          <div 
-            className="absolute -bottom-[20%] -right-[20%] w-[60vw] h-[60vw] rounded-full -z-10"
-            style={{
-              background: 'radial-gradient(circle, rgba(147, 173, 152, 0.6) 0%, transparent 70%)',
-              filter: 'blur(200px)'
-            }}
-          ></div>
-          
-          {/* Aurora Light Source 3 - Center Right */}
-          <div 
-            className="absolute top-[30%] -right-[10%] w-[50vw] h-[50vw] rounded-full -z-10"
-            style={{
-              background: 'radial-gradient(circle, rgba(180, 200, 170, 0.5) 0%, rgba(160, 190, 165, 0.3) 50%, transparent 70%)',
-              filter: 'blur(160px)'
-            }}
-          ></div>
-        </div>
         
         {/* Header - Smart Navigation */}
         <header className={getHeaderClasses()}>
@@ -151,19 +122,19 @@ export default function LandingPage() {
                 <div className="flex items-center justify-center w-full space-x-6">
                   <Link 
                     href="#pricing" 
-                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                    className="font-diatype transition-colors duration-300 text-white hover:text-gray-300 text-sm"
                   >
                     Pricing
                   </Link>
                   <Link 
                     href="#questions" 
-                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                    className="font-diatype transition-colors duration-300 text-white hover:text-gray-300 text-sm"
                   >
                     Info
                   </Link>
                   <Link 
                     href="/login" 
-                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900 text-sm"
+                    className="font-diatype transition-colors duration-300 text-white hover:text-gray-300 text-sm"
                   >
                     Log in
                   </Link>
@@ -174,13 +145,13 @@ export default function LandingPage() {
                   <div className="flex items-center justify-between w-full">
                     <div>
                       <Link href="/" className="flex items-center space-x-2">
-                        <span className="text-xl font-semibold font-diatype-mono text-gray-900">
+                        <span className={`text-xl font-semibold font-diatype-mono ${isAtTop ? 'text-gray-900' : 'text-white'}`}>
                           matcharestock
                         </span>
                       </Link>
                       <div className="mt-2 space-y-4">
                         <Link href="/login?mode=signup">
-                          <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center space-x-1.5">
+                          <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex items-center space-x-1.5">
                             <span className="text-sm font-medium">Sign up</span>
                             <ArrowUpRight className="w-4 h-4" />
                           </button>
@@ -191,7 +162,7 @@ export default function LandingPage() {
                            target="_blank" 
                            rel="noopener noreferrer"
                          >
-                           <button className="bg-gradient-to-b from-[rgb(114,137,217)] to-[rgb(91,110,174)] text-white px-4 py-2 rounded-full hover:from-[rgb(124,147,227)] hover:to-[rgb(101,120,184)] transition-all flex items-center space-x-1.5">
+                           <button className="bg-[#4A6741] text-white px-4 py-2 rounded-full hover:bg-[#3E5536] transition-all flex items-center space-x-1.5">
                              <span className="text-sm font-medium">Join the Discord</span>
                              <ArrowUpRight className="w-4 h-4" />
                            </button>
@@ -201,7 +172,7 @@ export default function LandingPage() {
                     <div className="relative" ref={settingsRef}>
                       <button
                         onClick={() => setSettingsOpen(!settingsOpen)}
-                        className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
+                        className={`p-2 backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30 rounded-lg transition-colors ${isAtTop ? 'text-gray-900' : 'text-white'}`}
                       >
                         <Settings className="h-4 w-4" />
                       </button>
@@ -243,7 +214,7 @@ export default function LandingPage() {
             <div className="hidden md:flex items-center justify-between w-full">
               {/* Logo */}
               <div className="flex items-center space-x-2">
-                <span className="text-xl font-semibold font-diatype-mono text-gray-900">
+                <span className={`text-xl font-semibold font-diatype-mono ${isAtTop ? 'text-gray-900' : 'text-white'}`}>
                   matcharestock
                 </span>
               </div>
@@ -252,13 +223,13 @@ export default function LandingPage() {
               <nav className="flex items-center space-x-8">
                 <Link 
                   href="#pricing" 
-                  className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                  className={`font-diatype transition-colors duration-300 ${isAtTop ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-300'}`}
                 >
                   Pricing
                 </Link>
                 <Link 
                   href="#questions" 
-                  className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                  className={`font-diatype transition-colors duration-300 ${isAtTop ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-300'}`}
                 >
                   Info
                 </Link>
@@ -269,12 +240,12 @@ export default function LandingPage() {
                 <div className="flex items-center space-x-6">
                   <Link 
                     href="/login" 
-                    className="font-diatype transition-colors duration-300 text-gray-700 hover:text-gray-900"
+                    className={`font-diatype transition-colors duration-300 ${isAtTop ? 'text-gray-700 hover:text-gray-900' : 'text-white hover:text-gray-300'}`}
                   >
                     Log in
                   </Link>
                   <Link href="/login?mode=signup">
-                    <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors flex items-center space-x-1.5">
+                    <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition-colors flex items-center space-x-1.5">
                       <span className="text-sm font-medium">Sign up</span>
                       <ArrowUpRight className="w-4 h-4" />
                     </button>
@@ -287,7 +258,7 @@ export default function LandingPage() {
                    rel="noopener noreferrer"
                    className="w-full"
                  >
-                   <button className="bg-gradient-to-b from-[rgb(114,137,217)] to-[rgb(91,110,174)] text-white px-4 py-2 rounded-full hover:from-[rgb(124,147,227)] hover:to-[rgb(101,120,184)] transition-all flex items-center space-x-1.5 w-full justify-center">
+                   <button className="bg-[#4A6741] text-white px-4 py-2 rounded-full hover:bg-[#3E5536] transition-all flex items-center space-x-1.5 w-full justify-center">
                      <span className="text-sm font-medium">Join the Discord</span>
                      <ArrowUpRight className="w-4 h-4" />
                    </button>
@@ -305,17 +276,12 @@ export default function LandingPage() {
           <div className="max-w-6xl w-[90%] mx-auto text-center">
             {/* Combined Frosted Glass Content Container */}
             <div 
-              className="p-12 lg:p-16 transition-all duration-300 hover:shadow-[inset_0_0_3px_2px_rgba(255,255,255,0.25),0_0_50px_rgba(200,220,200,0.15),0_0_100px_rgba(180,200,180,0.08)] relative border border-white/30"
+              className="p-12 lg:p-16 transition-all duration-300 hover:shadow-lg relative"
               style={{
                 borderRadius: '24px',
-                backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                backdropFilter: 'blur(32px)',
-                WebkitBackdropFilter: 'blur(32px)',
-                boxShadow: `
-                  inset 0 0 2px 1.5px rgba(255, 255, 255, 0.2),
-                  0 0 40px rgba(200, 220, 200, 0.1),
-                  0 0 80px rgba(180, 200, 180, 0.05)
-                `
+                backgroundColor: 'white',
+                border: '2px solid #4A6741',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)'
               }}
             >
               <div className="relative z-10">
@@ -329,16 +295,7 @@ export default function LandingPage() {
                 {/* Mobile Layout - Just notification images, no sections */}
                 <div className="md:hidden mb-8">
                   <div className="space-y-6">
-                    {/* RestockBot Image */}
-                    <div className="flex justify-center">
-                      <img 
-                        src="/images/restockbot.PNG" 
-                        alt="RestockBot Discord notification" 
-                        className="max-w-full h-auto"
-                        style={{ maxHeight: '140px' }}
-                      />
-                    </div>
-                    
+
                     {/* Mockup Image */}
                     <div className="flex justify-center">
                       <img 
@@ -358,9 +315,9 @@ export default function LandingPage() {
                       {/* Dashboard Display Image - Match total height of section 3 images */}
                       <div className="mb-4 flex justify-center" style={{ height: '400px' }}>
                         <img 
-                          src="/images/dashboarddisplay.png" 
+                          src="/images/subscribe.png" 
                           alt="Dashboard display showing brand subscriptions" 
-                          className="max-w-full h-auto md:ml-0 -ml-6"
+                          className="max-w-full h-auto md:ml-0 -ml-6 rounded-lg"
                           style={{ maxHeight: '240px', marginTop: 'auto', marginBottom: 'auto' }}
                         />
                       </div>
@@ -381,9 +338,9 @@ export default function LandingPage() {
                           className="absolute z-10"
                           style={{ 
                             maxHeight: '180px',
-                            top: '60px',
+                            top: '40px',
                             left: '50%',
-                            transform: 'translateX(-30%)'
+                            transform: 'translateX(-45%)'
                           }}
                         />
                         {/* Wako image - now top layer */}
@@ -407,27 +364,15 @@ export default function LandingPage() {
                     </div>
                     
                     <div className="text-center">
-                      {/* Combined image container - Match height of other sections */}
-                      <div className="mb-4 flex flex-col justify-center" style={{ height: '400px' }}>
-                        {/* RestockBot Image - Above mockup, bigger on desktop */}
-                        <div className="flex justify-center mb-4">
-                          <img 
-                            src="/images/restockbot.PNG" 
-                            alt="RestockBot Discord notification" 
-                            className="max-w-full h-auto"
-                            style={{ maxHeight: '240px' }}
-                          />
-                        </div>
-                        
-                        {/* Figma Mockup Image - Below RestockBot */}
-                        <div className="flex justify-center">
-                          <img 
-                            src="/images/mockup.png" 
-                            alt="Matcha restock notification mockup" 
-                            className="max-w-full h-auto"
-                            style={{ maxHeight: '160px' }}
-                          />
-                        </div>
+                      {/* Image container - Match height of other sections */}
+                      <div className="mb-4 flex justify-center" style={{ height: '400px' }}>
+                        {/* Figma Mockup Image */}
+                        <img 
+                          src="/images/mockup.png" 
+                          alt="Matcha restock notification mockup" 
+                          className="max-w-full h-auto"
+                          style={{ maxHeight: '240px', marginTop: 'auto', marginBottom: 'auto' }}
+                        />
                       </div>
                       
                       <div className="flex justify-center mb-4">
@@ -580,7 +525,7 @@ export default function LandingPage() {
                     </li>
                   </ul>
                   <Link href="/login?mode=signup" className="w-full">
-                    <button className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors w-full">
+                    <button className="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition-colors w-full">
                       <span className="text-sm font-medium">Get Started</span>
                     </button>
                   </Link>
