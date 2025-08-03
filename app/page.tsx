@@ -315,7 +315,7 @@ export default function LandingPage() {
                       {/* Dashboard Display Image - Match total height of section 3 images */}
                       <div className="mb-4 flex justify-center" style={{ height: '400px' }}>
                         <img 
-                          src="/images/subscribe.png" 
+                          src="/images/ss.PNG" 
                           alt="Dashboard display showing brand subscriptions" 
                           className="max-w-full h-auto md:ml-0 -ml-6 rounded-lg"
                           style={{ maxHeight: '240px', marginTop: 'auto', marginBottom: 'auto' }}
