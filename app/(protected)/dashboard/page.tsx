@@ -197,7 +197,11 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-white">
+    <div className={`min-h-screen relative overflow-hidden ${user && !user.isSubscribed ? 'bg-white' : 'bg-gradient-to-br from-sage-200 via-sage-100 to-sage-300'}`}>
+      {/* Background gradient overlay - only show when not on pricing screen */}
+      {user && user.isSubscribed && (
+        <div className="absolute inset-0 bg-gradient-radial from-sage-300/50 via-sage-200/30 to-sage-400/40"></div>
+      )}
       
       {/* Header - always show but with different styling */}
       <header className="relative z-10 px-6 py-6 lg:px-12">
@@ -222,7 +226,7 @@ export default function DashboardPage() {
               {user && user.isSubscribed && (
                 <Link
                   href="/settings"
-                  className="p-2 bg-gray-100 border border-gray-300 text-gray-900 hover:bg-gray-200 rounded-lg transition-colors"
+                  className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
                 >
                   <Settings className="h-4 w-4" />
                 </Link>
@@ -231,7 +235,11 @@ export default function DashboardPage() {
               {/* Sign Out Icon */}
               <button 
                 onClick={handleLogout}
-                className="p-2 text-gray-900 rounded-lg transition-colors bg-gray-100 border border-gray-300 hover:bg-gray-200"
+                className={`p-2 text-gray-900 rounded-lg transition-colors ${
+                  user && user.isSubscribed 
+                    ? 'backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30' 
+                    : 'border border-gray-300 hover:bg-gray-100'
+                }`}
               >
                 <LogOut className="h-4 w-4" />
               </button>
@@ -256,7 +264,7 @@ export default function DashboardPage() {
             {user && user.isSubscribed && (
               <Link
                 href="/settings"
-                className="p-2 bg-gray-100 border border-gray-300 text-gray-900 hover:bg-gray-200 rounded-lg transition-colors"
+                className="p-2 backdrop-blur-xl bg-white/20 border border-white/30 text-gray-900 hover:bg-white/30 rounded-lg transition-colors"
               >
                 <Settings className="h-4 w-4" />
               </Link>
@@ -265,7 +273,11 @@ export default function DashboardPage() {
             {/* Sign Out Icon */}
             <button 
               onClick={handleLogout}
-              className="p-2 text-gray-900 rounded-lg transition-colors bg-gray-100 border border-gray-300 hover:bg-gray-200"
+              className={`p-2 text-gray-900 rounded-lg transition-colors ${
+                user && user.isSubscribed 
+                  ? 'backdrop-blur-xl bg-white/20 border border-white/30 hover:bg-white/30' 
+                  : 'border border-gray-300 hover:bg-gray-100'
+              }`}
             >
               <LogOut className="h-4 w-4" />
             </button>

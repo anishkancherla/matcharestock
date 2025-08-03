@@ -1,4 +1,5 @@
 import type { BrandData } from "@/lib/types"
+import { MetalButtonWrapper } from "./ui/metal-button-wrapper"
 
 interface BrandCardProps {
   brandData: BrandData
@@ -11,24 +12,19 @@ export default function BrandCard({ brandData, isSubscribed, onToggleSubscriptio
   const isComingSoon = brandData.brand === "Yamamasa Koyamaen"
   
   return (
-    <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 pb-6 border-b border-gray-200">
-        <h3 className="text-3xl font-bold text-gray-900 mb-4 sm:mb-0 font-diatype-mono">{brandData.brand}</h3>
+    <div className="backdrop-blur-xl bg-white/20 border border-white/30 rounded-3xl p-8 shadow-2xl hover:bg-white/25 transition-all duration-300">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center mb-8 pb-6 border-b border-white/20">
+        <h3 className="text-3xl font-bold text-gray-900 mb-4 sm:mb-0 font-gaisyr">{brandData.brand}</h3>
         {isComingSoon ? (
           <span className="bg-gradient-to-r from-[#e67e22] to-[#d35400] text-white text-sm font-medium px-4 py-2 rounded-full font-diatype shadow-sm">
             Coming Soon
           </span>
         ) : (
-          <button
+          <MetalButtonWrapper
+            title="Subscribe"
+            isSubscribed={isSubscribed}
             onClick={onToggleSubscription}
-            className={`px-4 py-2 rounded-full transition-colors flex items-center space-x-1.5 text-sm font-medium ${
-              isSubscribed
-                ? 'bg-green-600 text-white hover:bg-green-700'
-                : 'bg-black text-white hover:bg-gray-800'
-            }`}
-          >
-            <span>{isSubscribed ? 'Unsubscribe' : 'Subscribe'}</span>
-          </button>
+          />
         )}
       </div>
       
@@ -40,7 +36,7 @@ export default function BrandCard({ brandData, isSubscribed, onToggleSubscriptio
             {brandData.blends.map((blend) => (
               <div 
                 key={blend.name}
-                className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-center hover:bg-gray-100 transition-all duration-200"
+                className="bg-white/30 backdrop-blur-sm border border-white/40 rounded-xl px-4 py-3 text-center hover:bg-white/40 transition-all duration-200"
               >
                 <span className="text-sm font-medium text-gray-800 font-diatype">{blend.name}</span>
               </div>
