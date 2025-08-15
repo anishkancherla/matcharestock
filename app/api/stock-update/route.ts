@@ -40,7 +40,6 @@ export async function POST(request: Request) {
     
     const currentTime = new Date().toISOString()
     const results = []
-    const restockNotifications = []
     
     // Process each product update
     for (const product of products) {
@@ -92,16 +91,7 @@ export async function POST(request: Request) {
         if (wasOutOfStock && nowInStock) {
           wasRestocked = true
           console.log(`📈 Back in stock: ${brand} - ${product_name}`)
-          
-          // Create restock notification entry
-          restockNotifications.push({
-            brand,
-            product_name: existing.product_name, // Use the name from database for consistency
-            product_url: stock_url,
-            subscribers_notified: 0, // Will be set when emails are sent
-            email_sent: false,
-            created_at: currentTime
-          })
+          // Note: Restock notification will be created automatically by database trigger
         }
 
         // Always update last_checked (scraper checked this URL), only update stock status if it changed
@@ -145,27 +135,15 @@ export async function POST(request: Request) {
       }
     }
 
-    // Create restock notification entries for all detected restocks
-    if (restockNotifications.length > 0) {
-      console.log(`📨 Creating ${restockNotifications.length} restock notification entries`)
-      
-      const { error: notificationError } = await supabase
-        .from('restock_notifications')
-        .insert(restockNotifications)
-
-      if (notificationError) {
-        console.error(`❌ Error creating restock notifications:`, notificationError)
-      } else {
-        console.log(`✅ Successfully created ${restockNotifications.length} restock notification entries`)
-      }
-    }
+    // Note: Restock notifications are now handled automatically by database trigger
+    // when is_in_stock changes from false to true
 
     const successful = results.filter(r => r.success)
     const failed = results.filter(r => !r.success)
     const restocks = results.filter(r => r.success && r.was_restocked)
 
     console.log(`✅ Processed ${successful.length} products successfully, ${failed.length} failed`)
-    console.log(`📈 Detected ${restocks.length} restocks - created notification entries for processing`)
+    console.log(`📈 Detected ${restocks.length} restocks - notifications will be handled by database trigger`)
 
     return NextResponse.json({
       success: true,
@@ -175,7 +153,7 @@ export async function POST(request: Request) {
       restocks_detected: restocks.length,
       results: results,
       timestamp: currentTime,
-      message: `Created ${restockNotifications.length} restock notification entries for processing`
+      message: `Detected ${restocks.length} restocks - notifications handled automatically by database trigger`
     })
 
   } catch (error) {
