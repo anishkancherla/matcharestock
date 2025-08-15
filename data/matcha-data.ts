@@ -13,6 +13,19 @@ export const matchaBrands: BrandData[] = [
     ],
   },
   {
+    brand: "Ippodo (Global)",
+    blends: [
+      { name: "Kanza", description: "The highest-ranking matcha with unparalleled fragrance and umami." },
+      { name: "Kuon", description: "Resplendent fragrance with a refreshing aftertaste." },
+      { name: "Ummon-no-mukashi", description: "Prominent umami flavour and smooth taste." },
+      { name: "Seiun", description: "Strong umami flavour and an aftertaste with depth." },
+      { name: "Sayaka-no-mukashi", description: "Mellow flavour with just the right amount of umami." },
+      { name: "Kan-no-shiro", description: "Rich, substantial taste for ceremonial preparation." },
+      { name: "Ikuyo-no-mukashi", description: "Refined, mild, and refreshing flavour." },
+      { name: "Wakaki-shiro", description: "Light taste perfect for beginners." },
+    ],
+  },
+  {
     brand: "Marukyu Koyamaen",
     blends: [
       { name: "Kiwami Choan", description: "The pinnacle of ceremonial grade, exceptionally smooth." },

@@ -96,7 +96,7 @@ export async function POST(request: Request) {
           // Create restock notification entry
           restockNotifications.push({
             brand,
-            product: existing.product_name, // Use the name from database for consistency
+            product_name: existing.product_name, // Use the name from database for consistency
             product_url: stock_url,
             subscribers_notified: 0, // Will be set when emails are sent
             email_sent: false,

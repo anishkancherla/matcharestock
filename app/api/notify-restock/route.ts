@@ -187,7 +187,7 @@ export async function POST(request: Request) {
       .from('restock_notifications')
       .insert({
         brand,
-        product: product || null,
+        product_name: product || null,
         product_url: productUrl || null,
         subscribers_notified: successfulEmails,
         created_at: new Date().toISOString()
