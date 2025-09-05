@@ -423,6 +423,37 @@ export default function LandingPage() {
                 </div>
               </div>
 
+              {/* Ippodo Global */}
+              <div className="relative">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-[#1a1a1a] mb-6 font-diatype">
+                    Ippodo Global
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 mb-6">
+                    <span className="text-[#757575] font-diatype-thin">Kanza</span>
+                    <span className="text-[#757575] font-diatype-thin">Kuon</span>
+                    <span className="text-[#757575] font-diatype-thin">Ummon-no-mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Seiun</span>
+                    <span className="text-[#757575] font-diatype-thin">Sayaka-no-mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Kan-no-shiro</span>
+                    <span className="text-[#757575] font-diatype-thin">Ikuyo-no-mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Wakaki-shiro</span>
+                  </div>
+                  <div className="bg-gradient-to-r from-[#27ae60]/10 to-[#27ae60]/5 border-l-4 border-[#27ae60] p-4 rounded-r-lg">
+                    <p className="text-[#27ae60] font-medium font-diatype leading-relaxed">
+                      Ippodo's international store with premium ceremonial grades and exclusive blends shipped worldwide!
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Creative separator */}
+                <div className="flex items-center justify-center mt-12">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                  <div className="mx-4 w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                </div>
+              </div>
+
               {/* Marukyu Koyamaen */}
               <div className="relative">
                 <div className="mb-6">
@@ -441,6 +472,35 @@ export default function LandingPage() {
                     <span className="text-[#757575] font-diatype-thin">Chigi no Shiro</span>
                     <span className="text-[#757575] font-diatype-thin">Isuzu</span>
                     <span className="text-[#757575] font-diatype-thin">Aoarashi</span>
+                  </div>
+                </div>
+                
+                {/* Creative separator */}
+                <div className="flex items-center justify-center mt-12">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                  <div className="mx-4 w-2 h-2 bg-gray-400 rounded-full"></div>
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent"></div>
+                </div>
+              </div>
+
+              {/* Horii Shichimeien */}
+              <div className="relative">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-[#1a1a1a] mb-6 font-diatype">
+                    Horii Shichimeien
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 mb-6">
+                    <span className="text-[#757575] font-diatype-thin">Choukou no Mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Homare no Mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Shichimei no Mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Todou Mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Agata no Shiro</span>
+                    <span className="text-[#757575] font-diatype-thin">Uji Mukashi</span>
+                  </div>
+                  <div className="bg-gradient-to-r from-[#9b59b6]/10 to-[#9b59b6]/5 border-l-4 border-[#9b59b6] p-4 rounded-r-lg">
+                    <p className="text-[#9b59b6] font-medium font-diatype leading-relaxed">
+                      Historic Kyoto tea house specializing in traditional ceremonial matcha with authentic Japanese craftsmanship!
+                    </p>
                   </div>
                 </div>
                 

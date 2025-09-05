@@ -42,6 +42,17 @@ export const matchaBrands: BrandData[] = [
     ],
   },
   {
+    brand: "Horii Shichimeien",
+    blends: [
+      { name: "Choukou no Mukashi", description: "Premium ceremonial matcha with refined umami and elegant aroma." },
+      { name: "Homare no Mukashi", description: "Well-balanced matcha with mellow fragrance and full umami." },
+      { name: "Shichimei no Mukashi", description: "Traditional blend with well-balanced taste and smooth finish." },
+      { name: "Todou Mukashi", description: "Classic matcha with harmonious flavor and umami richness." },
+      { name: "Agata no Shiro", description: "Light and refreshing matcha with delicate taste profile." },
+      { name: "Uji Mukashi", description: "Traditional Uji matcha with authentic flavor and aroma." },
+    ],
+  },
+  {
     brand: "Yamamasa Koyamaen",
     blends: [
       { name: "Coming Soon", description: "We're working on adding tracking for this premium matcha brand." },
