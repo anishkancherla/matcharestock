@@ -29,6 +29,9 @@ function getBrandWebhookUrl(brand: string): string | undefined {
     case 'ippodo (global)':
     case 'ippodo global':
       return process.env.DISCORD_WEBHOOK_IPPODO_GLOBAL
+    case 'horii shichimeien':
+    case 'horii':
+      return process.env.DISCORD_WEBHOOK_HORII
     default:
       // Fallback to generic webhook if brand not recognized
       return process.env.DISCORD_WEBHOOK_URL
@@ -46,6 +49,9 @@ function getBrandConfig(brand: string): { emoji: string, color: number } {
     case 'ippodo (global)':
     case 'ippodo global':
       return { emoji: '🌍', color: 0x2196F3 } // Blue for Ippodo Global
+    case 'horii shichimeien':
+    case 'horii':
+      return { emoji: '🏛️', color: 0x9B59B6 } // Purple for Horii Shichimeien (historic tea house)
     default:
       return { emoji: '🍵', color: 0x90EE90 } // Default light green
   }
