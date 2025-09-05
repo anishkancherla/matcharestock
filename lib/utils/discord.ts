@@ -51,7 +51,7 @@ function getBrandConfig(brand: string): { emoji: string, color: number } {
       return { emoji: '🌍', color: 0x2196F3 } // Blue for Ippodo Global
     case 'horii shichimeien':
     case 'horii':
-      return { emoji: '🏛️', color: 0x9B59B6 } // Purple for Horii Shichimeien (historic tea house)
+      return { emoji: '⭐', color: 0x9B59B6 } // Purple for Horii Shichimeien with star
     default:
       return { emoji: '🍵', color: 0x90EE90 } // Default light green
   }
