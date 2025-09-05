@@ -441,7 +441,7 @@ export default function LandingPage() {
                   </div>
                   <div className="bg-gradient-to-r from-[#27ae60]/10 to-[#27ae60]/5 border-l-4 border-[#27ae60] p-4 rounded-r-lg">
                     <p className="text-[#27ae60] font-medium font-diatype leading-relaxed">
-                      Ippodo's international store with premium ceremonial grades and exclusive blends shipped worldwide!
+                      Ippodo's international store!
                     </p>
                   </div>
                 </div>
@@ -496,11 +496,6 @@ export default function LandingPage() {
                     <span className="text-[#757575] font-diatype-thin">Todou Mukashi</span>
                     <span className="text-[#757575] font-diatype-thin">Agata no Shiro</span>
                     <span className="text-[#757575] font-diatype-thin">Uji Mukashi</span>
-                  </div>
-                  <div className="bg-gradient-to-r from-[#9b59b6]/10 to-[#9b59b6]/5 border-l-4 border-[#9b59b6] p-4 rounded-r-lg">
-                    <p className="text-[#9b59b6] font-medium font-diatype leading-relaxed">
-                      Historic Kyoto tea house specializing in traditional ceremonial matcha with authentic Japanese craftsmanship!
-                    </p>
                   </div>
                 </div>
                 
