@@ -55,7 +55,14 @@ export const matchaBrands: BrandData[] = [
   {
     brand: "Yamamasa Koyamaen",
     blends: [
-      { name: "Coming Soon", description: "We're working on adding tracking for this premium matcha brand." },
+      { name: "Seiun", description: "High grade ceremonial matcha with intense, velvety full-bodied character." },
+      { name: "Tennouzan", description: "Premium matcha with robust flavor and distinctive characteristics." },
+      { name: "Senjin no Mukashi", description: "Traditional matcha blend with authentic Japanese craftsmanship." },
+      { name: "Shikibu no Mukashi", description: "Classic ceremonial grade with elegant taste and aroma." },
+      { name: "Ogurayama", description: "Flavorful usucha grade matcha perfect for everyday enjoyment." },
+      { name: "Yomo no Kaori", description: "Aromatic matcha with delicate fragrance and balanced flavor." },
+      { name: "Samidori", description: "Ceremonial grade matcha with smooth texture and rich umami." },
+      { name: "Matsukaze", description: "Traditional blend with harmonious flavor and refined character." },
     ],
   },
 ]

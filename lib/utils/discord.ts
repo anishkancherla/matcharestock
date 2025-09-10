@@ -32,6 +32,9 @@ function getBrandWebhookUrl(brand: string): string | undefined {
     case 'horii shichimeien':
     case 'horii':
       return process.env.DISCORD_WEBHOOK_HORII
+    case 'yamamasa koyamaen':
+    case 'yamamasa':
+      return process.env.DISCORD_WEBHOOK_YAMAMASA
     default:
       // Fallback to generic webhook if brand not recognized
       return process.env.DISCORD_WEBHOOK_URL
@@ -52,6 +55,9 @@ function getBrandConfig(brand: string): { emoji: string, color: number } {
     case 'horii shichimeien':
     case 'horii':
       return { emoji: '⭐', color: 0x9B59B6 } // Purple for Horii Shichimeien with star
+    case 'yamamasa koyamaen':
+    case 'yamamasa':
+      return { emoji: '🍃', color: 0xFF9800 } // Orange for Yamamasa Koyamaen with leaf
     default:
       return { emoji: '🍵', color: 0x90EE90 } // Default light green
   }

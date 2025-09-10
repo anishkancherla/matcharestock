@@ -507,14 +507,23 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              {/* Yamamasa Koyamaen - Coming Soon */}
-              <div className="text-center">
-                <h3 className="text-xl font-semibold text-[#2d2d2d] mb-2 font-diatype">
-                  Yamamasa Koyamaen
-                </h3>
-                <span className="bg-gradient-to-r from-[#e67e22] to-[#d35400] text-white text-xs font-medium px-3 py-1 rounded-full font-diatype shadow-sm">
-                  Coming Soon
-                </span>
+              {/* Yamamasa Koyamaen */}
+              <div className="relative">
+                <div className="mb-6">
+                  <h3 className="text-2xl font-bold text-[#1a1a1a] mb-6 font-diatype">
+                    Yamamasa Koyamaen
+                  </h3>
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-2 mb-6">
+                    <span className="text-[#757575] font-diatype-thin">Seiun</span>
+                    <span className="text-[#757575] font-diatype-thin">Tennouzan</span>
+                    <span className="text-[#757575] font-diatype-thin">Senjin no Mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Shikibu no Mukashi</span>
+                    <span className="text-[#757575] font-diatype-thin">Ogurayama</span>
+                    <span className="text-[#757575] font-diatype-thin">Yomo no Kaori</span>
+                    <span className="text-[#757575] font-diatype-thin">Samidori</span>
+                    <span className="text-[#757575] font-diatype-thin">Matsukaze</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
