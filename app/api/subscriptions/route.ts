@@ -265,18 +265,6 @@ export async function POST(request: NextRequest) {
 
     console.log(`🔔 Restock notification received for ${brand}:`, products.map(p => p.name));
 
-    // TEMPORARY: Block Ippodo notifications to prevent spam
-    if (brand.includes('Ippodo')) {
-      console.log(`🚫 IPPODO NOTIFICATIONS TEMPORARILY DISABLED - Skipping notification for ${brand}`);
-      return NextResponse.json({
-        message: 'Ippodo notifications temporarily disabled',
-        brand,
-        products: products.map(p => p.name),
-        notified: 0,
-        paused: true
-      });
-    }
-
 
     if (!apiKey || apiKey !== SCRAPER_API_KEY) {
       console.log('❌ Unauthorized restock notification attempt');

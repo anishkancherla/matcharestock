@@ -137,17 +137,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Brand is required" }, { status: 400 })
     }
 
-    // TEMPORARY: Block Ippodo notifications to prevent spam
-    if (brand.includes('Ippodo')) {
-      console.log(`🚫 IPPODO NOTIFICATIONS TEMPORARILY DISABLED - Skipping notification for ${brand} - ${product}`);
-      return NextResponse.json({ 
-        success: true, 
-        message: "Ippodo notifications temporarily disabled",
-        notified: 0,
-        paused: true
-      });
-    }
-
     console.log(`Restock notification triggered for brand: ${brand}, product: ${product}`)
 
     const supabase = await createClient()
