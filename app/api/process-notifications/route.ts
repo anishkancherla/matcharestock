@@ -83,21 +83,6 @@ export async function POST(request: Request) {
     for (const [brand, notifications] of Object.entries(brandGroups)) {
       console.log(`\n🏷️ Processing ${brand} (${notifications.length} products)`)
       
-      // BLOCK ALL IPPODO PROCESSING - DISABLED DUE TO SPAM
-      if (brand.toLowerCase().includes('ippodo')) {
-        console.log(`🚫 BLOCKED: Skipping all Ippodo notifications processing - ${notifications.length} notifications ignored`)
-        
-        // Mark as failed to skip processing but not crash the system
-        stats.failures += notifications.length
-        stats.notification_results.push({
-          brand: brand,
-          products: notifications.map(n => n.product_name),
-          success: false,
-          notified: 0,
-          error: 'Ippodo notifications temporarily disabled'
-        })
-        continue // Skip to next brand
-      }
       
       const notificationIds = notifications.map(n => n.id)
       
