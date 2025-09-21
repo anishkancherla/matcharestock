@@ -137,6 +137,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Brand is required" }, { status: 400 })
     }
 
+    // BLOCK IPPODO GLOBAL NOTIFICATIONS - DISABLED DUE TO SPAM
+    if (brand.toLowerCase().includes('ippodo') && brand.toLowerCase().includes('global')) {
+      console.log(`🚫 BLOCKED: Ippodo Global notifications are temporarily disabled - brand: ${brand}`)
+      return NextResponse.json({ 
+        success: true, 
+        message: "Ippodo Global notifications are temporarily disabled",
+        notified: 0,
+        blocked: true
+      })
+    }
+
     console.log(`Restock notification triggered for brand: ${brand}, product: ${product}`)
 
     const supabase = await createClient()
