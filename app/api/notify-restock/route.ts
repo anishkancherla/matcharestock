@@ -137,12 +137,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Brand is required" }, { status: 400 })
     }
 
-    // BLOCK IPPODO GLOBAL NOTIFICATIONS - DISABLED DUE TO SPAM
-    if (brand.toLowerCase().includes('ippodo') && brand.toLowerCase().includes('global')) {
-      console.log(`🚫 BLOCKED: Ippodo Global notifications are temporarily disabled - brand: ${brand}`)
+    // BLOCK ALL IPPODO NOTIFICATIONS - DISABLED DUE TO SPAM
+    if (brand.toLowerCase().includes('ippodo')) {
+      console.log(`🚫 BLOCKED: All Ippodo notifications are temporarily disabled - brand: ${brand}`)
       return NextResponse.json({ 
         success: true, 
-        message: "Ippodo Global notifications are temporarily disabled",
+        message: "Ippodo notifications are temporarily disabled",
         notified: 0,
         blocked: true
       })

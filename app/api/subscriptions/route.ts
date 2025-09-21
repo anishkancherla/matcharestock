@@ -293,12 +293,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // BLOCK IPPODO GLOBAL SUBSCRIPTIONS - DISABLED DUE TO SPAM
-    if (brand.toLowerCase().includes('ippodo') && brand.toLowerCase().includes('global')) {
-      console.log(`🚫 BLOCKED: Ippodo Global subscription notifications are temporarily disabled - brand: ${brand}`);
+    // BLOCK ALL IPPODO SUBSCRIPTIONS - DISABLED DUE TO SPAM
+    if (brand.toLowerCase().includes('ippodo')) {
+      console.log(`🚫 BLOCKED: All Ippodo subscription notifications are temporarily disabled - brand: ${brand}`);
       return NextResponse.json({
         success: true,
-        message: 'Ippodo Global notifications are temporarily disabled',
+        message: 'Ippodo notifications are temporarily disabled',
         subscribersNotified: 0,
         totalSubscribers: 0,
         blocked: true

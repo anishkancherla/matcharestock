@@ -89,8 +89,22 @@ export async function POST(request: Request) {
         
         let wasRestocked = false
         if (wasOutOfStock && nowInStock) {
-          wasRestocked = true
-          console.log(`📈 Back in stock: ${brand} - ${product_name}`)
+          // ANTI-SPAM: Prevent multiple notifications for ALL Ippodo within 1 hour
+          if (brand.toLowerCase().includes('ippodo')) {
+            const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+            const lastChangeTime = existing.stock_change_detected_at || '1970-01-01'
+            
+            if (lastChangeTime > oneHourAgo) {
+              console.log(`🚫 BLOCKED: Ippodo restock too soon - last change: ${lastChangeTime}`)
+              wasRestocked = false
+            } else {
+              wasRestocked = true
+              console.log(`📈 Back in stock: ${brand} - ${product_name} (rate limit passed)`)
+            }
+          } else {
+            wasRestocked = true
+            console.log(`📈 Back in stock: ${brand} - ${product_name}`)
+          }
           // Note: Restock notification will be created automatically by database trigger
         }
 
