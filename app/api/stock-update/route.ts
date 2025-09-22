@@ -91,7 +91,6 @@ export async function POST(request: Request) {
         if (wasOutOfStock && nowInStock) {
           wasRestocked = true
           console.log(`📈 Back in stock: ${brand} - ${product_name}`)
-          // Note: Restock notification will be created automatically by database trigger
         }
 
         // Always update last_checked (scraper checked this URL), only update stock status if it changed
@@ -103,6 +102,11 @@ export async function POST(request: Request) {
         if (existing.is_in_stock !== is_in_stock) {
           updateData.is_in_stock = is_in_stock
           console.log(`🔄 Stock status changed for ${brand} - ${product_name}: ${existing.is_in_stock} → ${is_in_stock}`)
+          
+          // If this is a restock, update the stock_change_detected_at field
+          if (wasRestocked) {
+            updateData.stock_change_detected_at = currentTime
+          }
         }
 
         const { error: updateError } = await supabase
@@ -118,6 +122,43 @@ export async function POST(request: Request) {
             error: 'Database update error'
           })
         } else {
+          // If this was a restock, create notification and trigger processing
+          if (wasRestocked) {
+            console.log(`🔔 Creating restock notification for ${brand} - ${product_name}`)
+            
+            // Create restock notification entry
+            const { error: notifError } = await supabase
+              .from('restock_notifications')
+              .insert({
+                brand: brand,
+                product_name: product_name,
+                product_url: stock_url,
+                email_sent: false
+              })
+
+            if (notifError) {
+              console.error(`❌ Error creating notification for ${brand} - ${product_name}:`, notifError)
+            } else {
+              console.log(`✅ Restock notification created for ${brand} - ${product_name}`)
+              
+              // Trigger automatic processing of notifications (fire and forget)
+              try {
+                const processUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/process-notifications`
+                console.log(`🚀 Triggering notification processing...`)
+                
+                fetch(processUrl, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ apiKey: process.env.SCRAPER_API_KEY })
+                }).catch(err => {
+                  console.error('⚠️ Background notification processing failed:', err)
+                })
+              } catch (e) {
+                console.error('❌ Failed to trigger notification processing:', e)
+              }
+            }
+          }
+          
           results.push({
             product: `${brand} - ${product_name}`,
             success: true,
@@ -143,7 +184,7 @@ export async function POST(request: Request) {
     const restocks = results.filter(r => r.success && r.was_restocked)
 
     console.log(`✅ Processed ${successful.length} products successfully, ${failed.length} failed`)
-    console.log(`📈 Detected ${restocks.length} restocks - notifications will be handled by database trigger`)
+    console.log(`📈 Detected ${restocks.length} restocks - notifications created and processing triggered automatically`)
 
     return NextResponse.json({
       success: true,
@@ -153,7 +194,7 @@ export async function POST(request: Request) {
       restocks_detected: restocks.length,
       results: results,
       timestamp: currentTime,
-      message: `Detected ${restocks.length} restocks - notifications handled automatically by database trigger`
+      message: `Detected ${restocks.length} restocks - notifications created and emails will be sent automatically`
     })
 
   } catch (error) {
