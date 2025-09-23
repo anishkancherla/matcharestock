@@ -55,6 +55,17 @@ export async function POST(request: Request) {
         continue
       }
 
+      // TEMPORARY: Block ippodo global routes
+      if (brand.toLowerCase() === 'ippodo global' || brand.toLowerCase() === 'ippodo (global)') {
+        console.warn(`🚫 TEMP BLOCK: Skipping ippodo global product: ${brand} - ${product_name}`)
+        results.push({
+          product: `${brand} - ${product_name}`,
+          success: false,
+          error: 'Ippodo global routes temporarily blocked'
+        })
+        continue
+      }
+
       try {
         // Find existing product by URL only
         const { data: existing, error: fetchError } = await supabase
