@@ -55,13 +55,13 @@ export async function POST(request: Request) {
         continue
       }
 
-      // TEMPORARY: Block ippodo global routes
-      if (brand.toLowerCase() === 'ippodo global' || brand.toLowerCase() === 'ippodo (global)') {
-        console.warn(`🚫 TEMP BLOCK: Skipping ippodo global product: ${brand} - ${product_name}`)
+      // TEMPORARY: Block all ippodo routes (regular and global)
+      if (brand.toLowerCase() === 'ippodo' || brand.toLowerCase() === 'ippodo global' || brand.toLowerCase() === 'ippodo (global)') {
+        console.warn(`🚫 TEMP BLOCK: Skipping ippodo product: ${brand} - ${product_name}`)
         results.push({
           product: `${brand} - ${product_name}`,
           success: false,
-          error: 'Ippodo global routes temporarily blocked'
+          error: 'Ippodo routes temporarily blocked'
         })
         continue
       }
