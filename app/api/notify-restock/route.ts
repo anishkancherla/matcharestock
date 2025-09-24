@@ -184,6 +184,7 @@ export async function POST(request: Request) {
       await sendDiscordNotification(brand, products);
     }
 
+    // Log as already sent to avoid being re-processed by /api/process-notifications
     const { error: logError } = await supabase
       .from('restock_notifications')
       .insert({
@@ -191,6 +192,8 @@ export async function POST(request: Request) {
         product_name: product || null,
         product_url: productUrl || null,
         subscribers_notified: successfulEmails,
+        email_sent: true,
+        sent_at: new Date().toISOString(),
         created_at: new Date().toISOString()
       })
 

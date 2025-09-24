@@ -83,11 +83,23 @@ export async function POST(request: Request) {
     for (const [brand, notifications] of Object.entries(brandGroups)) {
       console.log(`\n🏷️ Processing ${brand} (${notifications.length} products)`)
       
-      const notificationIds = notifications.map(n => n.id)
+      // Dedupe by normalized product_url to avoid sending duplicates
+      const seen = new Set<string>()
+      const deduped = [] as typeof notifications
+      for (const n of notifications) {
+        const key = `${(n.brand || '').toLowerCase()}::${(n.product_url || '').toLowerCase()}`
+        if (!seen.has(key)) {
+          seen.add(key)
+          deduped.push(n)
+        }
+      }
+
+      const notificationIds = deduped.map(n => n.id)
+      const allNotificationIds = notifications.map(n => n.id)
       
       try {
         // Prepare products for the notification API
-        const products = notifications.map(notification => ({
+        const products = deduped.map(notification => ({
           name: notification.product_name, // Fixed: was notification.product
           url: notification.product_url || null
         }))
@@ -127,7 +139,7 @@ export async function POST(request: Request) {
               sent_at: new Date().toISOString(),
               subscribers_notified: notified
             })
-            .in('id', notificationIds)
+            .in('id', allNotificationIds)
 
           if (updateError) {
             console.error(`❌ Error marking notifications as sent for ${brand}:`, updateError)

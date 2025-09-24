@@ -332,6 +332,15 @@ export async function POST(request: NextRequest) {
     // DEBUG: Log all emails we're about to process
     console.log('📧 All subscribers found:', subscriptions.map(s => s.email));
 
+    // Dedupe products by normalized URL+name to avoid duplicates in email body
+    const productSeen = new Set<string>();
+    const dedupedProducts = products.filter(p => {
+      const key = `${(p.name || '').toLowerCase()}::${(p.url || '').toLowerCase()}`;
+      if (productSeen.has(key)) return false;
+      productSeen.add(key);
+      return true;
+    });
+
     // More personal, less promotional subject line
     const emailSubject = `Matcha is available!`;
     
@@ -352,9 +361,9 @@ export async function POST(request: NextRequest) {
               <p style="color: #666666; margin: 10px 0 0 0; font-size: 16px;">Good news! The following matcha from ${brand} is available:</p>
             </div>
             
-            <!-- Simple Product List -->
+            <!-- Simple Product List (deduped) -->
             <div style="margin: 25px 0;">
-              ${products.map(product => `
+              ${dedupedProducts.map(product => `
                 <div style="margin-bottom: 15px; padding: 15px; background-color: #f8f9fa; border-radius: 4px;">
                   <div style="font-weight: 500; color: #333333; font-size: 16px;">
                     ${product.url ? `<a href="${product.url}" style="color: #333333; text-decoration: underline;">${product.name}</a>` : product.name}

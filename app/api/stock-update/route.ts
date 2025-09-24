@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     
     const currentTime = new Date().toISOString()
     const results = []
+    let createdRestockCount = 0
     
     // Process each product update
     for (const product of products) {
@@ -51,17 +52,6 @@ export async function POST(request: Request) {
           product: `${brand} - ${product_name}`,
           success: false,
           error: 'Missing brand or product name'
-        })
-        continue
-      }
-
-      // TEMPORARY: Block all ippodo routes (regular and global)
-      if (brand.toLowerCase() === 'ippodo' || brand.toLowerCase() === 'ippodo global' || brand.toLowerCase() === 'ippodo (global)') {
-        console.warn(`🚫 TEMP BLOCK: Skipping ippodo product: ${brand} - ${product_name}`)
-        results.push({
-          product: `${brand} - ${product_name}`,
-          success: false,
-          error: 'Ippodo routes temporarily blocked'
         })
         continue
       }
@@ -148,25 +138,15 @@ export async function POST(request: Request) {
               })
 
             if (notifError) {
-              console.error(`❌ Error creating notification for ${brand} - ${product_name}:`, notifError)
+              // Ignore duplicate pending rows (handled by DB unique indexes once added)
+              if ((notifError as any).code === '23505') {
+                console.warn(`ℹ️ Duplicate pending notification skipped for ${brand} - ${product_name}`)
+              } else {
+                console.error(`❌ Error creating notification for ${brand} - ${product_name}:`, notifError)
+              }
             } else {
               console.log(`✅ Restock notification created for ${brand} - ${product_name}`)
-              
-              // Trigger automatic processing of notifications (fire and forget)
-              try {
-                const processUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/process-notifications`
-                console.log(`🚀 Triggering notification processing...`)
-                
-                fetch(processUrl, {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ apiKey: process.env.SCRAPER_API_KEY })
-                }).catch(err => {
-                  console.error('⚠️ Background notification processing failed:', err)
-                })
-              } catch (e) {
-                console.error('❌ Failed to trigger notification processing:', e)
-              }
+              createdRestockCount += 1
             }
           }
           
@@ -187,15 +167,16 @@ export async function POST(request: Request) {
       }
     }
 
-    // Note: Restock notifications are now handled automatically by database trigger
-    // when is_in_stock changes from false to true
+    // Note: Restock notifications are processed by the dedicated API endpoint.
+    // The scraper orchestrator will call /api/process-notifications after updates,
+    // so we avoid triggering processing here to prevent double sends.
 
     const successful = results.filter(r => r.success)
     const failed = results.filter(r => !r.success)
     const restocks = results.filter(r => r.success && r.was_restocked)
 
     console.log(`✅ Processed ${successful.length} products successfully, ${failed.length} failed`)
-    console.log(`📈 Detected ${restocks.length} restocks - notifications created and processing triggered automatically`)
+    console.log(`📈 Detected ${restocks.length} restocks - ${createdRestockCount} new notification rows created`)
 
     return NextResponse.json({
       success: true,
